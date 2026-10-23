@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+data/
+*.sqlite
+*.db
+playwright-report/
+test-results/
+apps/desktop/out/
+apps/desktop/app/
+.vite/

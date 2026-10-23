@@ -1,0 +1,38 @@
+{
+  "name": "segnale-remoto",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Survival/crafting co-op 3D low-poly per 2-4 amici, da browser e PC.",
+  "type": "module",
+  "workspaces": [
+    "packages/shared",
+    "packages/server",
+    "packages/client"
+  ],
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c magenta,cyan \"npm run dev -w @segnale/server\" \"npm run dev -w @segnale/client\"",
+    "build": "npm run build -w @segnale/client && npm run build -w @segnale/server",
+    "start": "node --disable-warning=ExperimentalWarning packages/server/dist/index.js",
+    "typecheck": "tsc -p packages/shared && tsc -p packages/server && tsc -p packages/client",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.19.1",
+    "concurrently": "9.2.5",
+    "eslint": "9.39.5",
+    "prettier": "3.6.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.48.0",
+    "vitest": "4.1.11"
+  }
+}
