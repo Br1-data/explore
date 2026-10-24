@@ -259,6 +259,29 @@ input::placeholder {
   background: #416660aa;
   border-color: #b3d7c6;
 }
+.solo-button {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 7px;
+  border: 0;
+  background: none;
+  color: var(--mint);
+  font-size: 10px;
+  text-align: center;
+}
+.solo-button:hover:not(:disabled) {
+  color: #d4f4df;
+}
+.server-notice {
+  border-left: 2px solid var(--accent);
+  background: #0b202980;
+  padding: 10px 12px;
+  color: #d5c5ad;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 14px 0;
+}
 .form-error {
   color: #ffb29e;
   font-size: 12px;

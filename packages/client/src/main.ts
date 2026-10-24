@@ -17,6 +17,9 @@ import {
 } from '@segnale/shared';
 import type { ClientMessage, MoveInput, PlayerState, ServerMessage, WorldNode } from '@segnale/shared';
 import { WorldView } from './game/view';
+import { resolveServerEndpoint } from './server-url';
+import { LocalTransport } from './local-transport';
+import type { GameTransport } from './local-transport';
 import './style.css';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -35,10 +38,12 @@ app.innerHTML = `
       <label for="name">IL TUO NOMINATIVO</label>
       <input id="name" name="name" maxlength="20" placeholder="Astronauta" required value="Astronauta" />
       <button id="create" class="primary" type="button">Nuova spedizione <span>→</span></button>
-      <div class="divider"><span>OPPURE RAGGIUNGI IL TUO EQUIPAGGIO</span></div>
-      <div class="join-row"><label class="sr-only" for="code">Codice stanza</label><input id="code" name="code" maxlength="4" pattern="[A-Za-z]{4}" placeholder="CODICE" aria-label="Codice stanza" /><button id="join" class="secondary" type="submit">Unisciti →</button></div>
+      <div id="online-join"><div class="divider"><span>OPPURE RAGGIUNGI IL TUO EQUIPAGGIO</span></div>
+      <div class="join-row"><label class="sr-only" for="code">Codice stanza</label><input id="code" name="code" maxlength="4" pattern="[A-Za-z]{4}" placeholder="CODICE" aria-label="Codice stanza" /><button id="join" class="secondary" type="submit">Unisciti →</button></div></div>
+      <p id="server-notice" class="server-notice" role="status" hidden>Il server di gioco non è ancora disponibile. Torna presto per partire con il tuo equipaggio.</p>
       <p id="lobby-error" class="form-error" role="alert"></p>
-      <p class="boarding-note"><span class="live-dot"></span> 1–4 astronauti <span>·</span> Co-op online <span>·</span> Nessun account</p>
+      <button id="solo" class="solo-button" type="button">Esplora in solitaria →</button>
+      <p id="boarding-note" class="boarding-note"><span class="live-dot"></span> 1–4 astronauti <span>·</span> Co-op online <span>·</span> Nessun account</p>
     </form>
     <div class="prototype-note"><span>PRIMO CONTATTO</span> Prototipo esplorativo · raccolta e sopravvivenza</div>
   </main>
@@ -65,10 +70,23 @@ app.innerHTML = `
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const worldHost = $('world');
+const serverEndpoint = resolveServerEndpoint(
+  import.meta.env.VITE_SERVER_URL,
+  location.href,
+  import.meta.env.DEV,
+);
+const defaultLocalMode = serverEndpoint.url === null && serverEndpoint.reason === 'missing';
+$('server-notice').hidden = serverEndpoint.url !== null || defaultLocalMode;
+$('online-join').hidden = defaultLocalMode;
+$('solo').hidden = defaultLocalMode;
+if (defaultLocalMode) {
+  $('boarding-note').textContent = 'Un esploratore · Nessun account · Gioca nel browser';
+}
 const keys = new Set<string>();
 let view: WorldView;
 let graphicsReady = false;
-let socket: WebSocket | undefined;
+let socket: GameTransport | undefined;
+let localMode = false;
 let playerId = '';
 let room = '';
 let seed = 42;
@@ -148,18 +166,30 @@ function leave(): void {
 }
 
 function setBusy(busy: boolean): void {
-  for (const id of ['create', 'join']) $<HTMLButtonElement>(id).disabled = busy;
-  $('create').firstChild!.textContent = busy ? 'Collegamento in corso… ' : 'Nuova spedizione ';
+  for (const id of ['create', 'join'])
+    $<HTMLButtonElement>(id).disabled =
+      busy || !graphicsReady || (serverEndpoint.url === null && !defaultLocalMode);
+  $<HTMLButtonElement>('solo').disabled = busy || !graphicsReady;
+  $('create').firstChild!.textContent = busy
+    ? 'Preparazione in corso… '
+    : defaultLocalMode
+      ? 'Esplora in solitaria '
+      : 'Nuova spedizione ';
 }
 
-function connect(requestedRoom?: string, reconnect = false): void {
-  if (!graphicsReady) return;
+function connect(
+  requestedRoom?: string,
+  reconnect = false,
+  mode: 'local' | 'online' = defaultLocalMode ? 'local' : 'online',
+): void {
+  if (!graphicsReady || (mode === 'online' && serverEndpoint.url === null)) return;
   const name = $<HTMLInputElement>('name').value.trim();
   if (!name) {
     $<HTMLInputElement>('name').reportValidity();
     return;
   }
   if (!reconnect) {
+    localMode = mode === 'local';
     intentionalClose = false;
     reconnectStarted = 0;
     $('lobby-error').textContent = '';
@@ -170,9 +200,7 @@ function connect(requestedRoom?: string, reconnect = false): void {
   } catch {
     /* Storage is optional. */
   }
-  const url = new URL('/ws', location.href);
-  url.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const current = new WebSocket(url);
+  const current: GameTransport = localMode ? new LocalTransport() : new WebSocket(serverEndpoint.url!);
   socket = current;
   let welcomed = false;
   current.addEventListener('open', () => {
@@ -204,7 +232,7 @@ function connect(requestedRoom?: string, reconnect = false): void {
       welcomed = true;
       playing = true;
       playerId = message.playerId;
-      room = message.room;
+      room = localMode ? '' : message.room;
       seed = message.seed;
       pending = [];
       snapshots = [];
@@ -220,15 +248,19 @@ function connect(requestedRoom?: string, reconnect = false): void {
       for (const id of ['lobby', 'landing-info', 'build-label', 'lobby-footer']) $(id).hidden = true;
       $('hud').hidden = false;
       $('session').hidden = false;
-      $('connection-label').textContent = 'CONNESSO';
+      $('connection-label').textContent = localMode ? 'MODALITÀ LOCALE' : 'CONNESSO';
+      $('share').hidden = localMode;
       $('room-code').textContent = room;
       const url = new URL(location.href);
-      url.searchParams.set('room', room);
+      if (localMode) url.searchParams.delete('room');
+      else url.searchParams.set('room', room);
       history.replaceState(null, '', url);
       toast(
         reconnect
           ? 'Collegamento ristabilito. Bentornato a bordo.'
-          : 'Atterraggio riuscito. Raccogli rottami e cristalli vicino al relitto.',
+          : localMode
+            ? 'Spedizione in solitaria. La partita resta in questa scheda; ricaricando riparti da zero.'
+            : 'Atterraggio riuscito. Raccogli rottami e cristalli vicino al relitto.',
       );
       return;
     }
@@ -256,7 +288,7 @@ function connect(requestedRoom?: string, reconnect = false): void {
       $('lobby-error').textContent = 'Questa sessione è stata aperta in un’altra finestra.';
       return;
     }
-    if ((welcomed || reconnect) && room) {
+    if (!localMode && (welcomed || reconnect) && room) {
       reconnectStarted ||= Date.now();
       if (Date.now() - reconnectStarted < 55_000) {
         $('connection-label').textContent = 'RICONNESSIONE…';
@@ -337,8 +369,13 @@ $('create').addEventListener('click', () => {
   if ($<HTMLInputElement>('name').checkValidity()) connect();
   else $<HTMLInputElement>('name').reportValidity();
 });
+$('solo').addEventListener('click', () => connect(undefined, false, 'local'));
 $('join-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  if (defaultLocalMode) {
+    connect(undefined, false, 'local');
+    return;
+  }
   const code = $<HTMLInputElement>('code').value.trim().toUpperCase();
   if (!/^[A-Z]{4}$/.test(code)) {
     $('lobby-error').textContent = 'Inserisci un codice stanza di 4 lettere.';
@@ -493,7 +530,7 @@ function updateHud(): void {
   crew.replaceChildren();
   const count = document.createElement('span');
   count.className = 'small-caps';
-  count.textContent = `EQUIPAGGIO ${players.filter((p) => p.connected).length}/${MAX_PLAYERS}`;
+  count.textContent = `EQUIPAGGIO ${players.filter((p) => p.connected).length}/${localMode ? 1 : MAX_PLAYERS}`;
   crew.append(count);
   for (const player of players) {
     const entry = document.createElement('div');
@@ -548,6 +585,7 @@ function remotePlayers(now: number): PlayerState[] {
 }
 
 resetView(42);
+setBusy(false);
 const previewPlayer = createPlayer('preview', '', 42);
 previewPlayer.z = 2;
 let lastFrame = performance.now();

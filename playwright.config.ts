@@ -18,6 +18,12 @@ export default defineConfig({
   },
   webServer: [
     {
+      command: 'npm run build -w @segnale/client && node e2e/serve-pages.mjs',
+      env: { VITE_SERVER_URL: '' },
+      url: 'http://127.0.0.1:5176/explore/',
+      reuseExistingServer: false,
+    },
+    {
       command: 'npm run dev -w @segnale/server',
       env: { PORT: '2570' },
       url: 'http://localhost:2570/health',
