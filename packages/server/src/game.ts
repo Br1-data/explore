@@ -23,6 +23,7 @@ export function send(socket: WebSocket, message: ServerMessage): void {
 /** A room owns all gameplay state; clients can request actions, never submit state. */
 export class GameRoom extends ExpeditionSimulation {
   readonly players = new Map<string, RoomPlayer>();
+  readonly runId = randomUUID();
   constructor(
     readonly code: string,
     seed = randomBytes(4).readUInt32LE(),
@@ -30,7 +31,7 @@ export class GameRoom extends ExpeditionSimulation {
     super(seed);
   }
 
-  connect(token: string, name: string, socket: WebSocket | null): RoomPlayer | null {
+  connect(token: string, name: string, socket: WebSocket | null, perks: string[] = []): RoomPlayer | null {
     let member = this.players.get(token);
     if (member) {
       const previous = member.socket;
@@ -43,7 +44,7 @@ export class GameRoom extends ExpeditionSimulation {
     }
     if (this.players.size >= MAX_PLAYERS) return null;
     member = {
-      ...createSimulationActor(randomUUID(), name, this.seed),
+      ...createSimulationActor(randomUUID(), name, this.seed, perks),
       socket,
       disconnectedAt: null,
     };
@@ -72,6 +73,7 @@ export class GameRoom extends ExpeditionSimulation {
   snapshot(): ServerMessage {
     return {
       type: 'snapshot',
+      world: this.worldSnapshot(),
       tick: this.tickNumber,
       elapsed: this.elapsed,
       players: [...this.players.values()].map(({ player }) => ({

@@ -33,7 +33,10 @@ describe('local browser transport', () => {
   it('opens and runs the shared simulation without a network connection', () => {
     expect(transport.readyState).toBe(1);
     join();
-    expect(messages[0]).toMatchObject({ type: 'welcome', room: 'SOLO' });
+    expect(messages.find((message) => message.type === 'welcome')).toMatchObject({
+      type: 'welcome',
+      room: 'SOLO',
+    });
     const start = snapshot().players[0].z;
     transport.send(
       JSON.stringify({
@@ -62,6 +65,37 @@ describe('local browser transport', () => {
     expect(snapshot().players[0].inventory.oxycell).toBe(0);
     expect(snapshot().players[0].o2).toBeGreaterThan(99.9);
     expect(messages.filter((message) => message.type === 'error')).toEqual([]);
+  });
+
+  it('catches up fixed simulation steps after a slow rendered frame', () => {
+    join();
+    const initialOxygen = snapshot().players[0].o2;
+    vi.setSystemTime(Date.now() + 450);
+    vi.advanceTimersByTime(50);
+    expect(snapshot().tick).toBe(10);
+    expect(snapshot().players[0].o2).toBeCloseTo(initialOxygen - 0.2);
+  });
+
+  it('pauses simulation and resumes a saved expedition with the same player and state', async () => {
+    join();
+    transport.send(JSON.stringify({ type: 'gather', nodeId: 'node-0' }));
+    vi.advanceTimersByTime(400);
+    const original = snapshot().players[0];
+    const tick = snapshot().tick;
+    transport.pause(true);
+    vi.advanceTimersByTime(10_000);
+    expect(snapshot().tick).toBe(tick);
+    transport.close();
+    messages = [];
+    transport = new LocalTransport({ resume: true });
+    transport.addEventListener('message', (event) => messages.push(JSON.parse(event.data)));
+    await Promise.resolve();
+    join();
+    expect(transport.resumed).toBe(true);
+    expect(snapshot().players[0]).toMatchObject({ id: original.id, inventory: original.inventory });
+    expect(snapshot().tick).toBe(tick);
+    vi.advanceTimersByTime(50);
+    expect(snapshot().tick).toBe(tick + 1);
   });
 
   it('stops emitting snapshots when the local expedition is closed', () => {

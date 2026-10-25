@@ -16,6 +16,17 @@ export interface PlayerState {
   inventory: Record<string, number>;
   connected: boolean;
   lastSeq: number;
+  status: 'alive' | 'downed' | 'dead';
+  downedUntil: number;
+  respawnAt: number;
+  reviveProgress: number;
+  activeItem: string;
+  battery: number;
+  maxHp: number;
+  maxO2: number;
+  perks: string[];
+  dodgeUntil: number;
+  dodgeReadyAt: number;
 }
 
 /** Movement axes are world-space directions, not relative to the camera. */
@@ -26,9 +37,11 @@ export interface MoveInput {
   yaw: number;
   sprint: boolean;
   jump: boolean;
+  interact?: boolean;
+  dodge?: boolean;
 }
 
-export function createPlayer(id: string, name: string, seed: number): PlayerState {
+export function createPlayer(id: string, name: string, seed: number, perks: string[] = []): PlayerState {
   const z = WORLD.crashZ;
   const x = valleyCenter(seed, z);
   return {
@@ -39,12 +52,27 @@ export function createPlayer(id: string, name: string, seed: number): PlayerStat
     z,
     vy: 0,
     yaw: 0,
-    hp: PLAYER.maxHp,
-    o2: PLAYER.maxO2,
+    hp: PLAYER.maxHp + (perks.includes('armor') ? 15 : 0),
+    o2: PLAYER.maxO2 + (perks.includes('lungs') ? 25 : 0),
     energy: PLAYER.maxEnergy,
-    inventory: { tool1: 1 },
+    inventory: {
+      tool1: 1,
+      ...(perks.includes('supplies') ? { scrap: 10, fiber: 5 } : {}),
+      ...(perks.includes('blaster') ? { blaster: 1 } : {}),
+    },
     connected: true,
     lastSeq: -1,
+    status: 'alive',
+    downedUntil: 0,
+    respawnAt: 0,
+    reviveProgress: 0,
+    activeItem: 'tool1',
+    battery: 100,
+    maxHp: PLAYER.maxHp + (perks.includes('armor') ? 15 : 0),
+    maxO2: PLAYER.maxO2 + (perks.includes('lungs') ? 25 : 0),
+    perks: [...perks],
+    dodgeUntil: 0,
+    dodgeReadyAt: 0,
   };
 }
 
@@ -53,6 +81,7 @@ export function stepPlayer(player: PlayerState, input: MoveInput, dt: number, se
   if (!Number.isFinite(dt) || dt <= 0) return;
   // Both callers use a fixed step. A stalled frame must not cause tunnelling.
   dt = Math.min(dt, 0.1);
+  if (player.status === 'dead') return;
   const oldGround = heightAt(seed, player.x, player.z);
   const grounded = player.y <= oldGround + 0.02 && player.vy <= 0;
   const magnitude = Math.hypot(input.moveX, input.moveZ);

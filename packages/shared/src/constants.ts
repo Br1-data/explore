@@ -1,5 +1,5 @@
 /** Bump whenever client and server messages change incompatibly. */
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
 
 export const MAX_PLAYERS = 4;
 
@@ -60,7 +60,7 @@ export const PLAYER = {
   jumpVel: 6.5,
   gravity: 18,
   dodgeSpeed: 13,
-  dodgeTime: 0.25,
+  dodgeTime: 0.3,
   dodgeCooldown: 1.2,
   maxSlope: 1.25,
   maxHp: 100,

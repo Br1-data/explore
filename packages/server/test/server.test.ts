@@ -100,6 +100,22 @@ describe('WebSocket multiplayer server', () => {
     expect(state.players).toHaveLength(4);
   });
 
+  it('persists research purchases and applies unlocks only to a new character', async () => {
+    game.profiles.settle('first-token', 'previous-run', 60, false);
+    const first = await connect('first-token');
+    const firstWelcome = await first.message('welcome');
+    expect((await first.message('profile')).profile.research).toBe(60);
+    first.send({ type: 'unlock', perkId: 'lungs' });
+    expect((await first.message('profile')).profile).toMatchObject({ research: 30, unlocks: ['lungs'] });
+    const old = await first.message('snapshot');
+    expect(old.players[0].maxO2).toBe(100);
+    const next = await connect('first-token');
+    expect((await next.message('welcome')).playerId).not.toBe(firstWelcome.playerId);
+    const updated = await next.message('snapshot');
+    expect(updated.players[0].maxO2).toBe(125);
+    expect(updated.players[0].o2).toBeGreaterThan(124);
+  });
+
   it('rejects malformed messages, missing rooms and incompatible versions without crashing', async () => {
     const client = new TestClient(url);
     await client.open();

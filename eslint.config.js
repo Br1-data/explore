@@ -7,6 +7,7 @@ export default tseslint.config(
       '**/dist/**',
       '**/node_modules/**',
       'apps/desktop/out/**',
+      'apps/desktop/app/**',
       'playwright-report/**',
       'test-results/**',
     ],

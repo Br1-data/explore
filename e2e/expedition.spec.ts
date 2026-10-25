@@ -28,30 +28,32 @@ test('two astronauts join, gather, craft and move in the same expedition', async
     const firstNode = await page.locator('#node-name').innerText();
     await page.keyboard.press('e');
     await expect(page.locator('#node-name')).not.toHaveText(firstNode);
-    await page.waitForTimeout(400); // Server multi-tool cooldown.
+    await page.waitForTimeout(550); // Server multi-tool cooldown.
     await page.keyboard.press('e');
     await page.keyboard.press('Tab');
     await expect(page.locator('#inventory')).toBeVisible();
     await expect(page.locator('#inventory-items')).toContainText('Cristalli');
     await expect(page.locator('#inventory-items')).toContainText('Rottami');
     await expect(page.getByRole('button', { name: 'Crea cella' })).toBeEnabled();
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(550);
     await page.getByRole('button', { name: 'Crea cella' }).click();
     await expect(page.locator('#cell-count')).toHaveText('1 CELLE');
     await expect(page.locator('#recipe-cost')).toHaveText('0/2 Cristalli + 1/1 Rottame');
+    await page.waitForTimeout(550);
+    await page.locator('[data-consume=oxycell]').click();
     await page.keyboard.press('Tab');
-    await page.waitForTimeout(400);
-    await page.keyboard.press('2');
     await expect(page.locator('#cell-count')).toHaveText('0 CELLE');
     await expect(page.locator('#o2-value')).toHaveText('100');
 
     const before = Number((await page.locator('#distance').innerText()).replace(/\D/g, ''));
     await page.keyboard.down('w');
-    await page.waitForTimeout(1300);
-    await page.keyboard.up('w');
-    await expect
-      .poll(async () => Number((await page.locator('#distance').innerText()).replace(/\D/g, '')))
-      .toBeLessThan(before - 3);
+    try {
+      await expect
+        .poll(async () => Number((await page.locator('#distance').innerText()).replace(/\D/g, '')))
+        .toBeLessThan(before - 3);
+    } finally {
+      await page.keyboard.up('w');
+    }
     await expect(other.locator('#crew')).toContainText('Ada');
 
     // A reload keeps the tab token and returns the same astronaut and inventory.
@@ -68,7 +70,7 @@ test('two astronauts join, gather, craft and move in the same expedition', async
 });
 
 test('an unknown room gives a useful error and leaves the menu usable', async ({ page }) => {
-  await page.goto('/?room=ZZZZ');
+  await page.goto('/?room=IIII');
   await page.getByRole('button', { name: 'Unisciti' }).click();
   await expect(page.locator('#lobby-error')).toContainText('Stanza non trovata');
   await expect(page.getByRole('button', { name: 'Nuova spedizione' })).toBeEnabled();

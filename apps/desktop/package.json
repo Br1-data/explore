@@ -1,0 +1,61 @@
+{
+  "name": "@segnale/desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Segnale Remoto per Windows, macOS e Linux",
+  "author": "Segnale Remoto contributors",
+  "main": "main.cjs",
+  "scripts": {
+    "prepare-client": "node prepare.cjs",
+    "dev": "npm run prepare-client && electron .",
+    "build": "npm run prepare-client && electron-builder --dir",
+    "package": "npm run prepare-client && electron-builder --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "it.segnaleremoto.game",
+    "productName": "Segnale Remoto",
+    "asar": true,
+    "npmRebuild": false,
+    "directories": {
+      "output": "out"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "app/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.games",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "linux": {
+      "category": "Game",
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Br1-data/explore.git"
+  }
+}

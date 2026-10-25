@@ -3,11 +3,14 @@ import { createServer } from 'node:http';
 import { PROTOCOL_VERSION, TICK_RATE, parseClientMessage } from '@segnale/shared';
 import { WebSocketServer, type WebSocket } from 'ws';
 import { GameRoom, send, type RoomPlayer } from './game';
+import { ProfileStore } from './profiles';
 
 const ROOM_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 const MAX_CONNECTIONS = 128;
 
-export function createGameServer() {
+export function createGameServer(options: { profilePath?: string } = {}) {
+  const profiles = new ProfileStore(options.profilePath);
+  const settled = new WeakMap<GameRoom, Set<string>>();
   const rooms = new Map<string, GameRoom>();
   const server = createServer((req, res) => {
     if (req.url !== '/' && req.url !== '/health') {
@@ -34,6 +37,7 @@ export function createGameServer() {
     let token: string | undefined;
     let windowStart = Date.now();
     let messageCount = 0;
+    let lastChatAt = 0;
     const joinTimeout = setTimeout(() => socket.close(4000, 'Accesso scaduto'), 10_000);
     socket.on('error', () => {});
     socket.on('close', () => {
@@ -90,7 +94,13 @@ export function createGameServer() {
           room = new GameRoom(code);
           rooms.set(code, room);
         }
-        const joined = room.connect(message.token, message.name, socket);
+        if ((room.run.phase === 'won' || room.run.phase === 'lost') && !room.players.has(message.token)) {
+          send(socket, { type: 'error', message: 'Questa spedizione è terminata. Crea una nuova stanza.' });
+          room = undefined;
+          return;
+        }
+        const profile = profiles.load(message.token);
+        const joined = room.connect(message.token, message.name, socket, profile.unlocks);
         if (!joined) {
           send(socket, { type: 'error', message: 'Stanza piena: massimo 4 astronauti.' });
           room = undefined;
@@ -99,6 +109,7 @@ export function createGameServer() {
         token = message.token;
         member = joined;
         clearTimeout(joinTimeout);
+        send(socket, { type: 'profile', profile });
         send(socket, { type: 'welcome', playerId: member.player.id, room: room.code, seed: room.seed });
         room.broadcast();
         return;
@@ -109,20 +120,19 @@ export function createGameServer() {
       }
       if (member.socket !== socket) return;
       let error: string | null = null;
-      switch (message.type) {
-        case 'input':
-          room.input(member, message.input, now);
-          break;
-        case 'gather':
-          error = room.gather(member, message.nodeId, now);
-          break;
-        case 'craft':
-          error = room.craft(member, now);
-          break;
-        case 'consume':
-          error = room.consume(member, message.itemId, now);
-          break;
-      }
+      if (message.type === 'unlock') {
+        const purchase = profiles.purchase(token!, message.perkId);
+        error = purchase.error;
+        send(socket, { type: 'profile', profile: purchase.profile });
+      } else if (message.type === 'chat') {
+        if (now - lastChatAt < 1000) error = 'Attendi un istante prima di inviare un altro messaggio.';
+        else {
+          lastChatAt = now;
+          for (const peer of room.players.values())
+            if (peer.socket)
+              send(peer.socket, { type: 'chat', playerName: member.player.name, text: message.text });
+        }
+      } else error = room.handleAction(member, message, now, [...room.players.values()]);
       if (error) send(socket, { type: 'error', message: error });
     });
   });
@@ -131,7 +141,22 @@ export function createGameServer() {
     for (const [code, room] of rooms) {
       room.tick(now);
       if (!room.players.size) rooms.delete(code);
-      else room.broadcast();
+      else {
+        if (room.run.phase === 'won' || room.run.phase === 'lost') {
+          let awarded = settled.get(room);
+          if (!awarded) {
+            awarded = new Set();
+            settled.set(room, awarded);
+          }
+          for (const [token, player] of room.players)
+            if (!awarded.has(token)) {
+              const profile = profiles.settle(token, room.runId, room.run.research, room.run.phase === 'won');
+              awarded.add(token);
+              if (player.socket) send(player.socket, { type: 'profile', profile });
+            }
+        }
+        room.broadcast();
+      }
     }
   }, 1000 / TICK_RATE);
   timer.unref();
@@ -163,6 +188,7 @@ export function createGameServer() {
         else resolve();
       });
     });
+    profiles.close();
   }
-  return { server, wss, rooms, close };
+  return { server, wss, rooms, profiles, close };
 }

@@ -70,7 +70,8 @@ describe('client protocol validation', () => {
       nodeId: 'node-42',
     });
     expect(parseClientMessage({ type: 'gather', nodeId: '__proto__' })).toBeNull();
-    expect(parseClientMessage({ type: 'craft', itemId: 'uplink' })).toBeNull();
+    expect(parseClientMessage({ type: 'craft', itemId: 'constructor' })).toBeNull();
+    expect(parseClientMessage({ type: 'craft', itemId: 'uplink' })).toMatchObject({ itemId: 'uplink' });
     expect(parseClientMessage({ type: 'consume', itemId: 'tool1' })).toBeNull();
     expect(parseClientMessage({ type: 'craft', itemId: 'oxycell' })).toEqual({
       type: 'craft',

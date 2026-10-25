@@ -7,7 +7,8 @@
   "workspaces": [
     "packages/shared",
     "packages/server",
-    "packages/client"
+    "packages/client",
+    "apps/desktop"
   ],
   "engines": {
     "node": ">=22.13"
@@ -22,7 +23,10 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "e2e": "playwright test",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test"
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "desktop:dev": "npm run build -w @segnale/client && npm run dev -w @segnale/desktop",
+    "desktop:build": "npm run build -w @segnale/client && npm run build -w @segnale/desktop",
+    "desktop:package": "npm run build -w @segnale/client && npm run package -w @segnale/desktop"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

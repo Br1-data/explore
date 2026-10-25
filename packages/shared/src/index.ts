@@ -6,3 +6,6 @@ export * from './world';
 export * from './player';
 export * from './protocol';
 export * from './simulation';
+export * from './game-types';
+export * from './catalog';
+export * from './progression';
