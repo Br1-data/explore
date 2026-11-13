@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Il carro celeste</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta
+      name="description"
+      content="Modello 3D del carro celeste della visione di Ezechiele 1: da esplorare nel browser e da scaricare per la stampa 3D."
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Marcellus&display=swap"
+    />
+    <style>
+      /* Layout: the model fills the screen like a night sky; the verses of the vision run down
+         the left edge as a reader's index, the tools sit top right, the caption bottom centre. */
+      :root {
+        color-scheme: dark;
+        --night: #06070d;
+        --panel: rgba(12, 14, 27, 0.8);
+        --panel-solid: #0e1122;
+        --line: rgba(214, 222, 255, 0.14);
+        --ink: #f1f2f8;
+        --ink-soft: #b4b9cf;
+        --chrysolite: #d9e04f;
+        --ember: #ff9146;
+        --sapphire: #7f9bff;
+        --display: 'Marcellus', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+        --text: 'Figtree', 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
+        --gutter-left: max(16px, env(safe-area-inset-left, 0px));
+        --gutter-right: max(16px, env(safe-area-inset-right, 0px));
+      }
+      [hidden] {
+        display: none !important;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--night);
+        color: var(--ink);
+        font: 400 15px/1.5 var(--text);
+        overflow: hidden;
+      }
+      .app {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      #view {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        outline: none;
+      }
+      #view:focus-visible {
+        outline: 2px solid var(--chrysolite);
+        outline-offset: -4px;
+      }
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 17.5rem) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-areas: 'mast tools' 'index .' 'index caption';
+        gap: 14px 20px;
+        padding-block: 16px;
+        padding-left: var(--gutter-left);
+        padding-right: var(--gutter-right);
+        pointer-events: none;
+      }
+      .overlay > * {
+        pointer-events: auto;
+      }
+
+      .mast {
+        grid-area: mast;
+        min-width: 0;
+      }
+      .mast h1 {
+        margin: 0;
+        font: 400 clamp(1.5rem, 1.1rem + 1.4vw, 2.05rem) / 1.1 var(--display);
+        letter-spacing: 0.01em;
+        text-wrap: balance;
+      }
+      .mast p {
+        margin: 4px 0 0;
+        color: var(--ink-soft);
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .index {
+        grid-area: index;
+        min-height: 0;
+        min-width: 0;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--line) transparent;
+      }
+      .index ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border-left: 1px solid var(--line);
+      }
+      .index button {
+        display: grid;
+        grid-template-columns: 4.4rem minmax(0, 1fr);
+        gap: 8px;
+        align-items: baseline;
+        width: 100%;
+        padding: 7px 10px 7px 12px;
+        margin-left: -1px;
+        border: 0;
+        border-left: 2px solid transparent;
+        background: none;
+        color: var(--ink-soft);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+      .index .ref {
+        font-size: 0.74rem;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.04em;
+        color: var(--ink-soft);
+        opacity: 0.8;
+      }
+      .index .name {
+        font-size: 0.93rem;
+        line-height: 1.3;
+      }
+      .index button:hover {
+        color: var(--ink);
+        background: rgba(214, 222, 255, 0.06);
+      }
+      .index button[aria-current='true'] {
+        color: var(--ink);
+        border-left-color: var(--chrysolite);
+        background: linear-gradient(90deg, rgba(217, 224, 79, 0.13), transparent 85%);
+      }
+      .index button[aria-current='true'] .ref {
+        color: var(--chrysolite);
+        opacity: 1;
+      }
+
+      .caption {
+        grid-area: caption;
+        justify-self: center;
+        align-self: end;
+        width: min(100%, 35rem);
+        min-width: 0;
+        padding: 14px 18px 15px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--panel);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      .caption .ref {
+        margin: 0;
+        color: var(--chrysolite);
+        font-size: 0.76rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .caption h2 {
+        margin: 2px 0 4px;
+        font: 400 1.32rem/1.2 var(--display);
+        text-wrap: balance;
+      }
+      .caption p {
+        margin: 0;
+        color: var(--ink);
+      }
+      .caption .hint {
+        margin-top: 6px;
+        color: var(--ink-soft);
+        font-size: 0.84rem;
+      }
+
+      .tools {
+        grid-area: tools;
+        justify-self: end;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+        min-width: 0;
+      }
+      .segmented {
+        display: inline-flex;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+      .tools button {
+        padding: 8px 13px;
+        border: 0;
+        background: none;
+        color: var(--ink-soft);
+        font: 500 0.87rem/1.2 var(--text);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .tools button:hover {
+        color: var(--ink);
+      }
+      .segmented button[aria-pressed='true'] {
+        background: var(--chrysolite);
+        color: #14160a;
+      }
+      .tools .pill {
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--panel);
+      }
+      .tools .pill[aria-expanded='true'] {
+        color: var(--ink);
+        border-color: var(--chrysolite);
+      }
+      .tools .primary {
+        border-color: transparent;
+        background: var(--ember);
+        color: #1d0d02;
+      }
+      .tools .primary:hover {
+        color: #1d0d02;
+        filter: brightness(1.08);
+      }
+      .sheet {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 3;
+        width: min(21rem, calc(100vw - var(--gutter-left) - var(--gutter-right)));
+        max-height: min(70vh, 30rem);
+        overflow-y: auto;
+        padding: 14px 16px 16px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--panel-solid);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+      }
+      .sheet h3 {
+        margin: 0 0 8px;
+        font: 400 1.05rem/1.2 var(--display);
+      }
+      .sheet h3:not(:first-child) {
+        margin-top: 16px;
+      }
+      .sheet p {
+        margin: 0 0 10px;
+        color: var(--ink-soft);
+        font-size: 0.86rem;
+      }
+      .checks {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px 12px;
+      }
+      .checks label,
+      .row label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.88rem;
+        cursor: pointer;
+      }
+      input[type='checkbox'],
+      input[type='range'] {
+        accent-color: var(--chrysolite);
+      }
+      .row {
+        display: grid;
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .row input[type='range'] {
+        width: 100%;
+      }
+      .sheet .wide {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 4px;
+        background: var(--ember);
+        color: #1d0d02;
+        font-weight: 600;
+        white-space: normal;
+      }
+      .sheet .wide:disabled {
+        opacity: 0.6;
+        cursor: progress;
+      }
+      .status {
+        min-height: 1.3em;
+        margin: 8px 0 0;
+      }
+      .files {
+        list-style: none;
+        margin: 12px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 4px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+      .files li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 0.86rem;
+      }
+      .files a {
+        color: var(--ink);
+        text-decoration-color: var(--line);
+        text-underline-offset: 3px;
+      }
+      .files a:hover {
+        text-decoration-color: var(--chrysolite);
+      }
+      .files .kind {
+        color: var(--ink-soft);
+        font-size: 0.74rem;
+        letter-spacing: 0.08em;
+      }
+      .print-note {
+        display: none;
+      }
+      body[data-mode='stampa'] .print-note {
+        display: block;
+      }
+
+      #loading {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        color: var(--ink-soft);
+        font: 400 1.1rem var(--display);
+        letter-spacing: 0.04em;
+        text-align: center;
+        pointer-events: none;
+      }
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible {
+        outline: 2px solid var(--chrysolite);
+        outline-offset: 2px;
+      }
+
+      @media (max-width: 760px) {
+        .overlay {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+          grid-template-areas: 'mast' 'tools' '.' 'caption' 'index';
+          gap: 10px;
+          padding-block: 12px;
+        }
+        .tools {
+          justify-self: start;
+          justify-content: flex-start;
+        }
+        .sheet {
+          left: 0;
+          right: auto;
+        }
+        .index {
+          overflow-x: auto;
+          overflow-y: hidden;
+          margin-inline: calc(-1 * var(--gutter-left)) calc(-1 * var(--gutter-right));
+          padding-inline: var(--gutter-left) var(--gutter-right);
+          scrollbar-width: none;
+        }
+        .index ol {
+          flex-direction: row;
+          gap: 6px;
+          border-left: 0;
+          width: max-content;
+        }
+        .index button {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          width: auto;
+          max-width: 11rem;
+          margin: 0;
+          padding: 7px 11px;
+          border: 1px solid var(--line);
+          border-radius: 4px;
+          background: var(--panel);
+        }
+        .index button[aria-current='true'] {
+          border-color: var(--chrysolite);
+          background: rgba(217, 224, 79, 0.14);
+        }
+        .index .name {
+          white-space: nowrap;
+          font-size: 0.86rem;
+        }
+        .caption {
+          padding: 10px 14px 11px;
+        }
+        .caption h2 {
+          font-size: 1.15rem;
+        }
+        .caption p {
+          font-size: 0.9rem;
+          line-height: 1.42;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div id="stage">
+        <canvas
+          id="view"
+          tabindex="0"
+          aria-label="Modello 3D del carro celeste. Trascina per ruotare, usa la rotellina o due dita per avvicinarti."
+        ></canvas>
+      </div>
+      <div id="loading" role="status">Carico il modello…</div>
+
+      <div class="overlay">
+        <header class="mast">
+          <h1>Il carro celeste</h1>
+          <p>Ezechiele 1 · modello 3D</p>
+        </header>
+
+        <div class="tools">
+          <div class="segmented" role="group" aria-label="Aspetto del modello">
+            <button type="button" data-mode-button="visione" aria-pressed="true">Visione</button>
+            <button type="button" data-mode-button="stampa" aria-pressed="false">Stampa 3D</button>
+          </div>
+          <button type="button" class="pill" data-toggle="sheet-view" aria-expanded="false">Parti</button>
+          <button type="button" class="pill primary" data-toggle="sheet-download" aria-expanded="false">
+            Scarica
+          </button>
+
+          <section class="sheet" id="sheet-view" hidden>
+            <h3>Parti visibili</h3>
+            <div class="checks" id="layers"></div>
+            <div class="row">
+              <label for="explode">Separa le parti</label>
+              <input type="range" id="explode" min="0" max="100" value="0" />
+            </div>
+            <div class="row">
+              <label><input type="checkbox" id="rotate" />Rotazione lenta nella vista d’insieme</label>
+            </div>
+          </section>
+
+          <section class="sheet" id="sheet-download" hidden>
+            <h3>File per la stampa 3D</h3>
+            <p>
+              Un archivio con il modello in un pezzo unico, il kit in cinque parti già orientate per il piatto
+              e il modello a colori. Misure in millimetri: circa 178 × 178 × 146.
+            </p>
+            <button type="button" class="wide" id="download-all">Scarica tutto (ZIP)</button>
+            <p class="status" id="download-status" role="status"></p>
+            <ul class="files" id="download-links" hidden></ul>
+          </section>
+        </div>
+
+        <nav class="index" aria-label="Dettagli della visione">
+          <ol id="details"></ol>
+        </nav>
+
+        <section class="caption" aria-live="polite">
+          <p class="ref" id="caption-ref"></p>
+          <h2 id="caption-title"></h2>
+          <p id="caption-text"></p>
+          <p class="hint" id="caption-hint" hidden></p>
+          <p class="hint print-note">
+            Vista di stampa: il modello è un unico solido chiuso. La griglia è un piatto da 220 mm, a
+            quadretti di 10 mm.
+          </p>
+        </section>
+      </div>
+    </div>
+    <script src="web/app.bundle.js"></script>
+  </body>
+</html>

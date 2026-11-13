@@ -1,0 +1,71 @@
+{
+  "cherubWingLength": 32.92,
+  "files": [
+    {
+      "name": "carro-celeste.stl",
+      "triangles": 331684,
+      "size": [
+        177.6,
+        177.3,
+        146.1
+      ],
+      "volumeCm3": 333.6,
+      "pieces": 1
+    },
+    {
+      "name": "kit/1-base-e-creature.stl",
+      "triangles": 197938,
+      "size": [
+        177.6,
+        177.3,
+        70.7
+      ],
+      "volumeCm3": 155.4,
+      "pieces": 1
+    },
+    {
+      "name": "kit/2-ruota-x4.stl",
+      "triangles": 27728,
+      "size": [
+        82.4,
+        82.4,
+        82
+      ],
+      "volumeCm3": 18.4,
+      "pieces": 1
+    },
+    {
+      "name": "kit/3-distesa.stl",
+      "triangles": 4498,
+      "size": [
+        160,
+        160,
+        4.5
+      ],
+      "volumeCm3": 73.5,
+      "pieces": 1
+    },
+    {
+      "name": "kit/4-trono.stl",
+      "triangles": 14670,
+      "size": [
+        46,
+        40,
+        44.4
+      ],
+      "volumeCm3": 21.2,
+      "pieces": 1
+    },
+    {
+      "name": "kit/5-arcobaleno.stl",
+      "triangles": 8086,
+      "size": [
+        127.8,
+        60,
+        15.5
+      ],
+      "volumeCm3": 8.5,
+      "pieces": 1
+    }
+  ]
+}

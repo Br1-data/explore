@@ -1,0 +1,21 @@
+{
+  "name": "carro-celeste",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Modello 3D parametrico del carro celeste di Ezechiele 1: visualizzatore web e file per la stampa 3D.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "build": "npm run build:model && npm run build:web",
+    "build:model": "node src/build.mjs",
+    "build:web": "esbuild web/src/main.js --bundle --minify --format=iife --target=es2022 --outfile=web/app.bundle.js",
+    "serve": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "manifold-3d": "3.2.1",
+    "three": "0.180.0"
+  }
+}

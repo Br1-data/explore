@@ -10,6 +10,7 @@ export default tseslint.config(
       'apps/desktop/app/**',
       'playwright-report/**',
       'test-results/**',
+      'carro-celeste/web/app.bundle.js',
     ],
   },
   js.configs.recommended,
@@ -26,5 +27,47 @@ export default tseslint.config(
       globals: { require: 'readonly', module: 'writable', __dirname: 'readonly', process: 'readonly' },
     },
     rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
+    // Model generator and dev scripts: Node.
+    files: ['carro-celeste/src/**/*.mjs', 'carro-celeste/scripts/**/*.mjs'],
+    languageOptions: { globals: { console: 'readonly', URL: 'readonly' } },
+  },
+  {
+    files: ['carro-celeste/scripts/**/*.cjs'],
+    languageOptions: {
+      globals: {
+        require: 'readonly',
+        __dirname: 'readonly',
+        process: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        window: 'readonly',
+      },
+    },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
+    // Web viewer: browser.
+    files: ['carro-celeste/web/src/**/*.js'],
+    languageOptions: {
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        location: 'readonly',
+        history: 'readonly',
+        performance: 'readonly',
+        devicePixelRatio: 'readonly',
+        matchMedia: 'readonly',
+        requestAnimationFrame: 'readonly',
+        setTimeout: 'readonly',
+        fetch: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        ResizeObserver: 'readonly',
+        TextEncoder: 'readonly',
+        Blob: 'readonly',
+      },
+    },
   },
 );
