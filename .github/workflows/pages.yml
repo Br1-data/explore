@@ -1,8 +1,11 @@
 name: Pubblica su GitHub Pages
 
-# Solo manuale: la pubblicazione sostituisce il sito attuale, quindi si lancia
-# da Actions quando si decide di farlo (Settings → Pages → Source: GitHub Actions).
+# Pubblica il ramo predefinito: è l'unico che l'ambiente «github-pages» accetta.
+# Si sviluppa su claude/funny-faraday-n6r8r2 e si porta qui con un avanzamento
+# rapido (vedi CLAUDE.md). Si può lanciare anche a mano da Actions.
 on:
+  push:
+    branches: [claude/funny-allen-d6a9za]
   workflow_dispatch:
 
 permissions:

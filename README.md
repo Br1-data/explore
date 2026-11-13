@@ -5,6 +5,8 @@ Avventura 2D di studio sui racconti del libro
 Si sceglie un capitolo e il personaggio da cui viverlo, Geova compreso, e si
 percorre il racconto per notarne i dettagli e immedesimarsi.
 
+**Gioca:** https://br1-data.github.io/explore/ (browser, anche da telefono).
+
 Progetto di studio personale, non ufficiale. Le citazioni bibliche vengono dalla
 Traduzione del Nuovo Mondo; il testo del libro non è riprodotto ma riassunto e
 collegato all'originale su jw.org.

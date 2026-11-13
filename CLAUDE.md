@@ -149,5 +149,15 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
 - `window.__incammino` espone la partita in corso per la prova dal vero
   (`istantanea()`, `teletrasporta(x)`).
 - Il sito è statico (`base: './'`): funziona anche sotto un sottopercorso.
-  Il workflow `pages.yml` pubblica solo se lanciato a mano da Actions.
+
+## Rami e pubblicazione
+
+- Sito pubblicato: https://br1-data.github.io/explore/
 - Ramo di lavoro: `claude/funny-faraday-n6r8r2`.
+- Ramo predefinito e pubblicato: `claude/funny-allen-d6a9za`. L'ambiente
+  `github-pages` accetta solo questo ramo; `pages.yml` pubblica a ogni push su di esso.
+- Per pubblicare, dopo che le verifiche sono passate sul ramo di lavoro, si porta il
+  ramo predefinito allo stesso punto con un avanzamento rapido (mai forzato):
+  `git push origin claude/funny-faraday-n6r8r2:claude/funny-allen-d6a9za`.
+- `ci.yml` («Verifiche») gira su ogni push: controllo dei tipi, test, build e prova
+  dal vero in Chromium.
