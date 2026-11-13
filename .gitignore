@@ -1,0 +1,5 @@
+node_modules/
+dist/
+e2e/schermate/
+*.log
+.DS_Store
