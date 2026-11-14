@@ -17,6 +17,7 @@ import { archivioFinto } from '../archivio/finto.mjs';
 /** I punti di vista di ogni capitolo giocabile (src/content/index.ts). */
 const PERCORSI = {
   1: ['enoc', 'geova', 'matusalemme', 'empio'],
+  2: ['noe', 'geova', 'moglie', 'figlio', 'contemporaneo'],
   16: ['debora', 'barac', 'geova', 'volontario', 'sisera'],
   17: ['iael', 'geova', 'sisera', 'barac', 'debora', 'madre'],
 };
@@ -31,6 +32,9 @@ const SUONI_ATTESI = {
   '1/enoc-strada': { sorgenti: ['folla', 'torcia'] },
   '1/enoc-pericolo': { luce: 'notte' },
   '1/empio-caccia': { sorgenti: ['insegue', 'torcia'], luce: 'notte' },
+  '2/noe-mondo': { sorgenti: ['rissa'] },
+  '2/geova-diluvio': { sorgenti: ['acqua'], pioggia: true },
+  '2/noe-ararat': { sorgenti: ['fuoco'], luce: 'giorno' },
   '16/debora-palma': { sorgenti: ['pecora', 'folla'], luce: 'giorno' },
   '16/debora-canto': { sorgenti: ['danza', 'folla'] },
   '16/geova-oppressione': { sorgenti: ['invoca'] },

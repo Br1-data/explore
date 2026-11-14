@@ -414,6 +414,20 @@ describe('Barac e Debora, Iael: fedeltà al testo', () => {
     }
   });
 
+  it('divide i capitoli come il libro: Enoc (1) e Noè (2)', () => {
+    // Al 2 appartengono Genesi 6-9, Ebrei 11:7 e 2 Pietro 2:5; all’1 Genesi 5:21-24, Ebrei 11:5 e Giuda 14, 15.
+    const delNoe = (r: string) => /^Genesi [6-9]:|^Ebrei 11:7\b|^2 Pietro 2:/.test(r);
+    const diEnoc = (r: string) => /^Genesi 5:2[1-4]\b|^Ebrei 11:5\b|^Giuda 1[45]\b/.test(r);
+    for (const [numero, vietato] of [
+      [1, delNoe],
+      [2, diEnoc],
+    ] as const) {
+      const cap = libro(numero);
+      const rif = [...Object.values(cap.versi).map((v) => v.rif), ...Object.values(cap.dettagli).flatMap((d) => d.fonti.map((f) => f.rif))];
+      for (const r of rif) expect(vietato(r), `cap. ${numero}: ${r}`).toBe(false);
+    }
+  });
+
   it('cita alla lettera le domande di Sisera e la risposta di Iael', () => {
     const cap = libro(17);
     const testo = cap.versi['gdc-4-17'].testo;

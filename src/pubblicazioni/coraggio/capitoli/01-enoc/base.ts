@@ -100,7 +100,6 @@ export const VERSI: Record<string, Verso> = {
     b('Genesi', 5, '25-27'),
     'Quanto a Matusalemme, all’età di 187 anni generò Làmec. Dopo la nascita di Làmec, Matusalemme visse 782 anni. E generò figli e figlie. L’intera vita di Matusalemme fu dunque di 969 anni; poi morì.',
   ),
-  'gen-7-6': verso('Genesi 7:6', b('Genesi', 7, '6'), 'Noè aveva 600 anni quando il diluvio si abbatté sulla terra.'),
   'prov-27-11': verso(
     'Proverbi 27:11',
     b('Proverbi', 27, '11'),
@@ -118,11 +117,6 @@ export const VERSI: Record<string, Verso> = {
     b('Giuda', 1, '14, 15'),
     'Ènoc, il settimo uomo nella discendenza di Adamo, profetizzò anche riguardo a loro quando disse: «Ecco, Geova è venuto con le sue sante miriadi per eseguire il giudizio contro tutti e dimostrare la colpevolezza di tutti gli empi per tutte le opere empie che hanno empiamente compiuto e per tutte le cose offensive che gli empi peccatori hanno detto contro di lui».',
     ['«miriadi»: o “decine di migliaia”.'],
-  ),
-  '2pt-2-5': verso(
-    '2 Pietro 2:5',
-    b('2 Pietro', 2, '5'),
-    'Non si trattenne nemmeno dal punire il mondo antico, ma quando portò il diluvio su un mondo di empi salvò Noè, predicatore di giustizia, e altre sette persone.',
   ),
 };
 
@@ -688,9 +682,9 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'm-noe',
     'Noè non conobbe Enoc',
-    'Noè nasce quando Matusalemme ha 369 anni, 69 anni dopo che Enoc fu preso. Di Noè la Bibbia dirà la stessa cosa detta di Enoc: «camminò con il vero Dio».',
+    'Noè nasce quando Matusalemme ha 369 anni, 69 anni dopo che Enoc fu preso: non conobbe il suo bisnonno. La sua storia è il capitolo 2.',
     'numeri',
-    [b('Genesi', 5, '25-29'), b('Genesi', 6, '9')],
+    [b('Genesi', 5, '25-29')],
   ),
   d(
     'm-lamec-parole',
@@ -711,7 +705,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'L’anno del Diluvio',
     'Sommando gli anni di Genesi 5 (187 + 182 + 600 = 969), Matusalemme muore nell’anno in cui Noè compie 600 anni: l’anno del Diluvio, il 2370 a.E.V. Suo figlio Lamec era morto cinque anni prima.',
     'numeri',
-    [b('Genesi', 5, '25-31'), b('Genesi', 7, '6'), F.tempo],
+    [b('Genesi', 5, '25-31'), F.tempo],
   ),
   d(
     'm-silenzio',
@@ -738,10 +732,10 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   ),
   d(
     'mondo-di-empi',
-    '«Un mondo di empi»',
-    'Pietro chiama il mondo di prima del Diluvio «un mondo di empi». Secondo la linea del tempo del libro, il Diluvio arrivò nel 2370 a.E.V., 669 anni dopo che Enoc fu preso.',
+    'Il tempo che restava',
+    'Secondo la linea del tempo del libro, il Diluvio arrivò nel 2370 a.E.V., 669 anni dopo che Enoc fu preso. Il capitolo 2, su Noè, racconta come finì quel mondo.',
     'numeri',
-    [b('2 Pietro', 2, '5'), F.tempo],
+    [F.tempo],
   ),
   d(
     'sottratto',

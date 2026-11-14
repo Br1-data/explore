@@ -10,10 +10,11 @@ cambiato perché spingeva a leggere alla lettera il «camminare con Dio» (decis
 sono architetturali e valgono per ogni capitolo: il motore e lo schema dei contenuti
 sono generici, un capitolo nuovo aggiunge solo contenuti (ed eventualmente scenografie).
 
-**Stato:** giocabili il capitolo 1 (Enoc, quattro punti di vista), il capitolo 16
+**Stato:** giocabili il capitolo 1 (Enoc, quattro punti di vista), il capitolo 2 (Noè,
+cinque: Noè, Geova, la moglie di Noè, uno dei figli, uno dei contemporanei), il capitolo 16
 (Barac e Debora, cinque punti di vista: Debora, Barac, Geova, uno dei 10.000, Sisera) e
 il capitolo 17 (Iael, sei punti di vista: Iael, Geova, Sisera, Barac, Debora, la madre di
-Sisera). Gli altri 51 capitoli compaiono nell’indice come «in preparazione».
+Sisera). Gli altri 50 capitoli compaiono nell’indice come «in preparazione».
 **Prossimo passo:** il capitolo che indicherà il committente, con la stessa struttura.
 
 Lingua del progetto: italiano (codice, commenti, testi, commit).
@@ -188,6 +189,8 @@ src/
       capitoli/
         01-enoc/             base.ts (versetti, VITE, DETTAGLI, SENSAZIONI, STUDIO), scenari.ts,
                              un file per punto di vista (enoc, geova, matusalemme, empio), index.ts
+        02-noe/              Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5 (noe, geova, moglie, figlio,
+                             contemporaneo); scenari.ts: cantiere, arcaPronta, diluvio, ararat (e mondo dall’1)
         16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
                              scenari.ts: palma, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
         17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)

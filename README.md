@@ -21,6 +21,11 @@ collegato all'originale su jw.org.
     affidare l’incarico, dare la forza, confermare, sottrarre Enoc al pericolo;
   - **Matusalemme**: che cosa rivelano i numeri di Genesi 5, sulla linea del tempo;
   - **Uno degli empi**: il loro mondo e il messaggio, dalla parte di chi lo ascoltò.
+- **Capitolo 2, Noè** (Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5), da cinque punti di vista:
+  Noè (integro in un mondo violento, costruttore e predicatore), Geova (il giudizio, il tempo
+  stabilito, il patto dell’arcobaleno), la moglie di Noè (la famiglia, le provviste, gli
+  scherni), uno dei figli (il cantiere, le date del diluvio) e uno dei contemporanei (il mondo
+  che non si accorse di nulla).
 - **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista:
   - **Debora**: profetessa e giudice sotto la palma, il comando di Geova trasmesso a
     Barac, «Verrò senz’altro», il segnale sul Tabor, il canto e le tribù;
@@ -39,7 +44,7 @@ collegato all'originale su jw.org.
   - **Barac**: arriva alla tenda e vede adempiersi la profezia di Debora;
   - **Debora**: la lode a Iael, senza invidia;
   - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
-- **166 dettagli** (84 + 48 + 34), ognuno con la sua fonte e un contrassegno che dice quanto
+- **195 dettagli** (82 + 29 + 48 + 36), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

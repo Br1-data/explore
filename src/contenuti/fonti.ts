@@ -15,6 +15,7 @@ const LIBRI: Record<string, [slug: string, numero: number]> = {
   Giudici: ['giudici', 7],
   Salmo: ['salmi', 19],
   Proverbi: ['proverbi', 20],
+  Matteo: ['matteo', 40],
   Giovanni: ['giovanni', 43],
   Romani: ['romani', 45],
   Galati: ['galati', 48],

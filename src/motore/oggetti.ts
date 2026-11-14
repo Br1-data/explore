@@ -1040,7 +1040,109 @@ const sala: Pittore = (p, o) => {
   }
 };
 
+/**
+ * L’arca (Genesi 6:14-16; lett. «cassa»): una grande cassa di legno coperta di catrame,
+ * con la porta di lato e un’apertura per la luce sotto il tetto.
+ * Varianti: 0 in costruzione (ossatura e impalcature), 1 finita con la porta aperta e
+ * la rampa, 2 chiusa.
+ */
+const arca: Pittore = (p, o) => {
+  const { ctx, P, tono } = p;
+  const v = o.variante ?? 1;
+  const L = 660;
+  const H = 150;
+  const legno = tono('#7a5634');
+  const scuro = tono('#3e2a1a');
+  if (v === 0) {
+    // Chiglia, costole e le prime file di tavole.
+    ctx.fillStyle = scuro;
+    ctx.fillRect(-L / 2, -14, L, 14);
+    for (let x = -L / 2; x <= L / 2; x += 33) ctx.fillRect(x - 4, -H, 8, H - 14);
+    ctx.fillStyle = legno;
+    ctx.fillRect(-L / 2, -66, L, 52);
+    ctx.fillStyle = scuro;
+    for (let y = -66; y < -14; y += 13) ctx.fillRect(-L / 2, y, L, 2);
+    // Impalcature.
+    ctx.strokeStyle = tono(P.tronco);
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let x = -L / 2 - 30; x <= L / 2 + 30; x += 115) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, -H - 20);
+    }
+    for (const y of [-H / 2, -H - 10]) {
+      ctx.moveTo(-L / 2 - 30, y);
+      ctx.lineTo(L / 2 + 30, y);
+    }
+    ctx.stroke();
+    return;
+  }
+  // Lo scafo, coperto di catrame dentro e fuori.
+  ctx.fillStyle = tono('#2c221b');
+  ctx.fillRect(-L / 2, -H, L, H);
+  ctx.fillStyle = tono('#463526');
+  for (let y = -H + 12; y < 0; y += 14) ctx.fillRect(-L / 2, y, L, 2);
+  // Tetto appena spiovente e, sotto, l’apertura per la luce.
+  ctx.fillStyle = scuro;
+  ctx.beginPath();
+  ctx.moveTo(-L / 2 - 10, -H);
+  ctx.lineTo(0, -H - 24);
+  ctx.lineTo(L / 2 + 10, -H);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = tono(mescola('#2c221b', '#f2e2b0', 0.45));
+  ctx.fillRect(-L / 2 + 12, -H + 3, L - 24, 7);
+  // La porta, da un lato.
+  const px = L * 0.18;
+  if (v === 1) {
+    ctx.fillStyle = tono('#140e0a');
+    ctx.fillRect(px - 24, -92, 48, 92);
+    // La rampa.
+    ctx.strokeStyle = legno;
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(px - 20, -2);
+    ctx.lineTo(px + 120, 0);
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = legno;
+    ctx.fillRect(px - 24, -92, 48, 92);
+    ctx.fillStyle = scuro;
+    for (let y = -84; y < 0; y += 14) ctx.fillRect(px - 24, y, 48, 2);
+  }
+};
+
+/** Un altare di pietre con il fuoco degli olocausti (Genesi 8:20). */
+const altare: Pittore = (p, o) => {
+  const { ctx, tono, t } = p;
+  ctx.fillStyle = tono('#8a8070');
+  rettTondo(ctx, -36, -42, 72, 46, 6);
+  ctx.fillStyle = tono('#6b6255');
+  for (const [x, y] of [[-30, -30], [-6, -36], [16, -26], [-20, -14], [8, -10]]) rettTondo(ctx, x, y, 18, 9, 3);
+  fiamma(ctx, 0, -44, 1.2, t + o.x);
+  luce(p, 0, -60, 140);
+};
+
+/** L’arcobaleno nelle nuvole, segno del patto (Genesi 9:13). Va messo sul piano di fondo. */
+const arcobaleno: Pittore = (p) => {
+  const { ctx } = p;
+  const colori = ['#e0604a', '#f0a446', '#f2d85a', '#7cbf6a', '#5a96d6', '#7864c4'];
+  ctx.save();
+  ctx.globalAlpha *= 0.42;
+  ctx.lineWidth = 11;
+  colori.forEach((c, i) => {
+    ctx.strokeStyle = c;
+    ctx.beginPath();
+    ctx.arc(0, 0, 540 - i * 11, Math.PI, Math.PI * 2);
+    ctx.stroke();
+  });
+  ctx.restore();
+};
+
 const PITTORI: Record<string, Pittore> = {
+  arca,
+  altare,
+  arcobaleno,
   tendone,
   otre,
   coppa,

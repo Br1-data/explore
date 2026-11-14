@@ -26,6 +26,8 @@ export type TipoSorgente =
 /** Gli oggetti di scena che suonano, e come. */
 export const SUONI_OGGETTI: Record<string, TipoSorgente> = {
   fuoco: 'fuoco',
+  // Il fuoco degli olocausti crepita come un fuoco (Genesi 8:20).
+  altare: 'fuoco',
   torcia: 'torcia',
   pecora: 'pecora',
   acqua: 'acqua',

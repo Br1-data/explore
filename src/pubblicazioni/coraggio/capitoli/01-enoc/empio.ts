@@ -89,7 +89,17 @@ export const empio: Ruolo = {
           tipo: 'esamina',
           etichetta: 'Il nome di Dio sulle vostre labbra',
           passi: [
-            { t: 'verso', id: 'gen-4-26', evidenzia: ['si cominciò a invocare il nome di Geova'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'invocare',
+                consegna: 'Che cosa cominciò in quel tempo? Completa il versetto.',
+                verso: 'gen-4-26',
+                testo: 'Anche Set ebbe un figlio, che chiamò [[Ènos]]. In quel tempo si cominciò a [[invocare]] il nome di Geova.',
+                distrattori: ['Ènoc', 'lodare'],
+              },
+            },
             det('nome-profanato'),
             det('quattro-secoli'),
             det('nome-come'),
@@ -289,18 +299,6 @@ export const empio: Ruolo = {
           passi: [
             det('anche-loro'),
             det('adempimento'),
-            {
-              t: 'attivita',
-              a: {
-                tipo: 'completa',
-                id: 'mondo-di-empi',
-                consegna: 'Come chiama l’apostolo Pietro il tuo mondo? Completa il versetto.',
-                verso: '2pt-2-5',
-                testo:
-                  'Non si trattenne nemmeno dal punire il mondo antico, ma quando portò il diluvio su un mondo di [[empi]] salvò Noè, [[predicatore]] di giustizia, e altre [[sette]] persone.',
-                distrattori: ['giusti', 'costruttore', 'otto'],
-              },
-            },
             det('mondo-di-empi'),
           ],
         },
