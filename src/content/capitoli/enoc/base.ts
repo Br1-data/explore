@@ -757,10 +757,10 @@ function s(id: string, domanda: string): [string, Sensazione] {
 }
 
 export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
-  s('solo', 'Intorno a te nessun altro cammina con Dio. Che cosa provi?'),
+  s('solo', 'Intorno a te nessun altro segue la condotta che Dio approva. Che cosa provi a essere l’unico?'),
   s('pacifico', 'Intorno a te alla violenza si risponde con la violenza. Che cosa ti costa restare un uomo pacifico?'),
-  s('nome', 'Il nome di Geova viene usato per profanarlo, proprio vicino a te. Che effetto ti fa?'),
-  s('famiglia', 'Cresci dei figli in un mondo empio. Quale pensiero ti accompagna ogni giorno?'),
+  s('nome', 'Vicino a te c’è chi usa il nome di Geova in modo profano, senza rispetto. Che cosa provi a sentirlo?'),
+  s('famiglia', 'Cresci dei figli in un mondo empio. Che cosa ti preoccupa di più per loro, e che cosa faresti per proteggerli?'),
   s(
     'trecento',
     'Trecento anni, un giorno dopo l’altro, seguendo la condotta che Dio approva. Che cosa ti aiuta a non smettere?',
@@ -771,15 +771,15 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   ),
   s(
     'medita',
-    'Pensi a Eden, ad Adamo ed Eva invecchiati, ad Abele. Sai che il tuo coraggio sarà messo alla prova. Che cosa decidi?',
+    'Ripensi all’Eden, ad Adamo ed Eva ormai vecchi, ad Abele ucciso da suo fratello. Sai che il tuo coraggio sarà messo alla prova. Che cosa ti aiuterebbe a decidere di restare fedele a Geova?',
   ),
-  s('incarico', 'Devi portare questo messaggio a persone molto diverse da te. Che cosa provi prima di scendere in strada?'),
+  s('incarico', 'Devi annunciare il giudizio di Geova a persone molto diverse da te. Che cosa provi prima di farlo?'),
   s(
     'strada',
-    'Hai detto tutto ciò che Geova voleva che sapessero. Senti gli sguardi su di te. Che cosa ti ha impedito di tacere?',
+    'Hai annunciato tutto il messaggio di Geova e senti gli sguardi di tutti su di te. Che cosa ti ha dato la forza di non tacere?',
   ),
-  s('pericolo', 'Sei in grave pericolo. A che cosa ti aggrappi?'),
-  s('conferma', 'Hai la conferma di essere gradito a Dio. Con quale certezza chiudi gli occhi?'),
+  s('pericolo', 'Dopo il tuo messaggio ti trovi in grave pericolo. In un momento così, su che cosa o su chi conti?'),
+  s('conferma', 'Geova ti fa sapere che gli sei gradito. Che cosa significherebbe per te sapere con certezza che Dio approva la tua vita?'),
 
   s('g-rallegra', 'Un uomo resta pacifico in un mondo violento, e questo rallegra tanto Geova. Che cosa ti dice questo di lui?'),
   s(
@@ -788,7 +788,7 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   ),
   s(
     'g-protegge',
-    'Geova non permette che facciano del male al suo profeta. Come ti fa sentire sapere come agisce verso chi cammina con lui?',
+    'Geova non permette che facciano del male al suo profeta. Che cosa ti dice questo di come tratta chi gli è fedele?',
   ),
   s('g-memoria', 'Enoc è al sicuro nella memoria di Geova. Che cosa vorresti chiedere a Enoc quando sarà risuscitato?'),
 
@@ -798,9 +798,12 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   ),
   s(
     'e-parole',
-    'Quelle parole parlano di te: quattro volte «empi». Che cosa ti dà più fastidio? E che cosa avresti potuto fare, invece?',
+    'Nel messaggio di Enoc la parola «empi» ritorna quattro volte, e parla di te. Che cosa ti dà più fastidio? E che cosa avresti potuto fare, invece?',
   ),
-  s('e-vuoto', 'Lo cercate, ma non si trova più. Il messaggio, però, lo avete sentito. Che cosa resta, adesso?'),
+  s(
+    'e-vuoto',
+    'Voi empi cercate Enoc, ma non lo trovate più: Dio lo ha preso. Il suo messaggio però lo avete sentito tutti. Ora che lui non c’è più, che cosa potreste fare di quelle parole?',
+  ),
 
   s(
     'm-padre',
@@ -812,7 +815,7 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   ),
   s(
     'm-diluvio',
-    'Tuo padre annunciò un giudizio. Tu vivi fino all’anno del Diluvio. Che cosa ti fa pensare questo numero?',
+    'Tuo padre aveva annunciato che Geova sarebbe venuto a giudicare gli empi. Tu vivi altri 669 anni dopo che lui non si trova più, e muori proprio nell’anno del Diluvio. Che cosa ti dice una così lunga attesa su Geova?',
   ),
 ]);
 

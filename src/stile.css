@@ -1447,6 +1447,8 @@ mark {
   top: -4px;
   bottom: 0;
   width: 0;
+  /* La linea è spessa 2px: la si centra sull’anno. */
+  margin-left: -1px;
   border-left: 2px solid var(--terra);
 }
 
@@ -1459,10 +1461,67 @@ mark {
   border-top: 7px solid var(--terra);
 }
 
+/*
+ * Il pomello del cursore ha una larghezza nota e il cursore sborda di mezzo pomello
+ * per lato: così il centro del pomello cade esattamente sull’anno, come le barre
+ * (il cursore nativo lo tiene dentro la traccia e sbaglia di mezzo pomello agli estremi).
+ */
 .linea__scorri {
-  width: 100%;
-  margin: 0;
-  accent-color: var(--terra);
+  --pomo: 22px;
+  -webkit-appearance: none;
+  appearance: none;
+  width: calc(100% + var(--pomo));
+  height: var(--pomo);
+  margin: 0 calc(var(--pomo) / -2);
+  background: transparent;
+  cursor: pointer;
+}
+
+.linea__scorri::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--carta-3);
+}
+
+.linea__scorri::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--carta-3);
+}
+
+.linea__scorri::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: var(--pomo);
+  height: var(--pomo);
+  margin-top: calc((4px - var(--pomo)) / 2);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--terra);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.linea__scorri::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--pomo);
+  height: var(--pomo);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--terra);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.linea__scorri:disabled {
+  cursor: default;
+}
+
+.linea__scorri:focus-visible {
+  outline: none;
+}
+
+.linea__scorri:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--terra);
+  outline-offset: 2px;
 }
 
 .linea__lettura {
@@ -1559,6 +1618,8 @@ mark {
   position: absolute;
   top: 0;
   bottom: 0;
+  /* Stessa misura delle righe .vita, altrimenti 6.6em non coincide con la colonna dei nomi. */
+  font-size: 0.82rem;
   left: calc(6.6em + 8px);
   right: calc(2.6em + 8px);
   pointer-events: none;

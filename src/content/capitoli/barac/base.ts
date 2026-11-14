@@ -37,8 +37,11 @@ export const F = {
     rif: 'La Torre di Guardia (studio), aprile 2017, «Lodiamo Geova con il nostro spirito volenteroso!»',
     url: `${RIVISTE}/torre-di-guardia-studio-aprile-2017/lodiamo-geova-dio-con-nostro-spirito-volenteroso/`,
   } as Fonte,
-  /** Non è su jw.org: il capitolo la indica senza collegamento. */
-  w86: { rif: 'La Torre di Guardia 1/6/1986, p. 31 parr. 6-8 (indicata nel capitolo)', url: URL_CAPITOLO } as Fonte,
+  /** Solo nella Biblioteca online (wol.jw.org): il sito jw.org non ha le riviste del 1986. */
+  w86: {
+    rif: 'La Torre di Guardia 1/6/1986, p. 31, «Domande dai lettori»',
+    url: 'https://wol.jw.org/it/wol/d/r6/lp-i/1986409',
+  } as Fonte,
   it: perspicacia,
 };
 
@@ -157,9 +160,9 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'profetessa',
     'Una profetessa',
-    'Il titolo di profetessa rende Debora una figura insolita nella narrazione biblica, anche se non è l’unica donna ad averlo ricevuto.',
+    'Il titolo di profetessa rende Debora una figura insolita nella narrazione biblica, anche se non è l’unica donna ad averlo ricevuto. La Bibbia la presenta prima di tutto come profetessa, e a guidare il popolo verso la liberazione fu soprattutto Barac: per questo di solito non viene contata fra i 12 giudici, anche se ebbe una parte nel giudicare Israele.',
     'libro',
-    [F.wp15],
+    [F.wp15, F.w86, F.fondo(2)],
   ),
   d(
     'non-autorita',
@@ -494,7 +497,7 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('g-sforzi', 'Geova avrebbe potuto vincere senza nessuno, eppure chiamò 10.000 volontari. Che cosa ti dice questo dei tuoi sforzi per lui?'),
 
   s('v-offrirsi', 'Offrirsi voleva dire rischiare la vita, mentre altri restavano con le greggi o con le navi. Che cosa ti spinge oggi a offrirti per Geova?'),
-  s('v-visto', 'Hai visto con i tuoi occhi che cosa ha fatto Geova. Quale esperienza ti ha mostrato il suo aiuto?'),
+  s('v-visto', 'I volontari videro con i loro occhi che cosa fece Geova. C’è un momento della tua vita in cui hai visto il suo aiuto?'),
 
   s('s-carri', 'Sisera contava sui suoi carri, e proprio i carri causarono la sua disfatta. Su che cosa rischi di contare tu, invece che su Geova?'),
 ]);

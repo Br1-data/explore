@@ -387,14 +387,20 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('g-donna', 'Geova si serve di una donna che non è israelita, né profetessa, né soldato. Che cosa dice questo a chi pensa di contare poco?'),
   s('g-nemici', '«Quelli che ti amano siano come il sole che sorge nella sua gloria.» Che cosa vorresti che Geova vedesse in te?'),
 
-  s('s-sicuro', 'Novecento carri, un’alleanza, una tenda, qualcuno di guardia all’entrata. Su che cosa stai contando, in realtà?'),
+  s(
+    's-sicuro',
+    'Prima i 900 carri, ora l’alleanza con Heber e una donna di guardia all’entrata: Sisera passa da una sicurezza all’altra. Che cosa ti dice questo di chi non conta su Dio?',
+  ),
   s('s-fine', 'Niente di ciò su cui contava Sisera lo salvò. Tu in che cosa riponi la tua fiducia?'),
 
   s('b-gloria', 'La gloria della vittoria non va a te, ma a una donna. Che cosa conta di più: la tua gloria o che la parola di Geova si adempia?'),
 
   s('d-lode', 'Un’altra donna riceve la lode più grande. Come ti senti quando l’onore va a qualcun altro per una cosa a cui hai lavorato anche tu?'),
 
-  s('m-attesa', 'Aspetti un figlio vittorioso e un ricco bottino. Su che cosa avevi costruito le tue certezze?'),
+  s(
+    'm-attesa',
+    'La madre di Sisera aspetta un figlio vittorioso e un ricco bottino, ma lui non tornerà. Su che cosa aveva costruito le sue certezze? E tu, su che cosa costruisci le tue?',
+  ),
 ]);
 
 /** Le sezioni di studio del capitolo, riproposte come domande aperte per il quaderno. */

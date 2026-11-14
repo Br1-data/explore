@@ -93,6 +93,7 @@ async function scatta(pagina, nome) {
 }
 
 const stato = (pagina) => pagina.evaluate(() => window.__partita?.istantanea());
+let lineaMisurata = false;
 
 /** L’archivio dei salvataggi: il vero Codice.gs, con un Google finto al posto di quello vero. */
 const archivio = archivioFinto();
@@ -146,6 +147,25 @@ async function risolviAttivita(scheda, attivita) {
         el.value = el.dataset.meta;
         el.dispatchEvent(new Event('input', { bubbles: true }));
       });
+      // Sull’anno scelto, la linea rossa e il pomello del cursore cadono dove cadono le barre.
+      const m = await scheda.evaluate((el) => {
+        const input = el.querySelector('.linea__scorri');
+        const r = input.getBoundingClientRect();
+        const pomo = parseFloat(getComputedStyle(input).getPropertyValue('--pomo'));
+        const frazione = (input.value - input.min) / (input.max - input.min);
+        const traccia = el.querySelector('.vita__traccia').getBoundingClientRect();
+        const linea = el.querySelector('.linea__cursore').getBoundingClientRect();
+        return {
+          anno: traccia.left + traccia.width * frazione,
+          linea: linea.left + 1,
+          pomello: r.left + pomo / 2 + (r.width - pomo) * frazione,
+        };
+      });
+      const scarto = Math.max(Math.abs(m.linea - m.anno), Math.abs(m.pomello - m.anno));
+      if (!lineaMisurata || scarto >= 1) {
+        lineaMisurata = true;
+        verifica(scarto < 1, `linea del tempo: barre, linea rossa e cursore allineati (scarto ${scarto.toFixed(1)} px)`);
+      }
       await scheda.locator('.linea__fissa').click();
       break;
     }

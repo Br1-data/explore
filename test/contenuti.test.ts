@@ -52,7 +52,8 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
     expect(fonti?.length, `${dove}: senza fonte`).toBeGreaterThan(0);
     for (const f of fonti ?? []) {
       expect(f.rif.length, dove).toBeGreaterThan(3);
-      expect(f.url, `${dove}: ${f.rif}`).toMatch(/^https:\/\/www\.jw\.org\/it\//);
+      // jw.org, o la sua Biblioteca online per ciò che jw.org non ha (es. riviste degli anni ’80).
+      expect(f.url, `${dove}: ${f.rif}`).toMatch(/^https:\/\/(www\.jw\.org\/it\/|wol\.jw\.org\/it\/wol\/)/);
     }
   };
 
