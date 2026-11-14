@@ -44,7 +44,7 @@ collegato all'originale su jw.org.
   - **Barac**: arriva alla tenda e vede adempiersi la profezia di Debora;
   - **Debora**: la lode a Iael, senza invidia;
   - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
-- **195 dettagli** (82 + 29 + 48 + 36), ognuno con la sua fonte e un contrassegno che dice quanto
+- **193 dettagli** (84 + 29 + 46 + 34), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;
