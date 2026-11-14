@@ -1,16 +1,17 @@
 // Every dimension of the model, in millimetres. Z is up; the ground the wheels stand on is
-// the top of the base. The throne faces -Y. The plan is a rectangle, long side along X, as in
-// the illustration of the chariot in the book "Pure Worship" (chapter 3).
+// the top of the base. The plan is a long rectangle, long side along X, with wheels that are
+// small next to it, as in the illustration of the chariot in the book "Pure Worship"
+// (chapter 3). The throne faces +X, along the long side.
 
 const wheel = {
-  offset: [74, 45], // wheel axes stand on the corners of a 148 x 90 mm rectangle
-  radius: 41, // outer radius of each of the two crossed rims
-  rimRadial: 3.4, // the rims are broad bands, like hoops
-  rimThick: 10,
+  offset: [86, 40], // wheel axes stand on the corners of a 172 x 80 mm rectangle
+  radius: 34, // outer radius of each of the two crossed rims
+  rimRadial: 3, // the rims are broad bands, like hoops
+  rimThick: 9,
   chamfer: 0.6,
   sink: 1.5, // how far a rim is embedded in the ground and in the expanse above
-  outerEyes: 20, // per row; two rows on the outer face of each band
-  innerEyes: 16, // per row; two rows on the inner face
+  outerEyes: 18, // per row; two rows on the outer face of each band
+  innerEyes: 14, // per row; two rows on the inner face
 };
 
 const margin = 1.5;
@@ -33,18 +34,21 @@ export const P = {
   ground,
   wheelCentreZ,
   cherub: {
-    offset: [36, 25], // each creature stands inside the rectangle, by its own wheel
-    wingElevation: [40, 50], // of the wing reaching along X and of the one reaching along Y
+    offset: [40, 20], // each creature stands inside the rectangle, by its own wheel
+    scale: 0.85, // the creatures are modelled 56 mm tall and scaled to stand well below the expanse
+    wingElevation: [30, 50], // of the wing reaching along X and of the one reaching along Y
   },
   expanse: {
-    half: [102, 68],
+    half: [123, 77], // the slab reaches a little past the wheels on every side
     bottom: expanseBottom,
     thick: expanseThick,
     top: expanseBottom + expanseThick,
     chamfer: 1.2,
   },
+  // Throne, figure and rainbow are modelled facing -Y and turned as one group.
   throne: {
     y: 2,
+    turn: 90,
   },
   rainbow: {
     y: 20.5,

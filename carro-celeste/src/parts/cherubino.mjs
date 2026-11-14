@@ -102,7 +102,7 @@ function ali(longOnLeft) {
     const axis = (deg === 225) === longOnLeft ? 0 : 1;
     const beta = C.wingElevation[axis] * DEG;
     const reachPerUnit = tx * Math.cos(beta) - ty * Math.sin(beta);
-    const length = (C.offset[axis] - WING_ROOT + overlap) / reachPerUnit;
+    const length = (C.offset[axis] / C.scale - WING_ROOT + overlap) / reachPerUnit;
     lengths.push(length);
     const d = [Math.cos(deg * DEG), Math.sin(deg * DEG), 0];
     const along = vec.add(vec.scale(d, Math.cos(beta)), [0, 0, Math.sin(beta)]);

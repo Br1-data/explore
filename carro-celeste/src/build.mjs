@@ -34,6 +34,8 @@ const parts = {
 };
 const cherubInfo = parts.cherubino.info;
 delete parts.cherubino.info;
+for (const key of Object.keys(parts.cherubino))
+  parts.cherubino[key] = parts.cherubino[key].scale(P.cherub.scale);
 const { aliA, aliB, ...cherubShared } = parts.cherubino;
 log('parts built');
 
@@ -57,8 +59,10 @@ const wheels = corners.map((c) => wheelSolid.translate(wheelAt(c)));
 const cherubs = corners.map((c) =>
   cherubSolid[cherubWings(c)].rotate([0, 0, cherubTurn(c)]).translate(cherubAt(c)),
 );
-const rainbowSolid = union(parts.arcobaleno.bande, parts.arcobaleno.nubi);
-const throneSolid = union(whole(parts.trono), whole(parts.figura));
+const turned = (solid) => solid.rotate([0, 0, P.throne.turn]);
+const rainbowLocal = union(parts.arcobaleno.bande, parts.arcobaleno.nubi);
+const rainbowSolid = turned(rainbowLocal);
+const throneSolid = turned(union(whole(parts.trono), whole(parts.figura)));
 
 // ---------------------------------------------------------------- one-piece model
 const single = union(
@@ -130,7 +134,7 @@ save(
 save('kit/4-trono.stl', onBed(throneSolid), 'Carro celeste - kit 4/5 - trono');
 save(
   'kit/5-arcobaleno.stl',
-  onBed(rainbowSolid.rotate([-90, 0, 0])),
+  onBed(rainbowLocal.rotate([-90, 0, 0])),
   'Carro celeste - kit 5/5 - arcobaleno (stampare coricato)',
 );
 
@@ -229,9 +233,9 @@ const instances = [
     rotationZDeg: cherubTurn(corner),
   })),
   { name: 'distesa', mesh: 'distesa' },
-  { name: 'trono', mesh: 'trono' },
-  { name: 'figura', mesh: 'figura' },
-  { name: 'arcobaleno', mesh: 'arcobaleno' },
+  { name: 'trono', mesh: 'trono', rotationZDeg: P.throne.turn },
+  { name: 'figura', mesh: 'figura', rotationZDeg: P.throne.turn },
+  { name: 'arcobaleno', mesh: 'arcobaleno', rotationZDeg: P.throne.turn },
 ];
 const glb = writeGlb({ meshes, materials, instances });
 writeFileSync(out + 'carro-celeste.glb', glb);

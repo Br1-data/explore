@@ -110,7 +110,7 @@ function lampo(random, stretch) {
 function lampi(random) {
   const bolts = [];
   // The bolts along X reach a little further, towards the short sides of the chariot.
-  for (let i = 0; i < 4; i++) bolts.push(lampo(random, i % 2 ? 1 : 1.08).rotate([0, 0, i * 90]));
+  for (let i = 0; i < 4; i++) bolts.push(lampo(random, i % 2 ? 1 : 1.28).rotate([0, 0, i * 90]));
   return union(bolts);
 }
 

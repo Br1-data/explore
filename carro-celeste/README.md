@@ -10,7 +10,7 @@ Si apre dal web qui: <https://claude.ai/artifact/2By3PSNDFpRXZT5756A5QW> (pagina
 
 | File                                                     | A cosa serve                                                           |
 | -------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [`modelli/carro-celeste.stl`](modelli/carro-celeste.stl) | Modello in un pezzo unico, solido chiuso, circa 235 × 180 × 148 mm     |
+| [`modelli/carro-celeste.stl`](modelli/carro-celeste.stl) | Modello in un pezzo unico, solido chiuso, circa 246 × 156 × 134 mm     |
 | [`modelli/kit/`](modelli/kit)                            | Lo stesso modello in cinque parti, ognuna già orientata per il piatto  |
 | [`modelli/carro-celeste.glb`](modelli/carro-celeste.glb) | Modello a colori per il visualizzatore web e per l’AR                  |
 | [`index.html`](index.html)                               | Visualizzatore web: dettagli per versetto, vista di stampa, download   |
@@ -68,4 +68,4 @@ npm run build
 - **Pezzo unico**: resina, oppure FDM con supporti ad albero. Strato 0,12–0,16 mm.
 - **Kit**: strato 0,12–0,2 mm, ugello 0,4 mm. Le ruote si stampano in piedi, in quattro copie, con supporti solo dentro i cerchi. La distesa rende bene in PETG o PLA trasparente, il trono in blu.
 - **Montaggio del kit**: le ruote entrano nelle sedi della base, la distesa si appoggia sulle ruote, trono e arcobaleno entrano nelle sedi della distesa (gioco di 0,25 mm).
-- A grandezza nominale serve un piatto da 250 mm. Il modello si può scalare liberamente nello slicer: 93% per un piatto da 220 mm, 76% per uno da 180 mm.
+- A grandezza nominale serve un piatto da 250 mm. Il modello si può scalare liberamente nello slicer: 89% per un piatto da 220 mm, 73% per uno da 180 mm.
