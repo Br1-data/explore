@@ -8,12 +8,13 @@ const smooth = (t) => t * t * (3 - 2 * t);
  * One feather along +X: a rounded vane with a raised shaft, canted about its own axis so
  * that neighbouring feathers overlap like shingles.
  */
-function feather(length, width, thickness, cant) {
+function feather(length, width, thickness, cant, withShaft) {
   const tip = width * 0.4;
   const vane = CrossSection.hull([
-    CrossSection.circle(width / 2, 10),
-    CrossSection.circle(tip, 8).translate([length - tip, 0]),
+    CrossSection.circle(width / 2, 8),
+    CrossSection.circle(tip, 6).translate([length - tip, 0]),
   ]).extrude(thickness, 0, 0, [1, 1], true);
+  if (!withShaft) return vane.rotate([cant, 0, 0]);
   const shaft = Manifold.cube([length - tip, width * 0.13, thickness + 0.42], true).translate([
     (length - tip) / 2,
     0,
@@ -33,7 +34,7 @@ export function ala(spec) {
 
   // Three overlapping rows, from the long flight feathers to the small coverts by the arm.
   const rows = [
-    { count: flight, from: 0, to: 1, length: flightLength, width, thick: 0.95, cant: 11 },
+    { count: flight, from: 0, to: 1, length: flightLength, width, thick: 0.95, cant: 11, shaft: true },
     {
       count: flight - 3,
       from: 0.03,
@@ -59,7 +60,7 @@ export function ala(spec) {
       const u = lerp(row.from, row.to, i / (row.count - 1));
       const [x, y] = curve(u);
       solids.push(
-        feather(row.length(u), row.width * L * (1 - 0.2 * u), row.thick, row.cant)
+        feather(row.length(u), row.width * L * (1 - 0.2 * u), row.thick, row.cant, row.shaft)
           .rotate([0, 0, angle(u)])
           .translate([x, y - 0.015 * L, 0]),
       );
@@ -80,7 +81,7 @@ export function ala(spec) {
       ]),
     );
   }
-  arm.push(CrossSection.circle(0.085 * L, 16));
+  arm.push(CrossSection.circle(0.085 * L * armScale, 16));
   solids.push(CrossSection.union(arm).extrude(2.6, 0, 0, [1, 1], true));
   return clean(union(solids));
 }

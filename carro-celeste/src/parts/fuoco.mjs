@@ -56,7 +56,9 @@ function carboni(random) {
 function fiamme(random) {
   const tongues = [];
   const plant = (x, y, height, radius) =>
-    tongues.push(fiamma(height, radius, random).translate([x, y, P.ground + 1.5]));
+    tongues.push(
+      fiamma(height, radius, random).translate([x, y, P.ground + (Math.hypot(x, y) > 8 ? -0.3 : 1.5)]),
+    );
   plant(0, 0, 50, 5.2);
   for (let i = 0; i < 4; i++) {
     const a = (i * 90 + 20) * (Math.PI / 180);
@@ -75,13 +77,13 @@ function fiamme(random) {
 /** One zig-zag bolt in the vertical plane through the axis, running outwards along +X. */
 function lampo(random) {
   const path = [
-    [3, 27, 2.0],
-    [15, 33, 1.9],
-    [19.5, 23.5, 1.8],
-    [33, 28.5, 1.6],
-    [38.5, 16, 1.45],
-    [51, 20, 1.25],
-    [61, P.ground - 0.4, 1.0],
+    [3, 27, 1.35],
+    [15, 33, 1.25],
+    [19.5, 23.5, 1.2],
+    [33, 28.5, 1.1],
+    [38.5, 16, 1.0],
+    [51, 20, 0.9],
+    [61, P.ground - 0.4, 0.8],
   ];
   const node = ([rho, z, half], index) =>
     Manifold.cube([half * 2, half * 2, half * 2], true)

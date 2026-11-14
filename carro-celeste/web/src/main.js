@@ -46,7 +46,7 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.minDistance = 0.25;
-controls.maxDistance = 9;
+controls.maxDistance = 30;
 controls.maxPolarAngle = Math.PI * 0.56;
 controls.autoRotateSpeed = 0.55;
 
@@ -104,7 +104,7 @@ const visionMaterials = {
   }),
   fuoco: new THREE.MeshBasicMaterial({ vertexColors: true }),
   fuoco_trono: new THREE.MeshBasicMaterial({ vertexColors: true }),
-  lampo: new THREE.MeshBasicMaterial({ color: hdr(0xcfe4ff, 2.6) }),
+  lampo: new THREE.MeshBasicMaterial({ color: hdr(0xcfe4ff, 1.3) }),
   crisolito: physical({
     color: 0xc6cf2e,
     metalness: 0.35,
@@ -166,21 +166,21 @@ const visionMaterials = {
     emissiveIntensity: 0.12,
   }),
   zaffiro: physical({
-    color: 0x1136b8,
+    color: 0x0f3fd2,
     metalness: 0.1,
     roughness: 0.06,
     clearcoat: 1,
     flatShading: true,
-    emissive: 0x0b2bb0,
-    emissiveIntensity: 0.55,
+    emissive: 0x0a34d6,
+    emissiveIntensity: 0.6,
     envMapIntensity: 1.6,
   }),
   elettro: standard({
-    color: 0xffe3a2,
-    metalness: 0.6,
-    roughness: 0.25,
-    emissive: 0xffc35a,
-    emissiveIntensity: 1.9,
+    color: 0xffdf9c,
+    metalness: 0.75,
+    roughness: 0.22,
+    emissive: 0xffb445,
+    emissiveIntensity: 0.95,
   }),
 };
 const RAINBOW = [0xe2222d, 0xf47a17, 0xf6d51f, 0x35b54a, 0x1f8fe0, 0x3a3fb8, 0x8433b5];
@@ -202,8 +202,8 @@ function paintFlames(geometry) {
   const { min, max } = geometry.boundingBox;
   const position = geometry.getAttribute('position');
   const colors = new Float32Array(position.count * 3);
-  const foot = new THREE.Color(0xffe9a8).multiplyScalar(2.3);
-  const tip = new THREE.Color(0xff4a0a).multiplyScalar(1.5);
+  const foot = new THREE.Color(0xffd067).multiplyScalar(1.45);
+  const tip = new THREE.Color(0xff3c06).multiplyScalar(1.05);
   const c = new THREE.Color();
   for (let i = 0; i < position.count; i++) {
     const t = (position.getZ(i) - min.z) / (max.z - min.z || 1);
@@ -299,16 +299,42 @@ function applyExplode() {
 
 // ------------------------------------------------------------------ camera moves
 let flight = null;
+let userMoved = false;
+
+/** The part of the stage the interface leaves free, in pixels. */
+function freeArea() {
+  const width = Math.max(1, stage.clientWidth);
+  const height = Math.max(1, stage.clientHeight);
+  const wide = width > 760;
+  const box = (selector) => document.querySelector(selector).getBoundingClientRect();
+  const left = wide ? box('.index').right + 16 : 12;
+  const top = wide ? 16 : box('.segmented').bottom + 12;
+  const bottom = box('.caption').top - 14;
+  return { width, height, left, top, right: width - 16, bottom: Math.max(top + 120, bottom) };
+}
+
+/** Shift the optical centre to the middle of the free area. */
+function centreView() {
+  const area = freeArea();
+  if (params.has('cam')) camera.clearViewOffset();
+  else {
+    const dx = (area.left + area.right) / 2 - area.width / 2;
+    const dy = (area.top + area.bottom) / 2 - area.height / 2;
+    camera.setViewOffset(area.width, area.height, -dx, -dy, area.width, area.height);
+  }
+  camera.updateProjectionMatrix();
+  return area;
+}
+
 function flyTo(detail, immediate) {
-  const position = toWorld(detail.camera);
+  const area = centreView();
   const target = toWorld(detail.target);
-  // On a tall screen the model needs more distance to fit across.
-  const aspect = stage.clientWidth / Math.max(1, stage.clientHeight);
-  if (aspect < 1)
-    position
-      .sub(target)
-      .multiplyScalar(Math.min(2.1, 1 / aspect))
-      .add(target);
+  const direction = toWorld(detail.camera).sub(target).normalize();
+  const reach = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / area.height;
+  const fit = Math.min(area.right - area.left, area.bottom - area.top);
+  const distance = (detail.radius * UNIT) / (reach * Math.max(120, fit));
+  const position = direction.multiplyScalar(distance).add(target);
+  userMoved = false;
   if (immediate || reducedMotion) {
     camera.position.copy(position);
     controls.target.copy(target);
@@ -374,10 +400,10 @@ function frame() {
     // Lightning: mostly a faint glow, now and then a flash.
     if (Math.random() < 0.012) flash = 1;
     flash *= 0.88;
-    visionMaterials.lampo.color.copy(hdr(0xcfe4ff, 1.5 + flash * 4.5));
+    visionMaterials.lampo.color.copy(hdr(0xcfe4ff, 1.1 + flash * 2.6));
     fireLight.intensity = 0.35 * flicker + flash * 0.5;
     visionMaterials.iride.emissiveIntensity = 0.8 + 0.3 * Math.sin(t * 1.4);
-    visionMaterials.elettro.emissiveIntensity = 1.8 + 0.25 * Math.sin(t * 1.1);
+    visionMaterials.elettro.emissiveIntensity = 0.95 + 0.15 * Math.sin(t * 1.1);
   }
 
   if (state.mode === 'stampa') renderer.render(scene, camera);
@@ -392,7 +418,9 @@ function resize() {
   renderer.setSize(width, height, false);
   composer.setSize(width, height);
   camera.aspect = width / height;
-  camera.updateProjectionMatrix();
+  // Re-frame the current detail unless the visitor has taken the camera somewhere else.
+  if (userMoved || params.has('cam')) centreView();
+  else flyTo(state.detail, true);
 }
 new ResizeObserver(resize).observe(stage);
 
@@ -451,6 +479,7 @@ function buildInterface() {
   // Any manual move takes over from the automatic orbit and from a camera flight in progress.
   controls.addEventListener('start', () => {
     flight = null;
+    userMoved = true;
     controls.autoRotate = false;
   });
   for (const toggle of document.querySelectorAll('[data-toggle]')) {

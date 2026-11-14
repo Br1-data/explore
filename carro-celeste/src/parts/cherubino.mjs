@@ -44,7 +44,7 @@ function corpo(edge) {
     ...stubs,
   );
   const sash = blend(0.3, robe, torusZ([0, 0, 29.6], 3.75, 0.8));
-  return toSolid(sash, { min: [-9.5, -9.5, 12.8], max: [9.5, 9.5, 45.2] }, edge, 0.06);
+  return toSolid(sash, { min: [-9.5, -9.5, 12.8], max: [9.5, 9.5, 45.2] }, edge * 1.15, 0.1);
 }
 
 /** One arm reaching out along +X, ending in an open human hand (v. 8). */
@@ -69,7 +69,7 @@ function braccio(edge) {
     capsule([12.3, 0.95, 31.5], [12.9, 1.75, 32.7], 0.42, 0.33), // thumb
     ...fingers,
   );
-  return toSolid(field, { min: [2.4, -2.6, 29.6], max: [16.4, 3.0, 40.2] }, edge * 0.7, 0.03);
+  return toSolid(field, { min: [2.4, -2.6, 29.6], max: [16.4, 3.0, 40.2] }, edge * 0.75, 0.05);
 }
 
 function gambe(edge) {
@@ -84,7 +84,7 @@ function gambe(edge) {
     return carve(0.12, leg, roundBox([x, 2.9, 1.5], [0.27, 1.7, 2.1], 0.1));
   };
   const field = blend(0, one(2.9), one(-2.9));
-  return toSolid(field, { min: [-5.8, -3.4, -0.6], max: [5.8, 3.9, 17.4] }, edge, 0.04);
+  return toSolid(field, { min: [-5.8, -3.4, -0.6], max: [5.8, 3.9, 17.4] }, edge, 0.07);
 }
 
 function ali() {

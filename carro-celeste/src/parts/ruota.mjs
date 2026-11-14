@@ -13,16 +13,15 @@ function eyeParts(scale) {
   const lens = CrossSection.circle(rho, 18)
     .translate([0, rho - b])
     .intersect(CrossSection.circle(rho, 18).translate([0, b - rho]));
-  const inner = lens.scale([0.8, 0.66]);
+  const inner = lens.scale([0.82, 0.7]);
   const embed = 0.35;
   const raise = (section, height) => section.extrude(height + embed).translate([0, 0, -embed]);
+  // A stack of ever smaller steps: eyelids, white, iris, pupil.
   return {
-    lid: raise(lens.subtract(inner), 0.85 * scale),
-    sclera: raise(inner, 0.45 * scale),
-    iris: Manifold.cylinder(0.8 * scale + embed, 1.3 * scale, 1.15 * scale, 10).translate([0, 0, -embed]),
-    pupil: Manifold.sphere(0.72 * scale, 8)
-      .scale([1, 1, 0.7])
-      .translate([0, 0, 0.78 * scale]),
+    lid: raise(lens, 0.4 * scale),
+    sclera: raise(inner, 0.72 * scale),
+    iris: Manifold.cylinder(1.0 * scale + embed, 1.25 * scale, 1.1 * scale, 10).translate([0, 0, -embed]),
+    pupil: Manifold.cylinder(0.5 * scale, 0.62 * scale, 0.5 * scale, 6).translate([0, 0, 0.9 * scale]),
   };
 }
 

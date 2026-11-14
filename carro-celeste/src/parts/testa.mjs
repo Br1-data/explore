@@ -65,9 +65,9 @@ function toro() {
     ellipsoid([0, -2.7, 4.6], [2.25, 1.75, 1.9]), // muzzle
     capsule([0, 1.6, 4.6], [0, -1.8, 5.6], 1.45, 1.5), // long nose
     capsule([0.8, 2.3, 4.5], [2.5, 1.9, 4.1], 0.62), // brow
-    capsule([2.3, 3.4, 3.7], [3.9, 4.3, 4.1], 0.95, 0.75), // horn
-    capsule([3.9, 4.3, 4.1], [4.3, 5.7, 4.5], 0.75, 0.5),
-    capsule([4.3, 5.7, 4.5], [3.9, 6.9, 4.8], 0.5, 0.2),
+    capsule([2.1, 3.4, 4.0], [3.5, 4.2, 4.6], 0.95, 0.75), // horn
+    capsule([3.5, 4.2, 4.6], [3.9, 5.6, 5.1], 0.75, 0.5),
+    capsule([3.9, 5.6, 5.1], [3.4, 6.8, 5.4], 0.5, 0.2),
     capsule([2.7, 2.6, 3.7], [4.1, 2.0, 4.2], 0.75, 0.45), // ear
     sphere(0, 3.6, 4.0, 1.2), // forelock
   );
@@ -80,21 +80,21 @@ function toro() {
 function aquila() {
   const head = blend(
     0.55,
-    ellipsoid([0, 0.5, 2.9], [3.0, 3.6, 2.3]),
-    capsule([0, 0.9, 4.9], [0, -0.3, 6.5], 1.25, 0.95), // upper beak
-    capsule([0, -0.3, 6.5], [0, -1.7, 6.9], 0.95, 0.6),
-    capsule([0, -1.7, 6.9], [0, -2.7, 6.3], 0.6, 0.22), // hook
-    capsule([0, -1.2, 4.6], [0, -2.0, 5.8], 0.8, 0.45), // lower beak
-    capsule([0.5, 1.9, 4.9], [2.7, 1.25, 4.1], 0.62, 0.5), // fierce brow
-    sphere(2.3, -1.4, 3.6, 1.3), // cheek feathers
-    capsule([0, 3.6, 3.4], [0, 4.9, 2.2], 1.1, 0.6), // crest
-    sphere(1.6, -3.3, 3.3, 1.2), // ruff
-    sphere(0, -3.7, 3.6, 1.2),
+    ellipsoid([0, 0.6, 2.7], [2.8, 3.4, 2.2]),
+    capsule([0, 1.1, 4.5], [0, 0.35, 7.1], 1.5, 1.05), // upper beak, arching forwards
+    capsule([0, 0.35, 7.1], [0, -1.5, 7.9], 1.05, 0.66),
+    capsule([0, -1.5, 7.9], [0, -3.0, 7.25], 0.66, 0.2), // hook
+    capsule([0, -1.4, 4.7], [0, -2.25, 6.5], 0.85, 0.4), // lower beak
+    capsule([0.4, 2.05, 5.2], [2.9, 1.2, 4.1], 0.72, 0.5), // fierce brow
+    sphere(2.2, -1.5, 3.4, 1.3), // cheek feathers
+    capsule([0, 3.7, 3.2], [0, 5.0, 1.9], 1.1, 0.6), // crest
+    sphere(1.6, -3.4, 3.1, 1.2), // ruff
+    sphere(0, -3.9, 3.3, 1.2),
   );
-  let f = carve(0.2, head, sphere(1.85, 0.75, 5.0, 0.66));
-  f = carve(0.05, f, capsule([0.75, -1.0, 6.2], [1.5, -0.9, 4.9], 0.17)); // gape
-  f = carve(0.08, f, sphere(0.55, 0.15, 6.15, 0.2)); // nostril
-  return mirrorU(blend(0.08, f, sphere(1.85, 0.75, 4.42, 0.5)));
+  let f = carve(0.2, head, sphere(1.9, 0.8, 4.95, 0.72));
+  f = carve(0.05, f, capsule([0.95, -1.15, 7.0], [1.5, -0.95, 5.0], 0.18)); // gape
+  f = carve(0.08, f, sphere(0.85, 0.75, 6.3, 0.24)); // nostril
+  return mirrorU(blend(0.08, f, sphere(1.9, 0.8, 4.4, 0.55)));
 }
 
 // A face may not spill past the diagonal planes it shares with its neighbours.
@@ -115,6 +115,6 @@ export function testa(scale, edge) {
       facing(270, wedge(aquila())),
     ),
   );
-  const r = 7.8 * scale;
-  return toSolid(field, { min: [-r, -r, -7.4 * scale], max: [r, r, 7.9 * scale] }, edge, 0.04);
+  const r = 8.6 * scale;
+  return toSolid(field, { min: [-r, -r, -7.4 * scale], max: [r, r, 7.9 * scale] }, edge, 0.06);
 }

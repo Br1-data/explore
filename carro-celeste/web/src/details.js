@@ -1,5 +1,7 @@
-// The details of the vision, each tied to its verses in Ezekiel 1 and to a camera position.
-// Coordinates are model millimetres (Z up); the throne faces -Y.
+// The details of the vision, each tied to its verses in Ezekiel 1 and to a point of view.
+// Coordinates are model millimetres (Z up); the throne faces -Y. `camera` gives the direction
+// to look from; the distance is worked out so that a sphere of `radius` around `target` fits
+// in the part of the screen the interface leaves free.
 // Texts paraphrase the account; the verse references point to the wording itself.
 
 export const DETAILS = [
@@ -9,7 +11,8 @@ export const DETAILS = [
     title: 'Il carro celeste',
     text: 'Quattro ruote enormi affiancate da quattro creature viventi. Sopra di loro una distesa che scintilla come ghiaccio e, più in alto, un trono.',
     camera: [-190, -345, 190],
-    target: [0, 0, 60],
+    target: [0, 0, 70],
+    radius: 118,
     orbit: true,
   },
   {
@@ -18,7 +21,8 @@ export const DETAILS = [
     title: 'La nuvola e il fuoco',
     text: 'Un vento tempestoso arriva dal nord con una grande nuvola e un fuoco sfavillante; in mezzo al fuoco, qualcosa che splende come elettro.',
     camera: [170, -215, 62],
-    target: [22, -22, 22],
+    target: [0, 0, 20],
+    radius: 104,
   },
   {
     id: 'creature',
@@ -26,7 +30,8 @@ export const DETAILS = [
     title: 'Le quattro creature viventi',
     text: 'In mezzo al fuoco ci sono quattro creature viventi dall’aspetto umano. Ognuna ha quattro facce e quattro ali.',
     camera: [118, -118, 70],
-    target: [22, -22, 40],
+    target: [0, 0, 38],
+    radius: 58,
     hide: ['ruote'],
   },
   {
@@ -36,6 +41,7 @@ export const DETAILS = [
     text: 'Davanti una faccia d’uomo, a destra una faccia di leone, a sinistra una faccia di toro; e ognuna ha anche una faccia d’aquila.',
     camera: [62, -62, 62],
     target: [25, -25, 51],
+    radius: 13,
     solo: 'cherubino_4',
     orbit: true,
   },
@@ -44,8 +50,9 @@ export const DETAILS = [
     ref: 'vv. 9, 11, 23',
     title: 'Le ali che si toccano',
     text: 'Due ali sono spiegate verso l’alto e toccano quelle delle creature vicine, diritte l’una verso l’altra. Le altre due coprono il corpo.',
-    camera: [0, -150, 78],
-    target: [0, -25, 50],
+    camera: [0, -150, 76],
+    target: [0, -25, 48],
+    radius: 46,
     hide: ['ruote'],
   },
   {
@@ -54,7 +61,8 @@ export const DETAILS = [
     title: 'Mani e piedi',
     text: 'Le gambe sono diritte e i piedi, simili a zoccoli di vitello, splendono come rame lucido. Sotto le ali, sui quattro lati, ci sono mani umane.',
     camera: [-22, -66, 44],
-    target: [25, -25, 26],
+    target: [25, -25, 24],
+    radius: 30,
     solo: 'cherubino_4',
   },
   {
@@ -62,8 +70,9 @@ export const DETAILS = [
     ref: 'vv. 13, 14',
     title: 'Carboni, torce e lampi',
     text: 'Le creature hanno l’aspetto di carboni ardenti. Fra loro si muove qualcosa di simile a torce di fuoco, e dal fuoco si sprigionano lampi.',
-    camera: [12, -128, 52],
-    target: [0, 0, 26],
+    camera: [12, -128, 50],
+    target: [0, 0, 24],
+    radius: 50,
     hide: ['ruote'],
   },
   {
@@ -73,6 +82,7 @@ export const DETAILS = [
     text: 'Accanto a ogni creatura una ruota poggia a terra e splende come crisolito. Sono due cerchi dello stesso diametro incrociati ad angolo retto: il carro va in ogni direzione senza voltarsi.',
     camera: [175, -160, 78],
     target: [45, -45, 43],
+    radius: 52,
   },
   {
     id: 'occhi',
@@ -81,6 +91,7 @@ export const DETAILS = [
     text: 'I cerchi hanno un’altezza impressionante e sono pieni di occhi tutt’intorno: al carro non sfugge nulla.',
     camera: [103, -92, 70],
     target: [72, -45, 60],
+    radius: 24,
   },
   {
     id: 'distesa',
@@ -89,6 +100,7 @@ export const DETAILS = [
     text: 'Sopra le teste delle creature si estende una superficie che scintilla come ghiaccio.',
     camera: [-150, -205, 120],
     target: [0, 0, 84],
+    radius: 88,
   },
   {
     id: 'trono',
@@ -97,6 +109,7 @@ export const DETAILS = [
     text: 'Al di sopra della distesa c’è qualcosa di simile a pietra di zaffiro che sembra un trono. Vi siede qualcuno che ha l’aspetto di un uomo.',
     camera: [-52, -128, 124],
     target: [0, 2, 108],
+    radius: 34,
   },
   {
     id: 'gloria',
@@ -105,6 +118,7 @@ export const DETAILS = [
     text: 'Dai fianchi in su splende come elettro, dai fianchi in giù come fuoco. Tutt’intorno c’è uno splendore come quello dell’arcobaleno fra le nubi in un giorno di pioggia.',
     camera: [0, -205, 132],
     target: [0, 12, 114],
+    radius: 64,
   },
 ];
 

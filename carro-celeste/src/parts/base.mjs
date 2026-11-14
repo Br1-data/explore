@@ -54,7 +54,7 @@ export function base() {
   for (const [x, y] of roundedSquarePath(B.half - 9.5, B.corner - 4, 10.5)) {
     const r = 3.4 + random() * 2.4;
     puffs.push(
-      Manifold.sphere(r, 12)
+      Manifold.sphere(r, 8)
         .scale([1, 1, 0.5])
         .translate([x + (random() - 0.5) * 3, y + (random() - 0.5) * 3, 2.6]),
     );

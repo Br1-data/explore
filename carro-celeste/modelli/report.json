@@ -3,40 +3,40 @@
   "files": [
     {
       "name": "carro-celeste.stl",
-      "triangles": 331684,
+      "triangles": 238306,
       "size": [
         177.6,
         177.3,
         146.1
       ],
-      "volumeCm3": 333.6,
+      "volumeCm3": 329.9,
       "pieces": 1
     },
     {
       "name": "kit/1-base-e-creature.stl",
-      "triangles": 197938,
+      "triangles": 141308,
       "size": [
         177.6,
         177.3,
-        70.7
+        70.6
       ],
-      "volumeCm3": 155.4,
+      "volumeCm3": 152,
       "pieces": 1
     },
     {
       "name": "kit/2-ruota-x4.stl",
-      "triangles": 27728,
+      "triangles": 20160,
       "size": [
-        82.4,
-        82.4,
+        82.6,
+        82.6,
         82
       ],
-      "volumeCm3": 18.4,
+      "volumeCm3": 18.3,
       "pieces": 1
     },
     {
       "name": "kit/3-distesa.stl",
-      "triangles": 4498,
+      "triangles": 4540,
       "size": [
         160,
         160,
@@ -47,7 +47,7 @@
     },
     {
       "name": "kit/4-trono.stl",
-      "triangles": 14670,
+      "triangles": 11150,
       "size": [
         46,
         40,
@@ -58,7 +58,7 @@
     },
     {
       "name": "kit/5-arcobaleno.stl",
-      "triangles": 8086,
+      "triangles": 5126,
       "size": [
         127.8,
         60,

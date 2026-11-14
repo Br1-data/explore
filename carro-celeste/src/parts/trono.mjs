@@ -107,8 +107,8 @@ export function figura(quality) {
   const whole = toSolid(
     arms,
     { min: [-13, Y - 16, DAIS - 1], max: [13, Y + 9, SEAT + 29] },
-    quality.edge * 1.4,
-    0.06,
+    quality.edge * 1.6,
+    0.1,
   );
   const upper = whole.trimByPlane([0, 0, 1], WAIST);
   const lower = whole.trimByPlane([0, 0, -1], -WAIST);
@@ -141,7 +141,7 @@ export function arcobaleno() {
       [r0 + R.band + 0.02, depth / 2],
       [r0 - 0.02, depth / 2],
     ];
-    bands.push(Manifold.revolve([profile], 128, 180).rotate([90, 0, 0]).translate([0, R.y, feet]));
+    bands.push(Manifold.revolve([profile], 72, 180).rotate([90, 0, 0]).translate([0, R.y, feet]));
   }
   const random = rng(28);
   const clouds = [];
