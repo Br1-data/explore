@@ -87,41 +87,53 @@ function gambe(edge) {
   return toSolid(field, { min: [-5.8, -3.4, -0.6], max: [5.8, 3.9, 17.4] }, edge, 0.07);
 }
 
-function ali() {
+/**
+ * The four wings. On a rectangular plan the neighbour along X is further away than the one
+ * along Y, so the two spread wings differ in length; `longOnLeft` says which side the longer
+ * one is on (it alternates from one creature to the next).
+ */
+function ali(longOnLeft) {
   const wings = [];
-  // The two wings spread upwards, towards the neighbours on either side (vv. 9, 11, 23).
-  const beta = C.wingElevation * DEG;
-  const probe = { ...ALA_SPIEGATA, length: 1 };
-  const [tx, ty] = alaTip(probe);
-  const reachPerUnit = tx * Math.cos(beta) - ty * Math.sin(beta);
+  const [tx, ty] = alaTip({ ...ALA_SPIEGATA, length: 1 });
   const overlap = 1.4;
-  const length = (C.offset - WING_ROOT + overlap) / reachPerUnit;
-  const spread = ala({ ...ALA_SPIEGATA, length });
+  const lengths = [];
+  // The two wings spread upwards, towards the neighbours on either side (vv. 9, 11, 23).
   for (const deg of [225, 315]) {
+    const axis = (deg === 225) === longOnLeft ? 0 : 1;
+    const beta = C.wingElevation[axis] * DEG;
+    const reachPerUnit = tx * Math.cos(beta) - ty * Math.sin(beta);
+    const length = (C.offset[axis] - WING_ROOT + overlap) / reachPerUnit;
+    lengths.push(length);
     const d = [Math.cos(deg * DEG), Math.sin(deg * DEG), 0];
     const along = vec.add(vec.scale(d, Math.cos(beta)), [0, 0, Math.sin(beta)]);
     const leading = vec.add(vec.scale(d, -Math.sin(beta)), [0, 0, Math.cos(beta)]);
     const root = [d[0] * WING_ROOT, d[1] * WING_ROOT, SHOULDER_Z];
-    wings.push(frame(root, along, leading).place(spread));
+    wings.push(frame(root, along, leading).place(ala({ ...ALA_SPIEGATA, length })));
   }
   // The two wings folded down, one covering each side of the body (vv. 11, 23).
   const folded = ala({ ...ALA_RIPIEGATA, length: 30 });
   const root = [5.5, 1.6, 40.4];
   const right = frame(root, vec.sub([7.0, 0.4, 9.5], root), [0, 1, 0]).place(folded);
   wings.push(right, right.mirror([1, 0, 0]));
-  return { solid: union(wings), spreadLength: length };
+  return { solid: union(wings), lengths };
 }
 
+/**
+ * Body, head and feet are the same for all four creatures; the wings come in two versions,
+ * `aliA` (longer wing on the creature's left) and `aliB` (on its right).
+ */
 export function cherubino(quality) {
   const edge = quality.edge;
   const arm = braccio(edge);
   const arms = DIAGONALS.map((deg) => arm.rotate([0, 0, deg]));
-  const wings = ali();
+  const a = ali(true);
+  const b = ali(false);
   return {
     corpo: union(corpo(edge), arms),
     testa: testa(HEAD_SCALE, edge * 0.8).translate([0, 0, HEAD_Z]),
-    ali: wings.solid,
     piedi: gambe(edge * 0.85),
-    info: { spreadLength: wings.spreadLength },
+    aliA: a.solid,
+    aliB: b.solid,
+    info: { wingLengths: a.lengths },
   };
 }

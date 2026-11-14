@@ -25,9 +25,12 @@ export function fiamma(height, radius, random, lobes = 5) {
   });
 }
 
+// The fire is drawn out along X, the long side of the chariot.
+const STRETCH = 1.9;
+
 function carboni(random) {
   const lumps = [];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 44; i++) {
     const ring = Math.sqrt(random()) * 12.5;
     const angle = random() * Math.PI * 2;
     const r = 2.2 + random() * 1.9;
@@ -43,12 +46,12 @@ function carboni(random) {
         p[2] *= k * 0.82;
       })
       .rotate([random() * 360, random() * 360, random() * 360])
-      .translate([Math.cos(angle) * ring, Math.sin(angle) * ring, P.ground + r * 0.45 + height]);
+      .translate([Math.cos(angle) * ring * STRETCH, Math.sin(angle) * ring, P.ground + r * 0.45 + height]);
     lumps.push(lump);
   }
   // A low mound under the lumps keeps the pile solid for printing.
   const mound = Manifold.sphere(13, 24)
-    .scale([1, 1, 0.34])
+    .scale([STRETCH, 1, 0.34])
     .translate([0, 0, P.ground - 0.6]);
   return union(lumps, mound).trimByPlane([0, 0, 1], P.ground - 0.5);
 }
@@ -57,25 +60,34 @@ function fiamme(random) {
   const tongues = [];
   const plant = (x, y, height, radius) =>
     tongues.push(
-      fiamma(height, radius, random).translate([x, y, P.ground + (Math.hypot(x, y) > 8 ? -0.3 : 1.5)]),
+      fiamma(height, radius, random).translate([
+        x,
+        y,
+        P.ground + (Math.hypot(x / STRETCH, y) > 6 ? -0.3 : 1.5),
+      ]),
     );
   plant(0, 0, 50, 5.2);
-  for (let i = 0; i < 4; i++) {
-    const a = (i * 90 + 20) * (Math.PI / 180);
-    plant(Math.cos(a) * 6.5, Math.sin(a) * 6.5, 30 + random() * 9, 4.0);
+  for (const [sx, sy] of [
+    [1, 1],
+    [-1, 1],
+    [-1, -1],
+    [1, -1],
+  ]) {
+    plant(sx * 8.5, sy * 4, 30 + random() * 9, 4.0);
+    plant(sx * 20.5, sy * 5.5, 12 + random() * 5, 2.5);
   }
-  // Torches between the living creatures: on the four axes, where the creatures are not.
-  for (let i = 0; i < 4; i++) {
-    const a = i * 90 * (Math.PI / 180);
-    plant(Math.cos(a) * 12.5, Math.sin(a) * 12.5, 19 + random() * 7, 3.1);
-    const b = (i * 90 + 45) * (Math.PI / 180);
-    plant(Math.cos(b) * 10.5, Math.sin(b) * 10.5, 12 + random() * 5, 2.6);
+  // Torches moving to and fro between the living creatures: along the axes, where the
+  // creatures are not.
+  for (const side of [-1, 1]) {
+    plant(side * 16.5, 0, 24 + random() * 7, 3.4);
+    plant(side * 25.5, 0, 15 + random() * 5, 2.8);
+    plant(0, side * 10.5, 18 + random() * 6, 3.0);
   }
   return union(tongues);
 }
 
 /** One zig-zag bolt in the vertical plane through the axis, running outwards along +X. */
-function lampo(random) {
+function lampo(random, stretch) {
   const path = [
     [3, 27, 1.35],
     [15, 33, 1.25],
@@ -88,7 +100,7 @@ function lampo(random) {
   const node = ([rho, z, half], index) =>
     Manifold.cube([half * 2, half * 2, half * 2], true)
       .rotate([45, 0, 45])
-      .translate([rho, index % 2 ? 1.1 : -1.1, z + (random() - 0.5) * 1.5]);
+      .translate([rho * stretch, index % 2 ? 1.1 : -1.1, z + (random() - 0.5) * 1.5]);
   const nodes = path.map(node);
   const segments = [];
   for (let i = 0; i + 1 < nodes.length; i++) segments.push(Manifold.hull([nodes[i], nodes[i + 1]]));
@@ -97,7 +109,8 @@ function lampo(random) {
 
 function lampi(random) {
   const bolts = [];
-  for (let i = 0; i < 4; i++) bolts.push(lampo(random).rotate([0, 0, i * 90]));
+  // The bolts along X reach a little further, towards the short sides of the chariot.
+  for (let i = 0; i < 4; i++) bolts.push(lampo(random, i % 2 ? 1 : 1.08).rotate([0, 0, i * 90]));
   return union(bolts);
 }
 

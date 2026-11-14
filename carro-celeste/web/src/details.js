@@ -9,10 +9,10 @@ export const DETAILS = [
     id: 'insieme',
     ref: 'Ezechiele 1:4-28',
     title: 'Il carro celeste',
-    text: 'Quattro ruote enormi affiancate da quattro creature viventi. Sopra di loro una distesa che scintilla come ghiaccio e, più in alto, un trono.',
-    camera: [-190, -345, 190],
-    target: [0, 0, 70],
-    radius: 118,
+    text: 'Quattro ruote enormi ai vertici di un grande quadrilatero, affiancate da quattro creature viventi. Sopra di loro una distesa che scintilla come ghiaccio e, più in alto, un trono.',
+    camera: [-150, -345, 185],
+    target: [0, 0, 72],
+    radius: 140,
     orbit: true,
   },
   {
@@ -20,18 +20,18 @@ export const DETAILS = [
     ref: 'v. 4',
     title: 'La nuvola e il fuoco',
     text: 'Un vento tempestoso arriva dal nord con una grande nuvola e un fuoco sfavillante; in mezzo al fuoco, qualcosa che splende come elettro.',
-    camera: [170, -215, 62],
+    camera: [150, -240, 62],
     target: [0, 0, 20],
-    radius: 104,
+    radius: 128,
   },
   {
     id: 'creature',
     ref: 'vv. 5, 6',
     title: 'Le quattro creature viventi',
     text: 'In mezzo al fuoco ci sono quattro creature viventi dall’aspetto umano. Ognuna ha quattro facce e quattro ali.',
-    camera: [118, -118, 70],
+    camera: [70, -150, 74],
     target: [0, 0, 38],
-    radius: 58,
+    radius: 66,
     hide: ['ruote'],
   },
   {
@@ -39,9 +39,9 @@ export const DETAILS = [
     ref: 'v. 10',
     title: 'Le quattro facce',
     text: 'Davanti una faccia d’uomo, a destra una faccia di leone, a sinistra una faccia di toro; e ognuna ha anche una faccia d’aquila.',
-    camera: [62, -62, 62],
-    target: [25, -25, 51],
-    radius: 13,
+    camera: [76, -65, 60],
+    target: [36, -25, 52.5],
+    radius: 9.5,
     solo: 'cherubino_4',
     orbit: true,
   },
@@ -50,9 +50,9 @@ export const DETAILS = [
     ref: 'vv. 9, 11, 23',
     title: 'Le ali che si toccano',
     text: 'Due ali sono spiegate verso l’alto e toccano quelle delle creature vicine, diritte l’una verso l’altra. Le altre due coprono il corpo.',
-    camera: [0, -150, 76],
+    camera: [0, -150, 70],
     target: [0, -25, 48],
-    radius: 46,
+    radius: 56,
     hide: ['ruote'],
   },
   {
@@ -60,8 +60,8 @@ export const DETAILS = [
     ref: 'vv. 7, 8',
     title: 'Mani e piedi',
     text: 'Le gambe sono diritte e i piedi, simili a zoccoli di vitello, splendono come rame lucido. Sotto le ali, sui quattro lati, ci sono mani umane.',
-    camera: [-22, -66, 44],
-    target: [25, -25, 24],
+    camera: [96, -85, 39],
+    target: [36, -25, 26],
     radius: 30,
     solo: 'cherubino_4',
   },
@@ -70,9 +70,9 @@ export const DETAILS = [
     ref: 'vv. 13, 14',
     title: 'Carboni, torce e lampi',
     text: 'Le creature hanno l’aspetto di carboni ardenti. Fra loro si muove qualcosa di simile a torce di fuoco, e dal fuoco si sprigionano lampi.',
-    camera: [12, -128, 50],
+    camera: [10, -128, 54],
     target: [0, 0, 24],
-    radius: 50,
+    radius: 58,
     hide: ['ruote'],
   },
   {
@@ -80,17 +80,17 @@ export const DETAILS = [
     ref: 'vv. 15-17',
     title: 'Una ruota dentro l’altra',
     text: 'Accanto a ogni creatura una ruota poggia a terra e splende come crisolito. Sono due cerchi dello stesso diametro incrociati ad angolo retto: il carro va in ogni direzione senza voltarsi.',
-    camera: [175, -160, 78],
-    target: [45, -45, 43],
-    radius: 52,
+    camera: [150, -170, 74],
+    target: [74, -45, 43],
+    radius: 62,
   },
   {
     id: 'occhi',
     ref: 'v. 18',
     title: 'Cerchi pieni di occhi',
     text: 'I cerchi hanno un’altezza impressionante e sono pieni di occhi tutt’intorno: al carro non sfugge nulla.',
-    camera: [103, -92, 70],
-    target: [72, -45, 60],
+    camera: [168, -85, 70],
+    target: [108, -45, 56],
     radius: 24,
   },
   {
@@ -98,9 +98,9 @@ export const DETAILS = [
     ref: 'v. 22',
     title: 'La distesa come ghiaccio',
     text: 'Sopra le teste delle creature si estende una superficie che scintilla come ghiaccio.',
-    camera: [-150, -205, 120],
+    camera: [-130, -215, 115],
     target: [0, 0, 84],
-    radius: 88,
+    radius: 112,
   },
   {
     id: 'trono',
@@ -108,7 +108,7 @@ export const DETAILS = [
     title: 'Il trono di zaffiro',
     text: 'Al di sopra della distesa c’è qualcosa di simile a pietra di zaffiro che sembra un trono. Vi siede qualcuno che ha l’aspetto di un uomo.',
     camera: [-52, -128, 124],
-    target: [0, 2, 108],
+    target: [0, 2, 110],
     radius: 34,
   },
   {
@@ -117,7 +117,7 @@ export const DETAILS = [
     title: 'Elettro, fuoco e arcobaleno',
     text: 'Dai fianchi in su splende come elettro, dai fianchi in giù come fuoco. Tutt’intorno c’è uno splendore come quello dell’arcobaleno fra le nubi in un giorno di pioggia.',
     camera: [0, -205, 132],
-    target: [0, 12, 114],
+    target: [0, 12, 116],
     radius: 64,
   },
 ];
@@ -185,7 +185,7 @@ export const README_TXT = `CARRO CELESTE - Ezechiele 1
 Modello 3D parametrico, misure in millimetri.
 
 CONTENUTO
-  carro-celeste.stl            modello in un pezzo unico (circa 178 x 178 x 146 mm)
+  carro-celeste.stl            modello in un pezzo unico (circa 235 x 180 x 148 mm)
   kit/1-base-e-creature.stl    base con nuvola, fuoco e le quattro creature viventi
   kit/2-ruota-x4.stl           una ruota: stamparne 4 copie
   kit/3-distesa.stl            la distesa simile a ghiaccio
@@ -201,5 +201,6 @@ STAMPA
   Montaggio del kit: le ruote entrano nelle sedi della base, la distesa si appoggia
   sulle ruote, trono e arcobaleno entrano nelle sedi della distesa. Una goccia di
   colla cianoacrilica per ogni sede.
-  Il modello si puo' scalare liberamente nello slicer.
+  A grandezza nominale serve un piatto da 250 mm; il modello si puo' scalare
+  liberamente nello slicer (76% per un piatto da 180 mm, 93% per uno da 220 mm).
 `;

@@ -1,27 +1,31 @@
 // Every dimension of the model, in millimetres. Z is up; the ground the wheels stand on is
-// the top of the base. The chariot has no front of its own: the throne faces -Y.
-
-const base = {
-  half: 87.5, // outer half-size of the cloud-rimmed base
-  slabHalf: 84,
-  corner: 22,
-  thick: 4,
-};
+// the top of the base. The throne faces -Y. The plan is a rectangle, long side along X, as in
+// the illustration of the chariot in the book "Pure Worship" (chapter 3).
 
 const wheel = {
-  offset: 45, // wheel axes stand on the corners of a 90 mm square
+  offset: [74, 45], // wheel axes stand on the corners of a 148 x 90 mm rectangle
   radius: 41, // outer radius of each of the two crossed rims
-  rimRadial: 8,
-  rimThick: 5,
-  chamfer: 0.8,
+  rimRadial: 3.4, // the rims are broad bands, like hoops
+  rimThick: 10,
+  chamfer: 0.6,
   sink: 1.5, // how far a rim is embedded in the ground and in the expanse above
-  sideEyes: 16,
-  treadEyes: 20,
+  outerEyes: 20, // per row; two rows on the outer face of each band
+  innerEyes: 16, // per row; two rows on the inner face
+};
+
+const margin = 1.5;
+const base = {
+  // outer half-sizes of the cloud-rimmed base: just clear of the wheels
+  half: [wheel.offset[0] + wheel.radius + margin, wheel.offset[1] + wheel.radius + margin],
+  inset: 3.5, // the slab stops short of the outer boundary; the cloud billows fill the rest
+  corner: 22,
+  thick: 4,
 };
 
 const ground = base.thick;
 const wheelCentreZ = ground - wheel.sink + wheel.radius;
 const expanseBottom = wheelCentreZ + wheel.radius - wheel.sink;
+const expanseThick = 6;
 
 export const P = {
   base,
@@ -29,15 +33,15 @@ export const P = {
   ground,
   wheelCentreZ,
   cherub: {
-    offset: 25, // cherubs stand on the corners of a 50 mm square, inside the wheels
-    wingLength: 33.4,
-    wingElevation: 50,
+    offset: [36, 25], // each creature stands inside the rectangle, by its own wheel
+    wingElevation: [40, 50], // of the wing reaching along X and of the one reaching along Y
   },
   expanse: {
-    radius: 80,
+    half: [102, 68],
     bottom: expanseBottom,
-    thick: 4,
-    top: expanseBottom + 4,
+    thick: expanseThick,
+    top: expanseBottom + expanseThick,
+    chamfer: 1.2,
   },
   throne: {
     y: 2,

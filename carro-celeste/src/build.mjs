@@ -34,6 +34,7 @@ const parts = {
 };
 const cherubInfo = parts.cherubino.info;
 delete parts.cherubino.info;
+const { aliA, aliB, ...cherubShared } = parts.cherubino;
 log('parts built');
 
 // ---------------------------------------------------------------- placement
@@ -43,15 +44,19 @@ const corners = [
   [-1, -1],
   [1, -1],
 ];
-const wheelAt = ([sx, sy]) => [sx * P.wheel.offset, sy * P.wheel.offset, P.wheelCentreZ];
-const cherubAt = ([sx, sy]) => [sx * P.cherub.offset, sy * P.cherub.offset, P.ground - 0.4];
+const wheelAt = ([sx, sy]) => [sx * P.wheel.offset[0], sy * P.wheel.offset[1], P.wheelCentreZ];
+const cherubAt = ([sx, sy]) => [sx * P.cherub.offset[0], sy * P.cherub.offset[1], P.ground - 0.4];
+// Which wing set a creature wears: the longer wing must point along X, the long side.
+const cherubWings = ([sx, sy]) => (sx * sy > 0 ? 'a' : 'b');
 const cherubTurn = ([sx, sy]) => (Math.atan2(sy, sx) * 180) / Math.PI - 90;
 
 const whole = (group) => union(Object.values(group));
 const wheelSolid = whole(parts.ruota);
-const cherubSolid = whole(parts.cherubino);
+const cherubSolid = { a: union(whole(cherubShared), aliA), b: union(whole(cherubShared), aliB) };
 const wheels = corners.map((c) => wheelSolid.translate(wheelAt(c)));
-const cherubs = corners.map((c) => cherubSolid.rotate([0, 0, cherubTurn(c)]).translate(cherubAt(c)));
+const cherubs = corners.map((c) =>
+  cherubSolid[cherubWings(c)].rotate([0, 0, cherubTurn(c)]).translate(cherubAt(c)),
+);
 const rainbowSolid = union(parts.arcobaleno.bande, parts.arcobaleno.nubi);
 const throneSolid = union(whole(parts.trono), whole(parts.figura));
 
@@ -75,7 +80,7 @@ const describe = (name, solid) => {
   );
   return { name, triangles: solid.numTri(), size, volumeCm3: +(solid.volume() / 1000).toFixed(1), pieces };
 };
-const report = { cherubWingLength: +cherubInfo.spreadLength.toFixed(2), files: [] };
+const report = { cherubWingLengths: cherubInfo.wingLengths.map((l) => +l.toFixed(2)), files: [] };
 const save = (file, raw, title) => {
   const solid = clean(raw);
   const info = describe(file, solid);
@@ -187,15 +192,15 @@ const meshes = [
       prim('pupilla', parts.ruota.pupille, 60),
     ],
   },
-  {
-    name: 'cherubino',
+  ...['a', 'b'].map((set) => ({
+    name: `cherubino_${set}`,
     primitives: [
-      prim('creatura', parts.cherubino.corpo, 60),
-      prim('volto', parts.cherubino.testa, 60),
-      prim('ali', parts.cherubino.ali, 30),
-      prim('rame', parts.cherubino.piedi, 60),
+      prim('creatura', cherubShared.corpo, 60),
+      prim('volto', cherubShared.testa, 60),
+      prim('ali', set === 'a' ? aliA : aliB, 30),
+      prim('rame', cherubShared.piedi, 60),
     ],
-  },
+  })),
   { name: 'distesa', primitives: [prim('ghiaccio', parts.distesa.ghiaccio, 0)] },
   { name: 'trono', primitives: [prim('zaffiro', parts.trono.zaffiro, 20)] },
   {
@@ -219,7 +224,7 @@ const instances = [
   ...corners.map((corner, i) => ({ name: `ruota_${i + 1}`, mesh: 'ruota', translation: wheelAt(corner) })),
   ...corners.map((corner, i) => ({
     name: `cherubino_${i + 1}`,
-    mesh: 'cherubino',
+    mesh: `cherubino_${cherubWings(corner)}`,
     translation: cherubAt(corner),
     rotationZDeg: cherubTurn(corner),
   })),

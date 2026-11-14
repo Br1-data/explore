@@ -4,43 +4,53 @@ import { P } from '../params.mjs';
 
 const B = P.base;
 
-/** Points spaced `step` apart along a rounded square of the given half-size. */
-function roundedSquarePath(half, corner, step) {
-  const straight = 2 * (half - corner);
+/** Points spaced about `step` apart along a rounded rectangle of half-sizes hx, hy. */
+function roundedRectPath(hx, hy, corner, step) {
+  const sides = [
+    { length: 2 * (hy - corner), at: (s) => [hx, -hy + corner + s] },
+    { length: 2 * (hx - corner), at: (s) => [hx - corner - s, hy] },
+    { length: 2 * (hy - corner), at: (s) => [-hx, hy - corner - s] },
+    { length: 2 * (hx - corner), at: (s) => [-hx + corner + s, -hy] },
+  ];
+  const centres = [
+    [hx - corner, hy - corner],
+    [-hx + corner, hy - corner],
+    [-hx + corner, -hy + corner],
+    [hx - corner, -hy + corner],
+  ];
   const arc = (Math.PI / 2) * corner;
-  const total = 4 * (straight + arc);
+  const total = sides.reduce((sum, side) => sum + side.length, 0) + 4 * arc;
   const count = Math.round(total / step);
   const points = [];
   for (let i = 0; i < count; i++) {
     let s = (i / count) * total;
-    const side = Math.floor(s / (straight + arc));
-    s -= side * (straight + arc);
-    let x;
-    let y;
-    if (s < straight) {
-      x = half;
-      y = -half + corner + s;
-    } else {
-      const a = (s - straight) / corner;
-      x = half - corner + Math.cos(a) * corner;
-      y = half - corner + Math.sin(a) * corner;
+    for (let k = 0; k < 4; k++) {
+      if (s < sides[k].length) {
+        points.push(sides[k].at(s));
+        break;
+      }
+      s -= sides[k].length;
+      if (s < arc) {
+        const a = (k * Math.PI) / 2 + s / corner;
+        points.push([centres[k][0] + Math.cos(a) * corner, centres[k][1] + Math.sin(a) * corner]);
+        break;
+      }
+      s -= arc;
     }
-    const turn = (side * Math.PI) / 2;
-    points.push([x * Math.cos(turn) - y * Math.sin(turn), x * Math.sin(turn) + y * Math.cos(turn)]);
   }
   return points;
 }
 
 export function base() {
   const random = rng(4);
-  const inner = B.slabHalf - B.corner;
-  const slab = CrossSection.square([inner * 2, inner * 2], true)
+  const [hx, hy] = B.half;
+  const slab = CrossSection.square([2 * (hx - B.inset - B.corner), 2 * (hy - B.inset - B.corner)], true)
     .offset(B.corner, 'Round', 2, 96)
     .extrude(B.thick);
 
   // Billows of cloud all around the rim, tangent to the outer boundary.
   const puffs = [];
-  for (const [x, y] of roundedSquarePath(B.half, B.corner + 3.5, 8.2)) {
+  for (const [x, y] of roundedRectPath(hx, hy, B.corner + B.inset, 8.2)) {
     const r = 4.6 + random() * 3.6;
     const distance = Math.hypot(x, y);
     const k = (distance - r) / distance;
@@ -51,7 +61,7 @@ export function base() {
     );
   }
   // A second, lower row further in gives the cloud some depth.
-  for (const [x, y] of roundedSquarePath(B.half - 9.5, B.corner - 4, 10.5)) {
+  for (const [x, y] of roundedRectPath(hx - 9.5, hy - 9.5, B.corner - 4, 10.5)) {
     const r = 3.4 + random() * 2.4;
     puffs.push(
       Manifold.sphere(r, 8)

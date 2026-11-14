@@ -106,12 +106,12 @@ const visionMaterials = {
   fuoco_trono: new THREE.MeshBasicMaterial({ vertexColors: true }),
   lampo: new THREE.MeshBasicMaterial({ color: hdr(0xcfe4ff, 1.3) }),
   crisolito: physical({
-    color: 0xc6cf2e,
+    color: 0xdcc832,
     metalness: 0.35,
     roughness: 0.16,
     clearcoat: 1,
     clearcoatRoughness: 0.08,
-    emissive: 0x7d8a12,
+    emissive: 0x8f7a12,
     emissiveIntensity: 0.55,
   }),
   occhio: standard({ color: 0xf7f2dd, roughness: 0.25, emissive: 0xfff3c4, emissiveIntensity: 0.55 }),
@@ -152,18 +152,18 @@ const visionMaterials = {
     emissiveIntensity: 0.25,
   }),
   ghiaccio: physical({
-    color: 0xdaf2ff,
+    color: 0xc9f3ee,
     metalness: 0,
     roughness: 0.04,
     clearcoat: 1,
     transparent: true,
-    opacity: 0.46,
+    opacity: 0.42,
     flatShading: true,
     side: THREE.DoubleSide,
     depthWrite: false,
     envMapIntensity: 2.2,
-    emissive: 0x4a8dc8,
-    emissiveIntensity: 0.12,
+    emissive: 0x3fb2b0,
+    emissiveIntensity: 0.16,
   }),
   zaffiro: physical({
     color: 0x0f3fd2,
@@ -232,9 +232,9 @@ function prepareModel(gltf) {
   });
   scene.add(modelRoot);
 
-  // A 220 mm build plate with a 10 mm grid, shown in print mode to give the scale.
-  const size = 220 * UNIT;
-  const grid = new THREE.GridHelper(size, 22, 0x8fa0c8, 0x4b5368);
+  // A 250 mm build plate with a 10 mm grid, shown in print mode to give the scale.
+  const size = 250 * UNIT;
+  const grid = new THREE.GridHelper(size, 25, 0x8fa0c8, 0x4b5368);
   grid.material.transparent = true;
   grid.material.opacity = 0.55;
   const plate = new THREE.Mesh(

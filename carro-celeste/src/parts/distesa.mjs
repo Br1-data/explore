@@ -1,57 +1,75 @@
 // Ezekiel 1:22 — the expanse over the heads of the living creatures, "sparkling like
-// awesome ice": a broad disc whose upper face is cut into irregular crystal facets.
-import { rng, solidFromTriangles } from '../lib/kernel.mjs';
+// awesome ice": a thick rectangular slab, like a block of ice, whose upper face is cut into
+// irregular crystal facets.
+import { chamferBox, rng, solidFromTriangles } from '../lib/kernel.mjs';
 import { P } from '../params.mjs';
 
 const E = P.expanse;
 
-export function distesa() {
+/** A block with a flat base and a faceted top, a little larger than the slab on every side. */
+function facetedBlock() {
   const random = rng(22);
-  const around = 56;
+  const [hx, hy] = [E.half[0] + 2, E.half[1] + 2];
+  const nx = 17;
+  const ny = 11;
   const positions = [];
   const triangles = [];
-  const vertex = (x, y, z) => positions.push(x, y, z) / 3 - 1;
-  // Rings alternate by half a step, so the bands between them are made of plain triangles.
-  let ringCount = 0;
-  const ring = (radius, z, jitter, lift) => {
-    const shift = ringCount++ % 2 ? 0.5 : 0;
-    const first = positions.length / 3;
-    for (let i = 0; i < around; i++) {
-      const a = ((i + shift + (random() - 0.5) * jitter) / around) * Math.PI * 2;
-      const r = radius + (random() - 0.5) * jitter * 3.2;
-      vertex(Math.cos(a) * r, Math.sin(a) * r, z + (random() - 0.5) * lift);
-    }
-    return { first, shift };
-  };
-  // Walking outwards from ring a to ring b; counter-clockwise seen from outside the solid.
-  const band = (a, b) => {
-    for (let i = 0; i < around; i++) {
-      const next = (i + 1) % around;
-      if (a.shift === 0) {
-        triangles.push(a.first + i, b.first + i, a.first + next);
-        triangles.push(a.first + next, b.first + i, b.first + next);
-      } else {
-        triangles.push(a.first + i, b.first + next, a.first + next);
-        triangles.push(a.first + i, b.first + i, b.first + next);
+  const top = (i, j) => j * (nx + 1) + i;
+  const bottom = (i, j) => (nx + 1) * (ny + 1) + j * (nx + 1) + i;
+  for (const layer of ['top', 'bottom']) {
+    for (let j = 0; j <= ny; j++) {
+      for (let i = 0; i <= nx; i++) {
+        const inside = i > 0 && i < nx && j > 0 && j < ny;
+        const wander = layer === 'top' && inside ? 1 : 0;
+        const x = -hx + ((i + (random() - 0.5) * 0.62 * wander) / nx) * 2 * hx;
+        const y = -hy + ((j + (random() - 0.5) * 0.62 * wander) / ny) * 2 * hy;
+        const z = layer === 'top' ? E.top - 0.25 + (random() - 0.5) * 1.1 : E.bottom - 1;
+        positions.push(x, y, z);
       }
     }
-  };
-
-  const top = E.top;
-  const centreTop = vertex(0, 0, top + 0.35);
-  const rings = [];
-  for (const r of [9, 19, 29, 39, 49, 59, 68]) rings.push(ring(r, top, 0.7, 1.0));
-  const edgeTop = ring(E.radius - 3.4, top - 0.2, 0.25, 0.25);
-  const girdle = ring(E.radius, E.bottom + E.thick * 0.5, 0, 0);
-  const edgeBottom = ring(E.radius - 2.4, E.bottom, 0, 0);
-  const centreBottom = vertex(0, 0, E.bottom);
-
-  for (let i = 0; i < around; i++) {
-    const next = (i + 1) % around;
-    triangles.push(centreTop, rings[0].first + i, rings[0].first + next);
-    triangles.push(centreBottom, edgeBottom.first + next, edgeBottom.first + i);
   }
-  const outward = [...rings, edgeTop, girdle, edgeBottom];
-  for (let k = 0; k + 1 < outward.length; k++) band(outward[k], outward[k + 1]);
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const [a, b, c, d] = [top(i, j), top(i + 1, j), top(i + 1, j + 1), top(i, j + 1)];
+      if (random() < 0.5) triangles.push(a, b, c, a, c, d);
+      else triangles.push(a, b, d, b, c, d);
+      const [e, f, g, h] = [bottom(i, j), bottom(i + 1, j), bottom(i + 1, j + 1), bottom(i, j + 1)];
+      triangles.push(e, g, f, e, h, g);
+    }
+  }
+  for (let i = 0; i < nx; i++) {
+    triangles.push(bottom(i, 0), bottom(i + 1, 0), top(i + 1, 0), bottom(i, 0), top(i + 1, 0), top(i, 0));
+    triangles.push(
+      bottom(i, ny),
+      top(i + 1, ny),
+      bottom(i + 1, ny),
+      bottom(i, ny),
+      top(i, ny),
+      top(i + 1, ny),
+    );
+  }
+  for (let j = 0; j < ny; j++) {
+    triangles.push(bottom(0, j), top(0, j + 1), bottom(0, j + 1), bottom(0, j), top(0, j), top(0, j + 1));
+    triangles.push(
+      bottom(nx, j),
+      bottom(nx, j + 1),
+      top(nx, j + 1),
+      bottom(nx, j),
+      top(nx, j + 1),
+      top(nx, j),
+    );
+  }
   return solidFromTriangles(positions, triangles);
+}
+
+export function distesa() {
+  // The outline: a crisp rectangular slab with chamfered edges, 2 mm taller than needed so
+  // that the faceted block alone decides the shape of the upper face.
+  const height = E.thick + 2;
+  const outline = chamferBox([E.half[0] * 2, E.half[1] * 2, height], E.chamfer).translate([
+    0,
+    0,
+    E.bottom + height / 2,
+  ]);
+  return outline.intersect(facetedBlock());
 }

@@ -46,6 +46,7 @@ const groups = {
   figura: figura({ edge: 0.3 }),
 };
 delete groups.cherubino.info;
+delete groups.cherubino.aliB;
 const rainbow = arcobaleno();
 groups.arcobaleno = { bande: union(rainbow.bande), nubi: rainbow.nubi };
 for (const [group, members] of Object.entries(groups)) {

@@ -1,5 +1,6 @@
 // Ezekiel 1:15-18 — one wheel: two rims of the same diameter crossed at right angles
-// ("a wheel within a wheel"), their rims full of eyes all around.
+// ("a wheel within a wheel"), their rims full of eyes all around. The rims are broad bands, as
+// in the book's drawing of the wheel.
 import { CrossSection, Manifold, union } from '../lib/kernel.mjs';
 import { P } from '../params.mjs';
 
@@ -25,7 +26,10 @@ function eyeParts(scale) {
   };
 }
 
-/** A single rim lying in the XY plane (axis = Z), with eyes on both faces and on the tread. */
+/**
+ * A single rim lying in the XY plane (axis = Z): a broad band, with two rows of eyes on its
+ * outer face and two on its inner face.
+ */
 function rim() {
   const { radius: ro, rimRadial, rimThick: t, chamfer: c } = W;
   const ri = ro - rimRadial;
@@ -43,33 +47,30 @@ function rim() {
   const body = Manifold.revolve([profile], 96);
 
   const groups = { lid: [], sclera: [], iris: [], pupil: [] };
-  const add = (parts, place) => {
-    for (const key of Object.keys(groups)) groups[key].push(place(parts[key]));
+  const eye = eyeParts(0.62);
+  const row = t * 0.245;
+  // `inward` eyes look towards the axis. Eyes are left out where the two bands cross and
+  // where the rim meets the ground and the expanse.
+  const ring = (count, inward, z, shift) => {
+    for (let i = 0; i < count; i++) {
+      const angle = ((i + shift) * 360) / count;
+      const fromVertical = Math.min(Math.abs(angle - 90), Math.abs(angle - 270));
+      if (fromVertical < 14) continue;
+      for (const key of Object.keys(groups)) {
+        groups[key].push(
+          eye[key]
+            .rotate([0, 0, 90])
+            .rotate([0, inward ? -90 : 90, 0])
+            .translate([inward ? ri + 0.12 : ro - 0.12, 0, z])
+            .rotate([0, 0, angle]),
+        );
+      }
+    }
   };
-
-  // Eyes on the two flat faces. Half a step off the vertical so none sits where the rims cross.
-  const side = eyeParts(1);
-  const rEye = ro - rimRadial / 2;
-  for (let i = 0; i < W.sideEyes; i++) {
-    const angle = ((i + 0.5) * 360) / W.sideEyes;
-    add(side, (m) => m.rotate([0, 0, 90]).translate([rEye, 0, h]).rotate([0, 0, angle]));
-    add(side, (m) => m.rotate([0, 0, 90]).rotate([180, 0, 0]).translate([rEye, 0, -h]).rotate([0, 0, angle]));
-  }
-
-  // Smaller eyes on the tread, left out where the rim meets the ground and the expanse.
-  const tread = eyeParts(0.62);
-  for (let i = 0; i < W.treadEyes; i++) {
-    const angle = ((i + 0.5) * 360) / W.treadEyes;
-    const fromVertical = Math.min(Math.abs(angle - 90), Math.abs(angle - 270));
-    if (fromVertical < 12) continue;
-    add(tread, (m) =>
-      m
-        .rotate([0, 0, 90])
-        .rotate([0, 90, 0])
-        .translate([ro - 0.12, 0, 0])
-        .rotate([0, 0, angle]),
-    );
-  }
+  ring(W.outerEyes, false, row, 0.25);
+  ring(W.outerEyes, false, -row, 0.75);
+  ring(W.innerEyes, true, row, 0.75);
+  ring(W.innerEyes, true, -row, 0.25);
   return { body, ...groups };
 }
 
