@@ -282,11 +282,11 @@ ritmo in `RITMI` e, se viene da un oggetto, la voce in `SUONI_OGGETTI`; poi si m
 il volume rispetto agli altri. In `e2e/percorsi.mjs` si aggiungono a `SUONI_ATTESI`
 le scene con sorgenti caratteristiche: la prova controlla che si sentano davvero.
 
-Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia. Il committente
-apprezza i «mini rompicapi» (completa i versetti, associa, ecc.): il capitolo 16 ne ha
-di più, almeno uno nuovo per ogni punto di vista, in prova; se lo convince diventa lo
-standard per tutti i capitoli. Dove un punto mostra un versetto con `evidenza`, spesso
-può diventare un `completa` o un `trova`.
+Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia. **Standard
+(approvato dal committente dopo la prova sul capitolo 16):** i «mini rompicapi» —
+completa i versetti, associa, metti in ordine, trova, domande — in ogni punto di vista,
+più di uno dove si può. Dove un punto mostra soltanto un versetto con `evidenza`, di
+solito conviene un `completa` o un `trova`.
 
 | Tipo         | Che cosa fa chi gioca                                   | Note |
 | ------------ | ------------------------------------------------------- | ---- |

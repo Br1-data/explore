@@ -71,7 +71,17 @@ export const geova: Ruolo = {
           etichetta: 'Un uomo diverso',
           passi: [
             det('settanta'),
-            { t: 'verso', id: 'prov-27-11' },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'rallegra',
+                consegna: 'Ciò che rallegra Geova lo dice un proverbio. Completa il versetto.',
+                verso: 'prov-27-11',
+                testo: 'Sii [[saggio]], figlio mio, e [[rallegra]] il mio cuore, perché io possa rispondere a chi mi [[accusa]].',
+                distrattori: ['forte', 'consola', 'odia'],
+              },
+            },
             {
               t: 'attivita',
               a: {

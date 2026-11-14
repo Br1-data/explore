@@ -605,7 +605,17 @@ export const enoc: Ruolo = {
             { t: 'fx', fx: { k: 'var', nome: 'ricerca', a: 1, dur: 0 } },
             { t: 'fx', fx: { k: 'camera', x: 1640, dur: 0 } },
             { t: 'fx', fx: { k: 'dissolvi', a: 0, dur: 2.2 } },
-            { t: 'verso', id: 'gen-5-24', evidenzia: ['Poi nessuno lo vide più, perché Dio lo prese'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'preso',
+                consegna: 'Così Genesi ricorda la tua vita. Completa il versetto.',
+                verso: 'gen-5-24',
+                testo: 'Ènoc continuò a [[camminare]] con il vero Dio. Poi nessuno lo vide più, perché Dio lo [[prese]].',
+                distrattori: ['lavorare', 'chiamò'],
+              },
+            },
           ],
         },
       ],

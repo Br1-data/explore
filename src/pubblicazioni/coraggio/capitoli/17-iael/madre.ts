@@ -47,7 +47,21 @@ export const madre: Ruolo = {
           x: 670,
           tipo: 'osserva',
           etichetta: 'Dalla grata',
-          passi: [{ t: 'verso', id: 'gdc-5-28', evidenzia: ['Perché il suo carro ancora non arriva?'] }, det('invano')],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'finestra',
+                consegna: 'Il canto ti descrive così. Completa il versetto.',
+                verso: 'gdc-5-28',
+                testo:
+                  'Dalla finestra una donna guardava fuori, dalla [[grata]] la madre di Sìsera scrutava: ‘Perché il suo [[carro]] ancora non arriva? Perché tarda tanto lo scalpitio dei suoi [[cavalli]]?’',
+                distrattori: ['porta', 'esercito', 'servi'],
+              },
+            },
+            det('invano'),
+          ],
         },
         {
           id: 'dame',

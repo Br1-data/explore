@@ -164,7 +164,17 @@ export const matusalemme: Ruolo = {
                 dettaglio: 'm-diluvio',
               },
             },
-            { t: 'verso', id: 'gen-7-6' },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'seicento',
+                consegna: 'Il conto torna con Genesi 7:6. Completa il versetto.',
+                verso: 'gen-7-6',
+                testo: 'Noè aveva [[600]] anni quando il [[diluvio]] si abbatté sulla terra.',
+                distrattori: ['500', '969', 'fuoco'],
+              },
+            },
             senti('m-diluvio'),
           ],
         },

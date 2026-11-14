@@ -88,7 +88,24 @@ export const debora: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Loda Iael',
           richiede: ['danze', 'racconti'],
-          passi: [det('prodiga'), senti('d-lode')],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'domanda',
+                id: 'lode',
+                domanda: 'Nel canto chiami Iael «benedetta fra le donne». Che cosa mostra una lode così?',
+                opzioni: [
+                  'Che a Debora importava che la parola di Geova si fosse realizzata, non la propria gloria',
+                  'Che Iael aveva preso il posto di Debora come giudice',
+                  'Che Debora voleva conquistare l’amicizia di Heber',
+                ],
+                corretta: 0,
+                dettaglio: 'prodiga',
+              },
+            },
+            senti('d-lode'),
+          ],
         },
       ],
     },

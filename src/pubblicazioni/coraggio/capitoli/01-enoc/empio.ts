@@ -289,7 +289,18 @@ export const empio: Ruolo = {
           passi: [
             det('anche-loro'),
             det('adempimento'),
-            { t: 'verso', id: '2pt-2-5', evidenzia: ['un mondo di empi'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'mondo-di-empi',
+                consegna: 'Come chiama l’apostolo Pietro il tuo mondo? Completa il versetto.',
+                verso: '2pt-2-5',
+                testo:
+                  'Non si trattenne nemmeno dal punire il mondo antico, ma quando portò il diluvio su un mondo di [[empi]] salvò Noè, [[predicatore]] di giustizia, e altre [[sette]] persone.',
+                distrattori: ['giusti', 'costruttore', 'otto'],
+              },
+            },
             det('mondo-di-empi'),
           ],
         },

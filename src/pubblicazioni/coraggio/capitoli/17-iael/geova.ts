@@ -106,7 +106,18 @@ export const geova: Ruolo = {
           etichetta: 'Ispira il canto',
           passi: [
             det('ispirato'),
-            { t: 'verso', id: 'gdc-5-31', evidenzia: ['quelli che ti amano siano come il sole che sorge nella sua gloria'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'sole',
+                consegna: 'Il canto si chiude con una preghiera. Completa il versetto.',
+                verso: 'gdc-5-31',
+                testo:
+                  'Così, o Geova, muoiano tutti i tuoi [[nemici]], ma quelli che ti [[amano]] siano come il [[sole]] che sorge nella sua gloria”. E il paese fu in pace per 40 anni.',
+                distrattori: ['popoli', 'temono', 'fuoco'],
+              },
+            },
             senti('g-nemici'),
           ],
         },

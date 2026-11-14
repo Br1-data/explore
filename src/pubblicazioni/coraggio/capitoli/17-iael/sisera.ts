@@ -151,6 +151,20 @@ export const sisera: Ruolo = {
       certezza: 'scritto',
       fonti: [b('Giudici', 4, '21')],
     },
+    {
+      t: 'attivita',
+      a: {
+        tipo: 'associa',
+        id: 'chiesto',
+        consegna: 'Ripensa a ciò che Sisera chiese a Iael. Che cosa avvenne invece?',
+        coppie: [
+          { a: '«dammi un po’ d’acqua da bere»', b: '«aprì dunque un otre contenente latte»', fonti: [b('Giudici', 4, '19')] },
+          { a: '«Mettiti all’entrata della tenda»', b: 'Iael esce, ma per andare incontro a Barac', fonti: [b('Giudici', 4, '20'), b('Giudici', 4, '22')] },
+          { a: '«rispondi di no»', b: '«Vieni, ti mostrerò l’uomo che stai cercando»', fonti: [b('Giudici', 4, '20'), b('Giudici', 4, '22')] },
+        ],
+        spiegazione: 'Sisera aveva dato ordini come se fosse al sicuro. Niente andò come aveva chiesto.',
+      },
+    },
     senti('s-fine'),
   ],
 };

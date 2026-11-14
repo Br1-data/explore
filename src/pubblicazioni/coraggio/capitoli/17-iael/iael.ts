@@ -49,7 +49,18 @@ export const iael: Ruolo = {
           tipo: 'esamina',
           etichetta: 'Il grande albero',
           passi: [
-            { t: 'verso', id: 'gdc-4-11', evidenzia: ['si era separato dai cheniti', 'vicino al grande albero di Zaanannìm'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'separato',
+                consegna: 'Dove vivete, e perché lì? Completa il versetto.',
+                verso: 'gdc-4-11',
+                testo:
+                  'Per inciso, Hèber il chenita si era [[separato]] dai cheniti (i discendenti di Obàb, suocero di [[Mosè]]) e aveva piantato la sua tenda vicino al grande [[albero]] di Zaanannìm, che è nei pressi di Chèdes.',
+                distrattori: ['alleato', 'Abraamo', 'pozzo'],
+              },
+            },
             det('cheniti'),
           ],
         },
