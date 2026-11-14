@@ -268,6 +268,12 @@ export interface Scena {
   uscita?: Passo[];
   /** Variabili di scena (0..1). Il motore conosce «agitazione», «visione», «incalzo», «pioggia». */
   vars?: Record<string, number>;
+  /**
+   * Il luogo, per l’orecchio: vento (aperto), folla (abitato, con un brusio lontano),
+   * quiete, notte, pioggia. Uccelli, grilli e gufi seguono la luce dell’ambiente;
+   * fuoco, pecore, acqua, incudini, folle, passi e pioggia si sentono da soli dove
+   * sono in scena (motore/suono.ts).
+   */
   suono?: 'vento' | 'folla' | 'notte' | 'quiete' | 'pioggia';
 }
 

@@ -73,6 +73,16 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
    Evitare anche le ripetizioni dentro un ruolo (un versetto citato e poi un dettaglio
    che ne ripete le parole): per questo le attività possono rivelare un `dettaglio`.
 9. Il repository precedente (gioco «Segnale Remoto») è stato rimosso su richiesta.
+10. **Suoni fedeli a ciò che si poteva sentire realmente** («Migliora la gestione dei
+    suoni, devono essere fedeli a quello che si poteva sentire realmente»). Quindi:
+    - niente musica di sottofondo né note sintetiche; si sentono vento, pioggia,
+      tuoni, voci, passi, fuoco, animali, attrezzi;
+    - ogni suono ha una **sorgente in scena** (oggetto, folla, attore, pioggia, luce):
+      si sente dov’è, più forte e nitido da vicino, a sinistra o a destra;
+    - canti e strumenti solo dove il racconto o le fonti li mettono (es. tamburelli e
+      danze in Giudici 5, cetra e flauto in Genesi 4:21), e solo strumenti dell’epoca;
+    - anche l’interfaccia usa suoni dell’epoca: fruscio di un rotolo, corda di cetra.
+    Si fa per ogni capitolo senza scrivere codice audio: vedi «Suoni» più sotto.
 
 Scelte di progetto conseguenti (applicate dal capitolo 17 in poi):
 
@@ -158,7 +168,7 @@ src/
     oggetti.ts           oggetti di scena (casa, tenda, tendone, carro, sala con grata…) — aggiungerne qui
     tavolozze.ts         ambienti (colori, cielo, terreno)
     arte.ts              piccole illustrazioni per le schede (Eden, Caino e Abele…)
-    suono.ts             audio generato con Web Audio (nessun file)
+    suono.ts             suoni del mondo ricavati dalla scena, generati con Web Audio (nessun file)
   ui/
     app.ts               schermate (inizio, libro, capitolo, gioco, fine) e tastiera
     schede.ts            schede del racconto e tutte le attività
@@ -196,8 +206,31 @@ Strumenti di scena già pronti nel motore:
 - pose: `fermo`, `cammina`, `parla`, `pugno`, `indica`, `alza`, `proclama`,
   `sdraiato`, `coperto` (sdraiato sotto una coperta);
 - folle: `comportamento` `vaga`/`cerca`/`insegue`, `gruppo` `rissa`/`invoca`/`danza`;
-- suoni d’ambiente: `vento`, `folla`, `notte`, `quiete`, `pioggia`;
 - oggetti per interni aperti sul davanti (`tendone`, `sala`): gli attori ci stanno dentro.
+
+### Suoni (decisione 10)
+
+Il motore (`motore/suono.ts`, tutto generato con Web Audio, nessun file) ricava i
+suoni dalla scena: ogni decimo di secondo la partita gli passa un `Paesaggio`.
+
+- **Luogo** = `suono` della scena: `vento` (aperto), `folla` (abitato: brusio lontano),
+  `quiete`, `notte`, `pioggia`. Deve essere `notte` se e solo se l’ambiente è `notte` (test).
+- **Luce** dalla tavolozza: di giorno uccelli, al crepuscolo pochi uccelli e grilli,
+  di notte grilli e qualche gufo. Con la pioggia tacciono.
+- **Oggetti che suonano** (`SUONI_OGGETTI`): `fuoco` e `torcia` crepitano, `pecora`
+  bela, `acqua` scorre (anche con `seVar`, es. il torrente in piena), `incudine` batte.
+- **Folle**: `folla` parla a bassa voce (più forte se `reagisce` e c’è `agitazione`),
+  `rissa` grida e colpi, `invoca` un’invocazione ripetuta, `danza` tamburelli, mani e
+  canto di donne, `insegue` gente che corre; le folle `fondo` sono un brusio lontano;
+  le `torce` crepitano.
+- **Attori** che si spostano (`fx vai`): passi. Chi gioca: passi, bagnati sotto la pioggia.
+- **Variabili**: `pioggia` (scrosci, gocce, tuoni oltre 0.6), `agitazione`.
+
+Per un capitolo nuovo basta mettere in scena le cose giuste. Se serve un suono che non
+c’è (es. il mare, un asino, un corno), si aggiunge una ricetta in `EVENTI`, il suo
+ritmo in `RITMI` e, se viene da un oggetto, la voce in `SUONI_OGGETTI`; poi si misura
+il volume rispetto agli altri. In `e2e/percorsi.mjs` si aggiungono a `SUONI_ATTESI`
+le scene con sorgenti caratteristiche: la prova controlla che si sentano davvero.
 
 Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia:
 
@@ -236,15 +269,16 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
    dalla cartella del capitolo.
 6. Registralo in `src/content/index.ts`. I test di `contenuti.test.ts` girano su ogni
    capitolo registrato; aggiungi test specifici (citazioni, calcoli) come per Enoc e Iael.
-7. Aggiungi i suoi punti di vista a `PERCORSI` in `e2e/percorsi.mjs` e verifica le
-   schermate (desktop e telefono).
+7. Aggiungi i suoi punti di vista a `PERCORSI` e le scene con suoni caratteristici a
+   `SUONI_ATTESI` in `e2e/percorsi.mjs`; verifica le schermate (desktop e telefono).
 
 ## Note tecniche
 
 - Coordinate di scena in unità logiche: altezza vista 540, terreno intorno a y=420.
   `x` dei punti fra 60 e `larghezza - 60`.
 - `window.__partita` espone la partita in corso per la prova dal vero
-  (`istantanea()`, `teletrasporta(x)`).
+  (`istantanea()`, `teletrasporta(x)`); `window.__suono.istantanea()` dice che cosa
+  sta suonando.
 - Toccare la scena vicino a un punto visibile ci porta e lo apre (`vaiVerso`).
 - Il sito è statico (`base: './'`): funziona anche sotto un sottopercorso.
 

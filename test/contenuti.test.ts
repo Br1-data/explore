@@ -7,6 +7,7 @@ import type { Attivita, Fonte, Passo, Ruolo } from '../src/content/tipi';
 import { ARTI } from '../src/motore/arte';
 import { STILI } from '../src/motore/figure';
 import { TIPI_OGGETTO } from '../src/motore/oggetti';
+import { SUONI_OGGETTI } from '../src/motore/suono';
 import { AMBIENTI } from '../src/motore/tavolozze';
 import { ID_SCHEMI } from '../src/ui/schemi';
 
@@ -26,6 +27,22 @@ describe('indice del libro', () => {
       expect(c.url.startsWith(URL_LIBRO), `${c.numero} ${c.nome}`).toBe(true);
       expect(c.nome.length).toBeGreaterThan(1);
       expect(c.titolo.length).toBeGreaterThan(3);
+    }
+  });
+});
+
+describe('suoni', () => {
+  it('fa suonare solo oggetti che esistono nel motore', () => {
+    for (const tipo of Object.keys(SUONI_OGGETTI)) expect(TIPI_OGGETTO, tipo).toContain(tipo);
+  });
+
+  it('dà a ogni scena un luogo sonoro coerente con la luce', () => {
+    for (const cap of capitoli) {
+      for (const scena of cap.ruoli.flatMap((r) => r.scene)) {
+        // Di notte non c’è il brusio di un luogo abitato né la quiete dell’alba: c’è la notte.
+        if (scena.ambiente === 'notte') expect(scena.suono, scena.id).toBe('notte');
+        if (scena.suono === 'notte') expect(scena.ambiente, scena.id).toBe('notte');
+      }
     }
   });
 });

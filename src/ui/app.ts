@@ -103,7 +103,7 @@ export class App {
     this.schermo.hidden = false;
     svuota(this.schermo);
     this.schermo.className = 'schermo';
-    this.suono.ambiente('');
+    this.suono.silenzio();
     document.title = NOME_GIOCO;
   }
 
@@ -654,15 +654,14 @@ export class App {
         this.salvataggio.segnaFinito(cap.numero, ruolo.id);
         this.vai(`/fine/${cap.numero}/${ruolo.id}`);
       },
-      suono: (evento, valore) => {
-        if (evento === 'passo') this.suono.passo();
-        else this.suono.ambiente(valore ?? '');
-      },
+      passo: () => this.suono.passo(),
+      paesaggio: (p) => this.suono.paesaggio(p),
     };
 
     const partita = (this.partita = new Partita(tela, cap, ruolo, ascoltatori));
-    // Appiglio per le prove automatiche (e2e/percorsi.mjs).
+    // Appigli per le prove automatiche (e2e/percorsi.mjs).
     (window as unknown as { __partita?: unknown }).__partita = partita;
+    (window as unknown as { __suono?: unknown }).__suono = this.suono;
 
     invito.addEventListener('click', () => partita.azione());
     prosegui.addEventListener('click', () => partita.prosegui());

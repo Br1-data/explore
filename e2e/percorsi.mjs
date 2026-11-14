@@ -18,6 +18,28 @@ const PERCORSI = {
   1: ['enoc', 'geova', 'matusalemme', 'empio'],
   17: ['iael', 'geova', 'sisera', 'barac', 'debora', 'madre'],
 };
+
+/**
+ * Che cosa si deve sentire in alcune scene: le sorgenti che vi stanno davvero
+ * (oggetti, folle), la luce, la pioggia. Per ogni nuovo capitolo aggiungere le
+ * scene con sorgenti caratteristiche.
+ */
+const SUONI_ATTESI = {
+  '1/enoc-mondo': { sorgenti: ['folla', 'fuoco', 'incudine', 'invoca', 'pecora', 'rissa'], luce: 'giorno' },
+  '1/enoc-strada': { sorgenti: ['folla', 'torcia'] },
+  '1/enoc-pericolo': { luce: 'notte' },
+  '1/empio-caccia': { sorgenti: ['insegue', 'torcia'], luce: 'notte' },
+  '17/iael-accampamento': { sorgenti: ['fuoco', 'pecora'], luce: 'giorno' },
+  '17/iael-tenda': { sorgenti: ['fuoco'] },
+  '17/geova-oppressione': { sorgenti: ['invoca'] },
+  '17/geova-chison': { sorgenti: ['folla'] },
+  '17/sisera-fuga': { sorgenti: ['insegue'], pioggia: true },
+  '17/barac-inseguimento': { sorgenti: ['insegue'], pioggia: true },
+  '17/debora-canto': { sorgenti: ['danza', 'folla'] },
+  '17/madre-finestra': { sorgenti: ['folla'] },
+};
+/** Ciò che si sentiva all’inizio di ogni scena giocata. */
+const ascoltati = new Map();
 const PORTA = 4317;
 const schermate = process.env.SCHERMATE;
 const [larghezza, altezza] = (process.env.VISTA ?? '1280x720').split('x').map(Number);
@@ -181,7 +203,9 @@ async function gioca(cap, id) {
     }
     if (s.indice !== scena) {
       scena = s.indice;
-      await pagina.waitForTimeout(schermate ? 500 : 0);
+      // Il tempo per far arrivare all’audio ciò che c’è in scena.
+      await pagina.waitForTimeout(schermate ? 500 : 400);
+      ascoltati.set(`${cap}/${s.scena}`, await pagina.evaluate(() => window.__suono?.istantanea()));
       await scatta(pagina, `${ruolo}-${scena + 1}-${s.scena}`);
     }
     const prossimo = s.punti.find((p) => p.visibile);
@@ -262,6 +286,24 @@ async function provaComandi() {
   await pagina.close();
 }
 
+/** I suoni seguono la scena: audio acceso ovunque, e le sorgenti attese presenti. */
+function provaSuoni() {
+  console.log('\nsuoni');
+  const spenti = [...ascoltati].filter(([, a]) => a?.stato !== 'running').map(([k]) => k);
+  verifica(ascoltati.size > 0 && spenti.length === 0, `audio attivo in ${ascoltati.size} scene${spenti.length ? ` (spento: ${spenti.join(', ')})` : ''}`);
+  for (const [scena, attese] of Object.entries(SUONI_ATTESI)) {
+    const a = ascoltati.get(scena);
+    if (!a) continue; // scena non giocata in questa prova
+    const mancano = (attese.sorgenti ?? []).filter((t) => !a.sorgenti.includes(t));
+    const luce = !attese.luce || a.luce === attese.luce;
+    const pioggia = !attese.pioggia || a.pioggia > 0;
+    verifica(
+      !mancano.length && luce && pioggia,
+      `${scena}: ${a.sorgenti.join(', ') || 'nessuna sorgente'} · ${a.luce}${a.pioggia ? ` · pioggia ${a.pioggia}` : ''}${mancano.length ? ` (mancano: ${mancano.join(', ')})` : ''}`,
+    );
+  }
+}
+
 try {
   await provaComandi();
   const capitoli = process.env.CAPITOLI?.split(',') ?? Object.keys(PERCORSI);
@@ -269,6 +311,7 @@ try {
   for (const cap of capitoli) {
     for (const id of PERCORSI[cap] ?? []) if (!soloRuoli || soloRuoli.includes(id)) await gioca(cap, id);
   }
+  provaSuoni();
   verifica(errori.length === 0, `nessun errore in console${errori.length ? `: ${errori.join(' | ')}` : ''}`);
 } catch (e) {
   console.error(e);

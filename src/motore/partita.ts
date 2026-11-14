@@ -1,6 +1,7 @@
 import type { Attore, Capitolo, Folla, Fx, Oggetto, Passo, Posa, Punto, Ruolo, Scena, TipoPunto } from '../content/tipi';
 import { disegnaFigura, stileFolla, STILI, type Luce, type Stile } from './figure';
 import { disegnaOggetto, type Pennello } from './oggetti';
+import { SUONI_OGGETTI, type Paesaggio, type SorgenteSonora } from './suono';
 import { quota, sfuma, tavolozza, type Tavolozza } from './tavolozze';
 import { alfa, casuale, interpola, limita, mescola } from './util';
 
@@ -48,7 +49,10 @@ export interface Ascoltatori {
   stato(stato: StatoScena): void;
   scenaCompletata(indice: number): void;
   fine(): void;
-  suono?(evento: 'passo' | 'ambiente', valore?: string): void;
+  /** I passi di chi gioca. */
+  passo?(): void;
+  /** Ciò che si sente nella scena: aggiornato più volte al secondo. */
+  paesaggio?(p: Paesaggio): void;
 }
 
 interface Persona {
@@ -136,6 +140,8 @@ export class Partita {
   private oggettiPerPiano: Record<'fondo' | 'medio' | 'primo', Oggetto[]> = { fondo: [], medio: [], primo: [] };
   private luci: Luce[] = [];
   private ultimoPasso = 0;
+  /** Fra quanto comunicare di nuovo ciò che si sente. */
+  private prossimoAscolto = 0;
 
   constructor(
     private tela: HTMLCanvasElement,
@@ -236,7 +242,7 @@ export class Partita {
         giro: 1,
       });
     }
-    this.ui.suono?.('ambiente', s.suono ?? 'vento');
+    this.prossimoAscolto = 0;
     this.notificaStato();
   }
 
@@ -600,7 +606,7 @@ export class Partita {
         if (g.posa !== 'proclama' && g.posa !== 'sdraiato' && g.posa !== 'coperto') g.posa = 'cammina';
         if (this.t - this.ultimoPasso > 0.34 && g.x !== prima) {
           this.ultimoPasso = this.t;
-          this.ui.suono?.('passo');
+          this.ui.passo?.();
         }
         // Arrivati in fondo a una scena completa, si prosegue.
         if (g.x >= s.larghezza - 44 && this.completa()) this.prosegui();
@@ -644,6 +650,12 @@ export class Partita {
 
     this.aggiornaFolla(dt);
 
+    this.prossimoAscolto -= dt;
+    if (this.prossimoAscolto <= 0 && this.ui.paesaggio) {
+      this.prossimoAscolto = 0.1;
+      this.ui.paesaggio(this.paesaggio());
+    }
+
     // Camera.
     const bersaglio = this.camera.blocco ?? g.x + (osserva ? 0 : g.verso * 70);
     const meta = limita(bersaglio, Math.min(this.vw / 2, s.larghezza / 2), Math.max(s.larghezza - this.vw / 2, s.larghezza / 2));
@@ -658,6 +670,54 @@ export class Partita {
         this.ui.invito(p ? { id: p.id, testo: p.etichetta, tipo: p.tipo } : null);
       }
     }
+  }
+
+  /**
+   * Ciò che si sente: il luogo (`suono` della scena), la luce, la pioggia, e le
+   * sorgenti che ci sono davvero in scena — oggetti che suonano, folle, attori che
+   * camminano — con la loro posizione.
+   */
+  private paesaggio(): Paesaggio {
+    const s = this.scena;
+    const sorgenti: SorgenteSonora[] = [];
+    s.oggetti.forEach((o, i) => {
+      const tipo = SUONI_OGGETTI[o.tipo];
+      if (!tipo) return;
+      const forza = (o.seVar ? this.vars[o.seVar] ?? 0 : 1) * ((o.piano ?? 'medio') === 'medio' ? 1 : 0.3);
+      if (forza > 0.02) sorgenti.push({ chiave: `${s.id}:o${i}`, tipo, x: o.x, forza });
+    });
+    const folle = new Map<Folla, { x: number; n: number }>();
+    for (const p of this.persone) {
+      const f = folle.get(p.folla) ?? { x: 0, n: 0 };
+      f.x += p.x;
+      f.n++;
+      folle.set(p.folla, f);
+    }
+    (s.folle ?? []).forEach((f, i) => {
+      const somma = folle.get(f);
+      if (!somma) return;
+      const visibile = f.seVar ? this.vars[f.seVar] ?? 0 : 1;
+      const lontana = f.piano === 'fondo';
+      const forza = Math.min(1, somma.n / 8) * visibile * (lontana ? 0.35 : 1);
+      if (forza < 0.02) return;
+      const x = somma.x / somma.n;
+      const tipo = lontana ? 'folla' : f.gruppo ?? (f.comportamento === 'insegue' ? 'insegue' : 'folla');
+      sorgenti.push({ chiave: `${s.id}:f${i}`, tipo, x, forza, agitata: !!f.reagisce });
+      if (f.torce && !lontana) sorgenti.push({ chiave: `${s.id}:t${i}`, tipo: 'torcia', x, forza: f.torce });
+    });
+    for (const [id, a] of this.attori) {
+      if (a.visibile && a.meta) sorgenti.push({ chiave: `${s.id}:a${id}`, tipo: 'passi', x: a.x, forza: 1 });
+    }
+    const P = this.tavolozzaCorrente();
+    return {
+      base: s.suono ?? 'vento',
+      luce: P.stelle >= 0.9 ? 'notte' : P.stelle >= 0.4 ? 'crepuscolo' : 'giorno',
+      ascolto: this.camera.x,
+      vista: this.vw,
+      pioggia: this.vars['pioggia'] ?? 0,
+      agitazione: this.vars['agitazione'] ?? 0,
+      sorgenti,
+    };
   }
 
   private oratore(): number {
