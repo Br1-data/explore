@@ -16,17 +16,27 @@ collegato all'originale su jw.org.
 - **L'indice completo**: i 54 capitoli del libro, divisi nelle tre parti.
 - **Capitolo 1, Enoc**, giocabile da quattro punti di vista, ognuno con i suoi dettagli:
   - **Enoc**: la sua condotta in un mondo violento, che cosa voleva dire camminare con
-    Dio, l'incarico di profeta, il pericolo, la conferma di essere gradito a Dio;
+    Dio, l’incarico di profeta, il pericolo, la conferma di essere gradito a Dio;
   - **Geova**: non raffigurato; si compiono gli atti che il racconto gli attribuisce:
-    affidare l'incarico, dare la forza, confermare, sottrarre Enoc al pericolo;
+    affidare l’incarico, dare la forza, confermare, sottrarre Enoc al pericolo;
   - **Matusalemme**: che cosa rivelano i numeri di Genesi 5, sulla linea del tempo;
   - **Uno degli empi**: il loro mondo e il messaggio, dalla parte di chi lo ascoltò.
-- **84 dettagli**, ognuno con la sua fonte e un contrassegno che dice quanto è certo:
-  *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
+- **Capitolo 17, Iael**, giocabile da sei punti di vista:
+  - **Iael**: da che parte sta ciascuno, che cosa fare quando Sisera arriva alla sua
+    tenda, il coraggio di agire da sola, il canto che la chiama benedetta;
+  - **Geova**: non raffigurato; risponde al grido del popolo, getta nello scompiglio
+    l’esercito di Sisera presso le acque di Meghiddo, lo consegna nelle mani di una donna;
+  - **Sisera**: il nemico che contava sui suoi carri e sulle alleanze;
+  - **Barac**: l’inseguimento e la profezia di Debora che si adempie;
+  - **Debora**: il canto di vittoria, le tribù, la lode a Iael senza invidia;
+  - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
+- **141 dettagli** (84 + 57), ognuno con la sua fonte e un contrassegno che dice quanto
+  è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;
-  - *situazioni di condotta*: scene tipiche del tempo, segnate «Ricostruzione», in cui
-    scegli che cosa fare e scopri che cosa fece il personaggio secondo le fonti;
+  - *situazioni di condotta*: momenti del racconto, o scene tipiche del tempo segnate
+    «Ricostruzione», in cui scegli che cosa fare e scopri che cosa fece il personaggio
+    secondo le fonti;
   - *attività sul testo*: ricomporre il messaggio di Enoc, completare i versetti,
     ricostruire le genealogie, classificare, usare la linea del tempo.
 - **Quaderno di studio**: dettagli scoperti, riflessioni personali, passi biblici

@@ -673,7 +673,382 @@ const uccelli: Pittore = (p, o) => {
   ctx.stroke();
 };
 
+const ovale = (ctx: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, rot = 0): void => {
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2);
+  ctx.fill();
+};
+
+/** Una grande tenda di pelo di capra, aperta sul davanti: si vede l’interno (Giudici 4:18-21). */
+const tendone: Pittore = (p) => {
+  const { ctx, P, tono } = p;
+  const pelo = tono(mescola('#3e3430', P.tela[0], 0.14));
+  const dentro = tono(mescola('#2a211e', P.tela[0], 0.06));
+  const tronco = tono(P.tronco);
+  const tetto = (y: number): void => {
+    // Il telo poggia sui pali e si abbassa un poco fra l’uno e l’altro.
+    ctx.moveTo(-236, -108 + y);
+    ctx.quadraticCurveTo(-160, -112 + y, -80, -140 + y);
+    ctx.quadraticCurveTo(0, -128 + y, 80, -140 + y);
+    ctx.quadraticCurveTo(160, -112 + y, 236, -108 + y);
+  };
+  // Corde e pioli.
+  ctx.strokeStyle = tono(mescola(P.tronco, '#c8b48a', 0.45));
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  for (const s of [-1, 1]) {
+    ctx.moveTo(236 * s, -108);
+    ctx.lineTo(318 * s, 0);
+    ctx.moveTo(80 * s, -140);
+    ctx.lineTo(276 * s, 0);
+  }
+  ctx.stroke();
+  ctx.fillStyle = tronco;
+  for (const x of [-318, -276, 276, 318]) ctx.fillRect(x - 2, -9, 4, 11);
+  // Il fondo, in ombra.
+  ctx.fillStyle = dentro;
+  ctx.beginPath();
+  ctx.moveTo(-226, 2);
+  tetto(4);
+  ctx.lineTo(226, 2);
+  ctx.closePath();
+  ctx.fill();
+  // Teli laterali.
+  ctx.fillStyle = pelo;
+  for (const s of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(236 * s, -108);
+    ctx.lineTo(266 * s, 2);
+    ctx.lineTo(222 * s, 2);
+    ctx.closePath();
+    ctx.fill();
+  }
+  // Stuoia sul pavimento.
+  ctx.fillStyle = tono('#b39a68');
+  ctx.fillRect(-196, -3, 300, 6);
+  ctx.fillStyle = tono('#8f7a4e');
+  for (let x = -190; x < 100; x += 22) ctx.fillRect(x, -3, 2, 6);
+  // Telo divisorio fra i due scompartimenti.
+  ctx.fillStyle = tono(mescola(P.tela[1], '#3a2a20', 0.25));
+  ctx.beginPath();
+  ctx.moveTo(122, -134);
+  ctx.lineTo(196, -118);
+  ctx.lineTo(200, 2);
+  ctx.lineTo(118, 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = tono(mescola(P.tela[0], '#2a1a12', 0.2));
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  for (const y of [-96, -70, -44, -18]) {
+    ctx.moveTo(119, y);
+    ctx.lineTo(199, y + 4);
+  }
+  ctx.stroke();
+  // Pali.
+  ctx.strokeStyle = tronco;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  for (const [x, h] of [
+    [-220, 110],
+    [-80, 140],
+    [80, 140],
+    [220, 110],
+  ]) {
+    ctx.moveTo(x, 2);
+    ctx.lineTo(x, -h);
+  }
+  ctx.stroke();
+  // Il tetto, a strisce cucite insieme.
+  ctx.strokeStyle = pelo;
+  ctx.lineWidth = 18;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  tetto(-6);
+  ctx.stroke();
+  ctx.strokeStyle = tono(mescola('#5a4c44', P.tela[0], 0.1));
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  tetto(-10);
+  ctx.stroke();
+};
+
+/** Un otre di pelle per il latte (Giudici 4:19). */
+const otre: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#8a5a3a');
+  ovale(ctx, 0, -11, 20, 11, -0.08);
+  ovale(ctx, 21, -17, 6, 4, -0.6);
+  ctx.strokeStyle = tono('#3d2a1e');
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(18, -21);
+  ctx.lineTo(23, -13);
+  ctx.stroke();
+  ctx.strokeStyle = tono('#6a432c');
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  for (const x of [-12, 10]) {
+    ctx.moveTo(x, -3);
+    ctx.lineTo(x - 3, 1);
+  }
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ovale(ctx, -4, -16, 10, 3, -0.1);
+};
+
+/** Una coppa splendida, con il latte (Giudici 5:25). */
+const coppa: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#9a6a3a');
+  ctx.fillRect(-4, -7, 8, 7);
+  ovale(ctx, 0, 0, 9, 2.5);
+  ctx.fillStyle = tono('#b98a4a');
+  ctx.beginPath();
+  ctx.moveTo(-17, -17);
+  ctx.quadraticCurveTo(0, 2, 17, -17);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = tono('#f2ead8');
+  ovale(ctx, 0, -17, 17, 3.4);
+  ctx.strokeStyle = tono('#e0b850');
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(-14, -12);
+  ctx.quadraticCurveTo(0, -4, 14, -12);
+  ctx.stroke();
+};
+
+/** Un martello di legno e un piolo da tenda (Giudici 4:21; immagine del capitolo). */
+const martello: Pittore = (p) => {
+  const { ctx, tono } = p;
+  const legno = tono('#8a6a44');
+  ctx.fillStyle = legno;
+  ctx.beginPath();
+  ctx.moveTo(16, -4);
+  ctx.lineTo(48, -1);
+  ctx.lineTo(16, 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillRect(10, -5, 7, 8);
+  ctx.save();
+  ctx.rotate(-0.35);
+  ctx.strokeStyle = tono('#5e4630');
+  ctx.lineWidth = 3.4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-8, 0);
+  ctx.lineTo(-8, -34);
+  ctx.stroke();
+  ctx.fillStyle = legno;
+  rettTondo(ctx, -20, -47, 24, 14, 4);
+  ctx.restore();
+};
+
+/** Un carro da guerra con una falce di ferro che sporge dal mozzo; variante 1: impantanato. */
+const carro: Pittore = (p, o) => {
+  const { ctx, P, tono } = p;
+  const impantanato = (o.variante ?? 0) === 1;
+  const legno = tono(mescola(P.tronco, '#8a5a34', 0.4));
+  ctx.save();
+  if (impantanato) {
+    ctx.translate(0, 10);
+    ctx.rotate(-0.15);
+  }
+  // Timone.
+  ctx.strokeStyle = legno;
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(20, -30);
+  ctx.quadraticCurveTo(70, -32, 98, -50);
+  ctx.stroke();
+  // Cassa.
+  ctx.fillStyle = legno;
+  ctx.beginPath();
+  ctx.moveTo(-34, -30);
+  ctx.lineTo(26, -30);
+  ctx.lineTo(30, -64);
+  ctx.quadraticCurveTo(0, -72, -30, -58);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = tono(mescola(P.tela[0], '#000000', 0.2));
+  ctx.fillRect(-28, -50, 54, 6);
+  // Falce di ferro.
+  ctx.fillStyle = tono('#80868f');
+  ctx.beginPath();
+  ctx.moveTo(-6, -27);
+  ctx.lineTo(-60, -31);
+  ctx.quadraticCurveTo(-68, -26, -61, -20);
+  ctx.lineTo(-6, -21);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillRect(-56, -30, 46, 1.6);
+  // Ruota.
+  ctx.strokeStyle = tono('#4a3828');
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(-6, -24, 24, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = (i * Math.PI) / 3 + 0.3;
+    ctx.moveTo(-6, -24);
+    ctx.lineTo(-6 + Math.cos(a) * 23, -24 + Math.sin(a) * 23);
+  }
+  ctx.stroke();
+  ctx.restore();
+  if (impantanato) {
+    ctx.fillStyle = tono(mescola(P.terra[1], '#2a2018', 0.55));
+    ovale(ctx, -4, 4, 62, 9);
+  }
+};
+
+/** Pozze di fango sotto la pioggia. */
+const fango: Pittore = (p, o) => {
+  const { ctx, P, tono, t } = p;
+  const r = casuale((o.x | 0) + 7);
+  const xs: number[] = [];
+  for (let i = 0; i < 3; i++) {
+    const x = -80 + i * 70 + r() * 20;
+    const w = 28 + r() * 30;
+    xs.push(x);
+    ctx.fillStyle = tono(mescola(P.terra[1], '#2a2018', 0.55));
+    ovale(ctx, x, 4, w, 5);
+    ctx.fillStyle = 'rgba(180,195,215,0.22)';
+    ovale(ctx, x - w * 0.2, 3, w * 0.45, 1.6);
+  }
+  ctx.strokeStyle = 'rgba(210,220,235,0.4)';
+  ctx.lineWidth = 1;
+  xs.forEach((x, i) => {
+    const k = (t * 1.3 + i / 3 + o.x * 0.01) % 1;
+    ctx.beginPath();
+    ctx.ellipse(x, 4, 3 + k * 12, 1 + k * 3, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+};
+
+/** Il monte Tabor: un grande cono con la cima smussata (da mettere sullo sfondo). */
+const tabor: Pittore = (p) => {
+  const { ctx, P, tono } = p;
+  const base = mescola(P.monti[2], P.foglia[1], 0.35);
+  ctx.fillStyle = tono(base);
+  ctx.beginPath();
+  ctx.moveTo(-560, 10);
+  ctx.bezierCurveTo(-380, -40, -260, -250, -150, -292);
+  ctx.quadraticCurveTo(0, -316, 150, -292);
+  ctx.bezierCurveTo(260, -250, 380, -40, 560, 10);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  ctx.beginPath();
+  ctx.moveTo(60, -300);
+  ctx.quadraticCurveTo(110, -298, 150, -292);
+  ctx.bezierCurveTo(260, -250, 380, -40, 560, 10);
+  ctx.lineTo(200, 10);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = tono(mescola(base, P.foglia[1], 0.5));
+  const r = casuale(311);
+  for (let i = 0; i < 30; i++) {
+    const k = r();
+    const y = -286 + k * 280;
+    const meta = 150 + 410 * Math.pow(k, 1.6);
+    ovale(ctx, (r() * 2 - 1) * meta * 0.85, y, 14 + r() * 16, 7 + r() * 5);
+  }
+};
+
+/** L’interno di una casa signorile, aperto sul davanti, con una finestra a grata (Giudici 5:28). */
+const sala: Pittore = (p, o) => {
+  const { ctx, P, tono, t } = p;
+  const muro = tono(P.muro[1]);
+  const interno = tono(mescola(P.muro[0], '#2a1e18', 0.42));
+  // Muri esterni e tetto piano.
+  ctx.fillStyle = muro;
+  ctx.fillRect(-334, -246, 668, 18);
+  ctx.fillRect(-334, -232, 26, 236);
+  ctx.fillRect(308, -232, 26, 236);
+  for (let x = -330; x < 330; x += 30) ctx.fillRect(x, -258, 16, 14);
+  // Parete di fondo.
+  ctx.fillStyle = interno;
+  ctx.fillRect(-308, -228, 616, 232);
+  // Finestra a grata, da cui si vede fuori.
+  const fx = -150;
+  const cielo = ctx.createLinearGradient(0, -196, 0, -86);
+  cielo.addColorStop(0, P.cielo[1]);
+  cielo.addColorStop(1, P.cielo[2]);
+  ctx.fillStyle = cielo;
+  ctx.fillRect(fx - 70, -196, 140, 110);
+  ctx.fillStyle = P.monti[1];
+  ctx.beginPath();
+  ctx.moveTo(fx - 70, -86);
+  for (let x = -70; x <= 70; x += 10) ctx.lineTo(fx + x, -110 - Math.sin(x * 0.05) * 8);
+  ctx.lineTo(fx + 70, -86);
+  ctx.fill();
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(fx - 70, -196, 140, 110);
+  ctx.clip();
+  ctx.strokeStyle = tono(P.tronco);
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  for (let d = -200; d <= 200; d += 18) {
+    ctx.moveTo(fx + d - 60, -196);
+    ctx.lineTo(fx + d + 60, -86);
+    ctx.moveTo(fx + d + 60, -196);
+    ctx.lineTo(fx + d - 60, -86);
+  }
+  ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle = muro;
+  ctx.fillRect(fx - 80, -88, 160, 10);
+  ctx.fillRect(fx - 76, -204, 152, 10);
+  // Stoffe tinte appese.
+  const stoffe = ['#7a2a5a', '#b04a2a', '#c9a040', '#4a3a7a'];
+  stoffe.forEach((c, i) => {
+    const x = 70 + i * 34;
+    const onda = Math.sin(t * 0.8 + i) * 1.5;
+    ctx.fillStyle = tono(c);
+    ctx.beginPath();
+    ctx.moveTo(x, -190);
+    ctx.lineTo(x + 26, -190);
+    ctx.lineTo(x + 26 + onda, -70);
+    ctx.lineTo(x + onda, -70);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,240,200,0.25)';
+    for (let y = -176; y < -76; y += 22) ctx.fillRect(x + 3, y, 20, 3);
+  });
+  ctx.fillStyle = tono(P.tronco);
+  ctx.fillRect(62, -196, 146, 6);
+  // Tappeto.
+  ctx.fillStyle = tono('#7a2a2a');
+  ctx.fillRect(-250, -3, 500, 6);
+  ctx.fillStyle = tono('#c9a040');
+  for (let x = -244; x < 250; x += 26) ctx.fillRect(x, -2, 10, 3);
+  // Lucerna su un sostegno.
+  if (o.variante !== 1) {
+    ctx.fillStyle = tono(P.tronco);
+    ctx.fillRect(250, -70, 5, 72);
+    ctx.fillStyle = tono('#9a6a3a');
+    ovale(ctx, 252, -74, 12, 5);
+    fiamma(ctx, 260, -78, 0.6, t + o.x);
+    luce(p, 260, -86, 120);
+  }
+};
+
 const PITTORI: Record<string, Pittore> = {
+  tendone,
+  otre,
+  coppa,
+  martello,
+  carro,
+  fango,
+  tabor,
+  sala,
   casa,
   tenda,
   albero,

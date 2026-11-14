@@ -374,9 +374,9 @@ export class Scheda {
         });
         opzioni.append(...mescolaStabile(bottoni, a.id));
         corpo.append(
-          testa('Mettiti nei suoi panni', distintivoRicostruzione()),
+          testa('Mettiti nei suoi panni', a.narrata ? null : distintivoRicostruzione()),
           h('p', { class: 'scheda__situazione' }, a.situazione),
-          elencoFonti(a.base, 'Si basa su: ') ?? '',
+          elencoFonti(a.base, a.narrata ? 'Lo racconta: ' : 'Si basa su: ') ?? '',
           h('p', { class: 'scheda__consegna' }, a.domanda ?? 'Che cosa fai?'),
           opzioni,
           esito,

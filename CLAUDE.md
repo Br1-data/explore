@@ -10,9 +10,12 @@ cambiato perché spingeva a leggere alla lettera il «camminare con Dio» (decis
 sono architetturali e valgono per ogni capitolo: il motore e lo schema dei contenuti
 sono generici, un capitolo nuovo aggiunge solo contenuti (ed eventualmente scenografie).
 
-**Stato:** il capitolo 1 (Enoc) è completo e giocabile con quattro punti di vista.
-Gli altri 53 capitoli compaiono nell'indice come «in preparazione».
-**Prossimo passo:** capitolo 2, Noè («Condannò il mondo»), con la stessa struttura.
+**Stato:** giocabili il capitolo 1 (Enoc, quattro punti di vista) e il capitolo 17
+(Iael, sei punti di vista: Iael, Geova, Sisera, Barac, Debora, la madre di Sisera).
+Gli altri 52 capitoli compaiono nell’indice come «in preparazione».
+**Prossimo passo:** il capitolo che indicherà il committente, con la stessa struttura.
+Nota per il capitolo 16 (Barac e Debora): nel 17 i due compaiono solo per l’inseguimento,
+la profezia adempiuta e il canto; la loro chiamata e la fede di Barac restano al 16.
 
 Lingua del progetto: italiano (codice, commenti, testi, commit).
 
@@ -48,7 +51,9 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
      mancanti), classifica (due categorie), linea del tempo, domanda;
    - **situazioni di condotta** (`tipo: 'condotta'`): una situazione tipica del tempo,
      il giocatore sceglie che cosa fare; la scelta fedele rivela la condotta del
-     personaggio con la sua fonte, le altre mostrano come agivano gli altri.
+     personaggio con la sua fonte, le altre mostrano come agivano gli altri. Se il
+     momento è raccontato dal testo (es. Sisera che arriva alla tenda di Iael) la
+     situazione è `narrata: true`: niente contrassegno «Ricostruzione», fonti «Lo racconta».
    Le «azioni del personaggio» come minigiochi in tempo reale **non** sono state scelte.
 6. **Ricostruzioni ammesse solo se dichiarate.** Una scena non narrata ma descritta in
    generale dalle fonti (es. «la violenza era la norma» → una rissa) si può mettere in
@@ -68,6 +73,16 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
    Evitare anche le ripetizioni dentro un ruolo (un versetto citato e poi un dettaglio
    che ne ripete le parole): per questo le attività possono rivelare un `dettaglio`.
 9. Il repository precedente (gioco «Segnale Remoto») è stato rimosso su richiesta.
+
+Scelte di progetto conseguenti (applicate dal capitolo 17 in poi):
+
+- **Personaggi negativi** (l’empio, Sisera, la madre di Sisera) si giocano come lente
+  per capire il racconto: la `fedelta` dice che non sono un modello da imitare, e per
+  loro non ci sono situazioni di condotta.
+- **Le morti violente non si mostrano**: la scena si oscura (`dissolvi`) prima della
+  scheda che le racconta, con le parole sobrie del testo. Un test lo verifica.
+- **Le parole pronunciate** nelle nuvolette (`nastro`) sono solo citazioni alla
+  lettera di un versetto riportato in `VERSI` (test).
 
 ## Livelli di certezza
 
@@ -111,9 +126,9 @@ npm run e2e        # gioca per intero ogni punto di vista in Chromium (serve `np
 ```
 
 Varianti della prova dal vero: `SCHERMATE=e2e/schermate` salva le schermate,
-`VISTA=390x844` prova a misura di telefono, `RUOLI=enoc,geova` limita i percorsi,
-`BASE_URL=http://localhost:5173` usa un server già avviato. Se Chromium manca:
-`npx playwright install chromium`.
+`VISTA=390x844` prova a misura di telefono, `CAPITOLI=17` e `RUOLI=iael,geova`
+limitano i percorsi, `BASE_URL=http://localhost:5173` usa un server già avviato. Se
+Chromium manca: `npx playwright install chromium`.
 
 **Prima di ogni commit:** `npm run check`, `npm run build`, `npm run e2e`, e guarda
 alcune schermate (desktop e telefono) per verificare la grafica. Le schermate
@@ -126,16 +141,21 @@ src/
   content/
     tipi.ts              schema dei contenuti (Capitolo, Ruolo, Scena, Punto, Passo, Attivita, Dettaglio…)
     libro.ts             indice dei 54 capitoli (generato da strumenti/genera-indice.mjs)
-    index.ts             registro dei capitoli giocabili: CAPITOLI = { 1: capitoloEnoc }
+    index.ts             registro dei capitoli giocabili: CAPITOLI = { 1: capitoloEnoc, 17: capitoloIael }
+    fonti.ts             comune: b() per i versetti (aggiungere i libri biblici in LIBRI), verso(), perspicacia(), indirizzi jw.org
+    scenografia.ts       comune: o(), serie(), taglia() per comporre le scenografie
     capitoli/enoc/
       base.ts            versetti, VITE (linea del tempo), DETTAGLI (fonti e certezza), SENSAZIONI, STUDIO
-      scenari.ts         scenografie riusabili, con larghezza a scelta (mondo, colline, altura, strada, notte, quiete)
+      scenari.ts         scenografie, con larghezza a scelta (mondo, colline, altura, strada, notte, quiete)
       enoc.ts geova.ts matusalemme.ts empio.ts   un file per punto di vista
       index.ts           assembla il Capitolo
+    capitoli/iael/       stessa struttura; PAROLE in base.ts = le frasi pronunciate (Giudici 4)
+      scenari.ts         accampamento, tendaIael, pianura (Chison e Tabor), villaggio, festa, casaSisera
+      iael.ts geova.ts sisera.ts barac.ts debora.ts madre.ts
   motore/
     partita.ts           ciclo di gioco, movimento, tocco sui punti, indizi, folle, sequenze, disegno
-    figure.ts            persone disegnate (senza volto) e pose
-    oggetti.ts           oggetti di scena (casa, tenda, albero, idolo…) — aggiungerne qui
+    figure.ts            persone disegnate (senza volto), pose e STILI dei personaggi
+    oggetti.ts           oggetti di scena (casa, tenda, tendone, carro, sala con grata…) — aggiungerne qui
     tavolozze.ts         ambienti (colori, cielo, terreno)
     arte.ts              piccole illustrazioni per le schede (Eden, Caino e Abele…)
     suono.ts             audio generato con Web Audio (nessun file)
@@ -164,8 +184,20 @@ tira le somme con un'attività.
 
 Tipi di passo: `narra` (anche `ricostruzione: true`), `verso` (con `evidenzia`),
 `dettaglio` (finisce nel quaderno), `senti` (domanda al giocatore, con appunto),
-`schema`, `attivita`, `fx` (effetti di scena: pose, spostamenti, nuvolette di parole,
-variabili come `agitazione`/`visione`, dissolvenze).
+`schema`, `attivita`, `fx` (effetti di scena: pose, spostamenti degli attori,
+nuvolette di parole, variabili, dissolvenze).
+
+Strumenti di scena già pronti nel motore:
+
+- variabili (`vars` della scena, cambiate con `fx var`): `agitazione` (la folla
+  reagisce a chi parla), `visione` (sfuma verso `ambiente2`), `incalzo` (una folla
+  insegue un attore), `pioggia` (nubi, scrosci; con `seVar: 'pioggia'` compaiono fango
+  e acqua);
+- pose: `fermo`, `cammina`, `parla`, `pugno`, `indica`, `alza`, `proclama`,
+  `sdraiato`, `coperto` (sdraiato sotto una coperta);
+- folle: `comportamento` `vaga`/`cerca`/`insegue`, `gruppo` `rissa`/`invoca`/`danza`;
+- suoni d’ambiente: `vento`, `folla`, `notte`, `quiete`, `pioggia`;
+- oggetti per interni aperti sul davanti (`tendone`, `sala`): gli attori ci stanno dentro.
 
 Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia:
 
@@ -178,13 +210,13 @@ Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia:
 | `classifica` | mette ogni voce in una di due categorie                 | ogni voce con fonti; può rivelare un `dettaglio` |
 | `linea`      | porta il cursore su un anno della linea del tempo       | `meta` = una nascita o morte; anni a.E.V. negativi |
 | `domanda`    | sceglie la risposta giusta                              | `dettaglio` oppure `spiegazione` + `fonti` |
-| `condotta`   | sceglie che cosa fare in una situazione «Ricostruzione» | una sola opzione `fedele` con `dettaglio`; le altre con `esito` e `fonti` |
+| `condotta`   | sceglie che cosa fare in una situazione «Ricostruzione» o `narrata` | una sola opzione `fedele` con `dettaglio`; le altre con `esito` e `fonti` |
 
 Punti `facoltativo` (bordo tratteggiato) non bloccano la scena; `richiede` ordina i
 punti. La scena è completa quando tutti i punti obbligatori sono fatti; si prosegue
 con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo`.
 
-## Come aggiungere un capitolo (es. Noè)
+## Come aggiungere un capitolo (modello: `capitoli/iael/`)
 
 1. Scarica e leggi il capitolo, i passi biblici indicati, le pubblicazioni citate e
    la descrizione delle immagini.
@@ -203,8 +235,9 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
    (`ui/schemi.ts`). Se servono scenografie comuni a più capitoli, spostale fuori
    dalla cartella del capitolo.
 6. Registralo in `src/content/index.ts`. I test di `contenuti.test.ts` girano su ogni
-   capitolo registrato; aggiungi test specifici (citazioni, calcoli) come per Enoc.
-7. Aggiorna `e2e/percorsi.mjs` (oggi gioca il capitolo 1) e verifica le schermate.
+   capitolo registrato; aggiungi test specifici (citazioni, calcoli) come per Enoc e Iael.
+7. Aggiungi i suoi punti di vista a `PERCORSI` in `e2e/percorsi.mjs` e verifica le
+   schermate (desktop e telefono).
 
 ## Note tecniche
 

@@ -65,6 +65,53 @@ export const STILI: Record<string, Stile> = {
     accessorio: 'clava',
     scala: 1,
   },
+  // Capitolo 17.
+  iael: {
+    tipo: 'donna',
+    veste: '#6a4f7a',
+    fascia: '#c08a4a',
+    pelle: '#b98a62',
+    capelli: '#2a1f1a',
+    velo: '#c9a77a',
+    scala: 0.97,
+  },
+  sisera: {
+    tipo: 'uomo',
+    veste: '#7a2a24',
+    fascia: '#c9a84a',
+    pelle: '#b5835a',
+    capelli: '#1e1a18',
+    barba: true,
+    scala: 1.04,
+  },
+  barac: {
+    tipo: 'uomo',
+    veste: '#8a7a52',
+    fascia: '#3d4a3a',
+    pelle: '#a36f4a',
+    capelli: '#2a1f1a',
+    barba: true,
+    accessorio: 'lancia',
+    scala: 1,
+  },
+  debora: {
+    tipo: 'donna',
+    veste: '#e6d6b0',
+    fascia: '#6a8a5a',
+    pelle: '#b98a62',
+    capelli: '#3a2a20',
+    velo: '#9fb59a',
+    scala: 0.97,
+  },
+  madre: {
+    tipo: 'donna',
+    veste: '#5a2f4a',
+    fascia: '#d0a040',
+    pelle: '#c79a72',
+    capelli: '#8a8078',
+    velo: '#8a4a6a',
+    scala: 0.95,
+  },
 };
 
 const VESTI = ['#8c6f56', '#6f5a4a', '#7a6a52', '#5f6b5a', '#8a5a48', '#6a5870', '#94805c', '#4f5d6b', '#7d4f3f', '#a08a68'];
@@ -171,7 +218,8 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
   const pelle = tono(s.pelle);
   const capelli = tono(s.capelli);
   const fascia = tono(s.fascia);
-  const sdraiato = f.posa === 'sdraiato';
+  const coperto = f.posa === 'coperto';
+  const sdraiato = f.posa === 'sdraiato' || coperto;
   const cammina = f.posa === 'cammina';
   let luce: Luce | null = null;
 
@@ -327,6 +375,15 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
     ctx.stroke();
     fiamma(ctx, tx, ty, 1, f.t + f.x);
     luce = { x: f.x + tx * s.scala, y: f.y + (ty - 6) * s.scala, r: 120 * s.scala };
+  }
+  if (coperto) {
+    // Una coperta di lana a strisce, dalle spalle ai piedi.
+    ctx.fillStyle = tono('#7a5a44');
+    ctx.beginPath();
+    ctx.roundRect(-16, Y_SPALLA - 2, 32, -Y_SPALLA + 6, 7);
+    ctx.fill();
+    ctx.fillStyle = tono('#5a3e2e');
+    for (let y = Y_SPALLA + 10; y < 0; y += 15) ctx.fillRect(-16, y, 32, 4);
   }
 
   ctx.restore();

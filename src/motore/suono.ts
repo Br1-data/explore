@@ -137,6 +137,11 @@ export class Suono {
         nota(55, 0.085, 0.07);
         nota(82.4, 0.045, 0.09);
         break;
+      case 'pioggia':
+        soffio(2600, 0.3, 0.55, 0.07);
+        soffio(760, 0.5, 0.22, 0.12);
+        nota(49, 0.05, 0.05);
+        break;
       case 'quiete':
         soffio(700, 0.5, 0.12, 0.09);
         nota(196, 0.035, 0.11);

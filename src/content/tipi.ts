@@ -43,7 +43,8 @@ export interface Verso {
   url: string;
 }
 
-export type Posa = 'fermo' | 'cammina' | 'parla' | 'pugno' | 'indica' | 'alza' | 'sdraiato' | 'proclama';
+/** «coperto»: sdraiato sotto una coperta. */
+export type Posa = 'fermo' | 'cammina' | 'parla' | 'pugno' | 'indica' | 'alza' | 'sdraiato' | 'coperto' | 'proclama';
 
 /** Una persona sulla linea del tempo. Anni a.E.V. negativi, E.V. positivi. */
 export interface Vita {
@@ -107,11 +108,15 @@ export type Attivita =
       dettaglio?: string;
     }
   | {
-      /** Una situazione tipica del tempo, dichiarata come ricostruzione: che cosa fai? */
+      /**
+       * Che cosa fai? Una situazione tipica del tempo, dichiarata come ricostruzione,
+       * oppure (`narrata`) un momento che il racconto stesso descrive.
+       */
       tipo: 'condotta';
       id: string;
       situazione: string;
-      /** Le fonti su cui si basa la ricostruzione. */
+      narrata?: boolean;
+      /** Le fonti su cui si basa la ricostruzione, o che raccontano la situazione. */
       base: Fonte[];
       domanda?: string;
       opzioni: Opzione[];
@@ -218,7 +223,7 @@ export interface Folla {
   comportamento?: 'fermo' | 'vaga' | 'insegue' | 'cerca';
   /** Reagisce alla variabile «agitazione». */
   reagisce?: boolean;
-  gruppo?: 'rissa' | 'invoca';
+  gruppo?: 'rissa' | 'invoca' | 'danza';
   /** Per «insegue»: distanza iniziale e finale dal bersaglio. */
   distanza?: [number, number];
   /** Per «insegue»: attore da seguire (se assente, chi gioca). */
@@ -261,8 +266,9 @@ export interface Scena {
   zone?: Zona[];
   ingresso?: Passo[];
   uscita?: Passo[];
+  /** Variabili di scena (0..1). Il motore conosce «agitazione», «visione», «incalzo», «pioggia». */
   vars?: Record<string, number>;
-  suono?: 'vento' | 'folla' | 'notte' | 'quiete';
+  suono?: 'vento' | 'folla' | 'notte' | 'quiete' | 'pioggia';
 }
 
 export interface Ruolo {

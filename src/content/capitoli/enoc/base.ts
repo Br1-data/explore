@@ -1,4 +1,7 @@
+import { b, BIBBIA, LIBRO_BASE, RIVISTE, verso } from '../../fonti';
 import type { Dettaglio, Fonte, Sensazione, SezioneStudio, Verso, Vita } from '../../tipi';
+
+export { b };
 
 /**
  * Capitolo 1 — Enoc: «Camminò con Dio».
@@ -7,24 +10,8 @@ import type { Dettaglio, Fonte, Sensazione, SezioneStudio, Verso, Vita } from '.
  * Le parole messe tra «» sono citazioni; il resto è riassunto con parole nostre.
  */
 
-const BIBBIA = 'https://www.jw.org/it/biblioteca-digitale/bibbia/bibbia-per-lo-studio/libri';
-const RIVISTE = 'https://www.jw.org/it/biblioteca-digitale/riviste';
-const LIBRO_BASE = 'https://www.jw.org/it/biblioteca-digitale/libri/cammina-coraggiosamente-con-dio';
-
 export const URL_CAPITOLO = `${LIBRO_BASE}/dal-tempo-patriarchi-a-giudici/enoc-cammin%C3%B2-con-dio/`;
 const URL_TEMPO = `${LIBRO_BASE}/dal-tempo-patriarchi-a-giudici/linea-tempo-patriarchi-giudici/`;
-
-const LIBRI: Record<string, [slug: string, numero: number]> = {
-  Genesi: ['genesi', 1],
-  Deuteronomio: ['deuteronomio', 5],
-  Proverbi: ['proverbi', 20],
-  Giovanni: ['giovanni', 43],
-  '2 Timoteo': ['2-timoteo', 55],
-  Ebrei: ['ebrei', 58],
-  '2 Pietro': ['2-pietro', 61],
-  Giuda: ['giuda', 65],
-  Rivelazione: ['rivelazione', 66],
-};
 
 /**
  * Le vite di Genesi 5 sulla linea del tempo (anni a.E.V., quindi negativi).
@@ -43,17 +30,6 @@ export const VITE: Vita[] = [
   { nome: 'Lamec', nasce: -3152, muore: -2375 },
   { nome: 'Noè', nasce: -2970, muore: -2020 },
 ];
-
-/** Fonte biblica con collegamento al versetto su jw.org. */
-export function b(libro: string, capitolo: number, versetti: string): Fonte {
-  const voce = LIBRI[libro];
-  if (!voce) throw new Error(`Libro biblico non previsto: ${libro}`);
-  const [slug, numero] = voce;
-  const primo = parseInt(versetti, 10);
-  const ancora = `v${numero}${String(capitolo).padStart(3, '0')}${String(primo).padStart(3, '0')}`;
-  const rif = libro === 'Giuda' ? `Giuda ${versetti}` : `${libro} ${capitolo}:${versetti}`;
-  return { rif, url: `${BIBBIA}/${slug}/${capitolo}/#${ancora}` };
-}
 
 export const F = {
   libro: { rif: 'Libro, cap. 1 «Camminò con Dio»', url: URL_CAPITOLO } as Fonte,
@@ -88,10 +64,6 @@ export const F = {
     url: `${BIBBIA}/ebrei/11/#v58011005`,
   } as Fonte,
 };
-
-function verso(rif: string, fonte: Fonte, testo: string, note?: string[]): Verso {
-  return { rif, testo, note, url: fonte.url ?? '' };
-}
 
 export const VERSI: Record<string, Verso> = {
   'gen-3-15': verso(

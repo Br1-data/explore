@@ -128,6 +128,15 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
     expect(Object.keys(cap.versi).filter((id) => !usati.has(id))).toEqual([]);
   });
 
+  it('fa pronunciare soltanto parole del testo biblico, alla lettera', () => {
+    const versi = Object.values(cap.versi).map((v) => v.testo);
+    for (const p of cap.ruoli.flatMap(passiDelRuolo)) {
+      if (p.t !== 'fx' || p.fx.k !== 'nastro') continue;
+      const parole = p.fx.testo.replace(/^…|…$/g, '').replace(/\.$/, '');
+      expect(versi.some((v) => v.includes(parole)), `«${p.fx.testo}»`).toBe(true);
+    }
+  });
+
   describe.each(cap.ruoli)('punto di vista: $nome', (ruolo) => {
     it('rimanda solo a contenuti che esistono', () => {
       const controlla = (p: Passo, dove: string): void => {
@@ -293,6 +302,49 @@ describe('Enoc: fedeltà al testo', () => {
     for (const p of passiDelRuolo(geova!)) {
       // Nessun nastro di parole pronunciate è attribuito a chi osserva.
       if (p.t === 'fx' && p.fx.k === 'nastro') expect(p.fx.chi).toBe('enoc');
+    }
+  });
+});
+
+describe('Iael: fedeltà al testo', () => {
+  const cap = CAPITOLI[17];
+  const tutte = cap.ruoli.flatMap(attivitaDel);
+  const classifica = (id: string) => {
+    const a = tutte.find((x) => x.id === id);
+    if (a?.tipo !== 'classifica') throw new Error(`manca la classifica ${id}`);
+    return a;
+  };
+
+  it('mette ogni particolare nel resoconto giusto (Giudici 4 o 5)', () => {
+    for (const v of classifica('resoconti').voci) {
+      for (const f of v.fonti) expect(f.rif, v.testo).toMatch(v.cat === 0 ? /^Giudici 4:/ : /^Giudici 5:/);
+    }
+  });
+
+  it('elenca le tribù come le ricorda il canto (Giudici 5:14-18)', () => {
+    const tribu = classifica('tribu').voci;
+    expect(tribu.filter((v) => v.cat === 0).map((v) => v.testo)).toEqual(['Efraim', 'Beniamino', 'Machir', 'Zabulon', 'Issacar', 'Neftali']);
+    expect(tribu.filter((v) => v.cat === 1).map((v) => v.testo)).toEqual(['Ruben', 'Galaad', 'Dan', 'Aser']);
+  });
+
+  it('cita alla lettera le domande di Sisera e la risposta di Iael', () => {
+    const testo = cap.versi['gdc-4-17'].testo;
+    for (const citazione of cap.dettagli['uomo-cercato'].testo.match(/«[^»]+»/g) ?? []) {
+      expect(testo).toContain(citazione.slice(1, -1).replace(/\.$/, ''));
+    }
+  });
+
+  it('non mostra il momento in cui Sisera viene ucciso', () => {
+    // Dove il racconto arriva a quel punto, la scena si oscura prima.
+    for (const ruolo of cap.ruoli) {
+      for (const scena of ruolo.scene) {
+        for (const p of scena.punti) {
+          const i = p.passi.findIndex((x) => x.t === 'narra' && /muore|morì/.test(x.testo));
+          if (i < 0) continue;
+          const prima = p.passi.slice(0, i).some((x) => x.t === 'fx' && x.fx.k === 'dissolvi' && x.fx.a === 1);
+          expect(prima, `${ruolo.id}/${p.id}`).toBe(true);
+        }
+      }
     }
   });
 });

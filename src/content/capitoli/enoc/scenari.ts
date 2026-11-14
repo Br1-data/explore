@@ -1,25 +1,11 @@
-import type { Oggetto, Scena } from '../../tipi';
+import { type Base, o, serie, taglia } from '../../scenografia';
+import type { Oggetto } from '../../tipi';
 
 /**
  * Scenografie condivise dai punti di vista del capitolo.
  * Sono ambientazioni generiche dell’epoca: gli unici elementi presi dal testo
  * sono quelli che Genesi 4:17-22 menziona (città, tende, bestiame, metalli).
  */
-
-type Base = Pick<Scena, 'larghezza' | 'ambiente' | 'seme' | 'oggetti' | 'suono'>;
-
-function o(tipo: string, x: number, extra: Partial<Oggetto> = {}): Oggetto {
-  return { tipo, x, ...extra };
-}
-
-function serie(tipo: string, xs: number[], extra: Partial<Oggetto> = {}): Oggetto[] {
-  return xs.map((x, i) => ({ tipo, x, variante: i % 3, ...extra }));
-}
-
-/** Accorcia una scenografia: scene brevi, poca strada tra un’azione e l’altra. */
-function taglia(base: Base, larghezza: number): Base {
-  return { ...base, larghezza, oggetti: base.oggetti.filter((x) => x.x < larghezza - 30) };
-}
 
 /** Il mondo intorno a Enoc: un insediamento al tramonto. */
 export function mondo(larghezza = 3600): Base {

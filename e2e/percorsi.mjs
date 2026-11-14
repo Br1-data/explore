@@ -1,18 +1,23 @@
-// Prova dal vero: gioca per intero ogni punto di vista del capitolo e verifica
-// che si arrivi alla conclusione con tutti i dettagli, senza errori in console.
+// Prova dal vero: gioca per intero ogni punto di vista dei capitoli giocabili e
+// verifica che si arrivi alla conclusione con tutti i dettagli, senza errori in console.
 //
 //   npm run build && npm run e2e
 //   BASE_URL=http://localhost:5173 npm run e2e      (server già avviato)
 //   SCHERMATE=e2e/schermate npm run e2e             (salva le schermate)
 //   VISTA=390x844 npm run e2e                       (prova a misura di telefono)
-//   RUOLI=enoc,geova npm run e2e                    (solo alcuni punti di vista)
+//   CAPITOLI=17 npm run e2e                         (solo alcuni capitoli)
+//   RUOLI=iael,geova npm run e2e                    (solo alcuni punti di vista)
 //   CHROMIUM=/percorso/chromium npm run e2e         (browser già installato altrove)
 
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
 
-const RUOLI = ['enoc', 'geova', 'matusalemme', 'empio'];
+/** I punti di vista di ogni capitolo giocabile (src/content/index.ts). */
+const PERCORSI = {
+  1: ['enoc', 'geova', 'matusalemme', 'empio'],
+  17: ['iael', 'geova', 'sisera', 'barac', 'debora', 'madre'],
+};
 const PORTA = 4317;
 const schermate = process.env.SCHERMATE;
 const [larghezza, altezza] = (process.env.VISTA ?? '1280x720').split('x').map(Number);
@@ -79,7 +84,7 @@ async function risolviAttivita(scheda, attivita) {
       await scheda.locator('[data-corretta]').click();
       break;
     case 'condotta':
-      // Prima una scelta diversa da quella di Enoc, per vedere come agivano gli altri.
+      // Prima una scelta diversa da quella del personaggio, per vedere come agivano gli altri.
       await scheda.locator('.opzione:not([data-fedele])').first().click();
       await scheda.locator('.esito-scelta__testo').waitFor();
       await scheda.locator('[data-fedele]').click();
@@ -128,7 +133,9 @@ async function risolviScheda(pagina, visti, ruolo) {
   await scheda.locator('.bottone--primario').click();
 }
 
-async function gioca(ruolo) {
+async function gioca(cap, id) {
+  // Nelle schermate e nei messaggi: «17-geova».
+  const ruolo = `${cap}-${id}`;
   console.log(`\n${ruolo}`);
   const contesto = await browser.newContext({
     viewport: { width: larghezza, height: altezza },
@@ -139,7 +146,7 @@ async function gioca(ruolo) {
   pagina.on('console', (m) => m.type() === 'error' && errori.push(`${ruolo}: ${m.text()}`));
   pagina.on('pageerror', (e) => errori.push(`${ruolo}: ${e.message}`));
 
-  await pagina.goto(`${base}/#/gioca/1/${ruolo}`);
+  await pagina.goto(`${base}/#/gioca/${cap}/${id}`);
   await pagina.waitForFunction(() => !!window.__partita);
   const guida = pagina.locator('.pannello .bottone--primario');
   if (await guida.count()) await guida.click();
@@ -216,7 +223,9 @@ async function provaComandi() {
   await pagina.locator('.inizio .bottone--primario').click();
   await pagina.locator('.capitolo').first().waitFor();
   verifica((await pagina.locator('.capitolo').count()) === 54, 'l’indice elenca i 54 capitoli del libro');
-  await pagina.locator('.capitolo--attivo').click();
+  const attivi = await pagina.locator('.capitolo--attivo').count();
+  verifica(attivi === Object.keys(PERCORSI).length, `l’indice segna come giocabili ${attivi} capitoli`);
+  await pagina.locator('.capitolo--attivo').first().click();
   await pagina.locator('.ruolo').first().waitFor();
   verifica((await pagina.locator('.ruolo').count()) === 4, 'il capitolo di Enoc offre quattro punti di vista');
   await pagina.locator('.ruolo[data-ruolo="enoc"] .bottone--primario').click();
@@ -255,7 +264,11 @@ async function provaComandi() {
 
 try {
   await provaComandi();
-  for (const ruolo of process.env.RUOLI?.split(',') ?? RUOLI) await gioca(ruolo);
+  const capitoli = process.env.CAPITOLI?.split(',') ?? Object.keys(PERCORSI);
+  const soloRuoli = process.env.RUOLI?.split(',');
+  for (const cap of capitoli) {
+    for (const id of PERCORSI[cap] ?? []) if (!soloRuoli || soloRuoli.includes(id)) await gioca(cap, id);
+  }
   verifica(errori.length === 0, `nessun errore in console${errori.length ? `: ${errori.join(' | ')}` : ''}`);
 } catch (e) {
   console.error(e);

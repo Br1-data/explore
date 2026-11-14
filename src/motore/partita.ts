@@ -265,6 +265,8 @@ export class Partita {
         x = centro + lato * (20 + Math.floor(i / 2) * 34 + r() * 6);
         verso = lato < 0 ? 1 : -1;
         posa = i < 4 ? 'pugno' : 'indica';
+      } else if (folla.gruppo === 'danza') {
+        posa = 'alza';
       }
       this.persone.push({
         stile: stileFolla(folla.seme * 31 + i, { donna, bimbo, armato, torcia }),
@@ -513,6 +515,8 @@ export class Partita {
       }
       case 'nastro': {
         const dur = fx.dur ?? 4;
+        // Una nuova frase dello stesso personaggio prende il posto della precedente.
+        this.nastri = this.nastri.filter((n) => n.chi !== fx.chi);
         this.nastri.push({ chi: fx.chi, testo: fx.testo, t: 0, dur: dur + 0.6 });
         this.attendi(dur, avanti, true);
         break;
@@ -593,7 +597,7 @@ export class Partita {
       g.verso = dir > 0 ? 1 : -1;
       if (!osserva) {
         g.fase += Math.abs(g.x - prima) * 0.064;
-        if (g.posa !== 'proclama' && g.posa !== 'sdraiato') g.posa = 'cammina';
+        if (g.posa !== 'proclama' && g.posa !== 'sdraiato' && g.posa !== 'coperto') g.posa = 'cammina';
         if (this.t - this.ultimoPasso > 0.34 && g.x !== prima) {
           this.ultimoPasso = this.t;
           this.ui.suono?.('passo');
@@ -626,7 +630,7 @@ export class Partita {
           a.fase += Math.abs(passo) * 0.064;
           a.posa = 'cammina';
         }
-      } else if (a.def.percorso && a.posa !== 'sdraiato' && a.posa !== 'proclama') {
+      } else if (a.def.percorso && a.posa !== 'sdraiato' && a.posa !== 'coperto' && a.posa !== 'proclama') {
         const [x0, x1] = a.def.percorso;
         const passo = a.giro * 42 * dt;
         a.x += passo;
@@ -671,6 +675,15 @@ export class Partita {
         continue;
       }
       if (f.gruppo === 'invoca') continue;
+      if (f.gruppo === 'danza') {
+        // Un girotondo sul posto, a braccia alzate o a passo di danza.
+        const k = this.t * 1.5 + p.indice * 0.9;
+        p.x = p.casa + Math.sin(k) * 22;
+        p.verso = Math.cos(k) > 0 ? 1 : -1;
+        p.fase += dt * 6;
+        p.posa = Math.sin(this.t * 2.3 + p.indice * 1.3) > 0 ? 'alza' : 'cammina';
+        continue;
+      }
 
       if (f.reagisce && agit > p.soglia) {
         // Chi è toccato dal messaggio si volta verso chi parla.
@@ -953,7 +966,9 @@ export class Partita {
       ctx.globalAlpha = 1;
     }
 
-    // Sole o luna.
+    // Sole o luna, nascosti dalle nuvole quando piove.
+    const coperto = this.vars['pioggia'] ?? 0;
+    ctx.globalAlpha = 1 - coperto * 0.92;
     const ax = P.astro.x * vw;
     const alone = ctx.createRadialGradient(ax, P.astro.y, P.astro.r * 0.4, ax, P.astro.y, P.astro.r * 4.4);
     alone.addColorStop(0, alfa(P.astro.alone, 0.5));
@@ -964,6 +979,15 @@ export class Partita {
     ctx.beginPath();
     ctx.arc(ax, P.astro.y, P.astro.r, 0, Math.PI * 2);
     ctx.fill();
+    ctx.globalAlpha = 1;
+    if (coperto > 0.01) {
+      // Una coltre grigia di nubi da pioggia.
+      const nubi = ctx.createLinearGradient(0, 0, 0, 330);
+      nubi.addColorStop(0, `rgba(58,64,78,${0.85 * coperto})`);
+      nubi.addColorStop(1, `rgba(96,102,116,${0.45 * coperto})`);
+      ctx.fillStyle = nubi;
+      ctx.fillRect(0, 0, vw, 330);
+    }
 
     // Nuvole lente.
     ctx.fillStyle = alfa(P.nuvole, 0.32);
@@ -1206,6 +1230,25 @@ export class Partita {
     if (agit > 0.02) {
       ctx.fillStyle = `rgba(150,30,20,${agit * 0.1})`;
       ctx.fillRect(0, 0, vw, ALTEZZA);
+    }
+    // Pioggia: cielo coperto e scrosci (variabile «pioggia»).
+    const pioggia = this.vars['pioggia'] ?? 0;
+    if (pioggia > 0.01) {
+      ctx.fillStyle = `rgba(34,42,58,${pioggia * 0.36})`;
+      ctx.fillRect(0, 0, vw, ALTEZZA);
+      ctx.strokeStyle = `rgba(206,216,232,${0.42 * pioggia})`;
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      const n = Math.round(170 * pioggia);
+      for (let i = 0; i < n; i++) {
+        const h = Math.abs(Math.sin(i * 12.9898)) * 43758.5453;
+        const k = h - Math.floor(h);
+        const x = (((i * 97.31 - this.camera.x * 0.9 + this.t * 70) % (vw + 60)) + vw + 60) % (vw + 60) - 30;
+        const y = ((i * 53.7 + this.t * (820 + k * 300)) % (ALTEZZA + 60)) - 40;
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 5, y + 20 + k * 8);
+      }
+      ctx.stroke();
     }
     // Vignettatura, più stretta dove la folla preme.
     let pressione = 0;
