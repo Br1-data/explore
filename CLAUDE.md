@@ -281,6 +281,10 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
   sta suonando.
 - Toccare la scena vicino a un punto visibile ci porta e lo apre (`vaiVerso`).
 - Il sito è statico (`base: './'`): funziona anche sotto un sottopercorso.
+- Aggiornamenti: chi l’ha installato sulla schermata Home riapre il gioco senza
+  ricaricarlo, quindi all’avvio e a ogni ritorno `App.cercaAggiornamento()` confronta lo
+  script dell’`index.html` pubblicato con quello in uso e, se è cambiato, ricarica (mai
+  durante un racconto: aspetta il cambio di schermata). La prova dal vero lo verifica.
 
 ## Rami e pubblicazione
 

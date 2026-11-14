@@ -243,7 +243,22 @@ async function provaComandi() {
   console.log('\ncomandi');
   const pagina = await browser.newPage({ viewport: { width: larghezza, height: altezza } });
   pagina.on('pageerror', (e) => errori.push(`comandi: ${e.message}`));
-  await pagina.goto(`${base}/`);
+  await pagina.goto(`${base}/`, { waitUntil: 'networkidle' });
+  // Esce una versione nuova mentre il gioco è aperto (webapp sulla schermata Home):
+  // tornandoci, si ricarica da sé.
+  const indice = new URL(pagina.url()).pathname;
+  await pagina.route(
+    (u) => u.pathname === indice,
+    async (route) => {
+      const r = await route.fetch();
+      const html = (await r.text()).replace(/(<script[^>]+type="module"[^>]+src="[^"]+)/, '$1?v=nuova');
+      await route.fulfill({ response: r, body: html });
+    },
+    { times: 1 },
+  );
+  const ricaricata = pagina.waitForEvent('load', { timeout: 5000 }).then(() => true, () => false);
+  await pagina.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  verifica(await ricaricata, 'con una versione nuova pubblicata, tornando nel gioco si aggiorna');
   await pagina.locator('.inizio .bottone--primario').click();
   await pagina.locator('.capitolo').first().waitFor();
   verifica((await pagina.locator('.capitolo').count()) === 54, 'l’indice elenca i 54 capitoli del libro');

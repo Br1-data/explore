@@ -48,6 +48,7 @@ export class App {
   private tasti = new Set<string>();
   private smonta: (() => void)[] = [];
   private aggiornaConteggio: (() => void) | null = null;
+  private nuovaVersione = false;
 
   constructor(radice: HTMLElement) {
     radice.append(this.schermo, this.gioco, this.strato);
@@ -63,8 +64,30 @@ export class App {
       const nascosto = document.hidden;
       this.partita?.pausa(nascosto || !this.strato.hidden);
       this.suono.sospendi(nascosto);
+      if (!nascosto) void this.cercaAggiornamento();
     });
     this.instrada();
+    void this.cercaAggiornamento();
+  }
+
+  /**
+   * Installato sulla schermata Home, il gioco si riapre senza ricaricarsi: all'avvio e a
+   * ogni ritorno si guarda se è uscita una versione nuova e la si carica, ma non durante
+   * un racconto o con un pannello aperto (si aspetta il prossimo cambio di schermata).
+   */
+  private async cercaAggiornamento(): Promise<void> {
+    const modulo = (d: Document) => d.querySelector('script[type="module"][src]')?.getAttribute('src');
+    try {
+      const testo = await (await fetch(location.pathname, { cache: 'no-cache' })).text();
+      const nuovo = modulo(new DOMParser().parseFromString(testo, 'text/html'));
+      // Una sola ricarica per versione: se la cache ridà la vecchia, niente giri a vuoto.
+      if (!nuovo || nuovo === modulo(document) || sessionStorage.getItem('nei-loro-panni.versione') === nuovo) return;
+      sessionStorage.setItem('nei-loro-panni.versione', nuovo);
+      this.nuovaVersione = true;
+      if (!this.partita && this.strato.hidden) location.reload();
+    } catch {
+      // Senza rete si riprova al prossimo ritorno.
+    }
   }
 
   // ————————————————————————— Navigazione —————————————————————————
@@ -75,6 +98,7 @@ export class App {
   }
 
   private instrada(): void {
+    if (this.nuovaVersione) return location.reload();
     const parti = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
     this.chiudiStrato();
     this.fermaTutto();
