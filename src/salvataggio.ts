@@ -5,7 +5,7 @@
  */
 
 /** Indirizzo dell’app web dell’archivio (Apps Script → Distribuisci → App web). */
-export const URL_ARCHIVIO = 'https://script.google.com/macros/s/DA-CONFIGURARE/exec';
+export const URL_ARCHIVIO = 'https://script.google.com/macros/s/AKfycbxqt4EBY6zrTTL0tQkDci5eE1J4KxEKFf_q27Wm-2XA-FXnWeuk2WfPmtpqFjfouhY-/exec';
 const SESSIONE = 'nei-loro-panni.sessione';
 /** Progressi salvati nel browser prima degli account: passano al primo account creato. */
 const VECCHI = 'nei-loro-panni.v1';
