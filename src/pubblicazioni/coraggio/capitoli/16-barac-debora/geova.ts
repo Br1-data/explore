@@ -119,7 +119,21 @@ export const geova: Ruolo = {
           x: 600,
           tipo: 'agisci',
           etichetta: 'Va’ davanti a Barac',
-          passi: [{ t: 'verso', id: 'gdc-4-14', evidenzia: ['Geova non sta forse andando davanti a te?'] }],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'trova',
+                id: 'tre-attribuzioni',
+                consegna: 'In questi due versetti la vittoria viene attribuita a Geova tre volte. Tocca le tre frasi.',
+                rif: 'Giudici 4:14, 15',
+                testo:
+                  'Debora disse ora a Bàrac: “Va’, perché questo è il giorno in cui [[Geova ti darà in mano Sìsera]]. [[Geova non sta forse andando davanti a te?]]” E Bàrac scese dal monte Tàbor alla testa dei 10.000 uomini. Allora [[Geova gettò nello scompiglio Sìsera]], tutti i suoi carri da guerra e tutto l’esercito, consegnandoli alla spada di Bàrac. Infine Sìsera saltò giù dal carro e fuggì a piedi.',
+                spiegazione: 'Il racconto lo dice prima che la battaglia cominci e mentre si combatte.',
+                dettaglio: 'tre-volte',
+              },
+            },
+          ],
         },
         {
           id: 'scompiglio',
@@ -129,7 +143,18 @@ export const geova: Ruolo = {
           richiede: ['davanti'],
           passi: [
             { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 3 } },
-            { t: 'verso', id: 'gdc-5-20', evidenzia: ['Dal cielo combatterono le stelle', 'Il Chìson li spazzò via'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'stelle',
+                consegna: 'Debora e Barac canteranno questo momento. Completa le parole del canto.',
+                verso: 'gdc-5-20',
+                testo:
+                  'Dal cielo combatterono le [[stelle]], dalle loro orbite combatterono contro Sìsera. Il Chìson li [[spazzò]] via, l’antico torrente, il torrente Chìson. Calpestasti i [[forti]], anima mia.',
+                distrattori: ['nubi', 'portò', 'carri'],
+              },
+            },
             det('stelle'),
             det('chison'),
           ],
@@ -161,7 +186,6 @@ export const geova: Ruolo = {
                 dettaglio: 'merito',
               },
             },
-            det('tre-volte'),
           ],
         },
         {

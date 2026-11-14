@@ -53,7 +53,18 @@ export const volontario: Ruolo = {
           tipo: 'esamina',
           etichetta: 'La porta e la strada',
           passi: [
-            { t: 'verso', id: 'gdc-5-6', evidenzia: ['le strade erano deserte', 'Non si vedeva né scudo né lancia tra quarantamila in Israele'] },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'strade',
+                consegna: 'Il canto di Debora descriverà questi anni. Completa le sue parole.',
+                verso: 'gdc-5-6',
+                testo:
+                  'Ai giorni di Samgàr, figlio di Anàt, ai giorni di Iàel, le strade erano [[deserte]]; si viaggiava per sentieri isolati. Non c’erano più abitanti nei [[villaggi]] d’Israele; non ce n’erano più, finché sorsi io, Debora, finché sorsi come madre in Israele. Si scelsero nuovi dèi, e allora ci fu guerra alle porte. Non si vedeva né [[scudo]] né lancia tra quarantamila in Israele.',
+                distrattori: ['affollate', 'campi', 'spada'],
+              },
+            },
             det('paura'),
           ],
         },

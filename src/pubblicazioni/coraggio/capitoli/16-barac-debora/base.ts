@@ -345,8 +345,8 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   ),
   d(
     'tre-volte',
-    'Tre volte',
-    'In due soli versetti la vittoria viene attribuita a Geova tre volte. Nessuno dei 10.000 volontari poteva vantarsi di aver liberato il popolo.',
+    'Nessuno poteva vantarsi',
+    'Nessuno dei 10.000 volontari poteva vantarsi di aver liberato il popolo. Le piogge torrenziali che misero fuori uso 900 carri caddero proprio nel posto giusto e al momento giusto.',
     'libro',
     [F.w17, b('Giudici', 4, '14, 15')],
   ),

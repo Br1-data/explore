@@ -282,13 +282,18 @@ ritmo in `RITMI` e, se viene da un oggetto, la voce in `SUONI_OGGETTI`; poi si m
 il volume rispetto agli altri. In `e2e/percorsi.mjs` si aggiungono a `SUONI_ATTESI`
 le scene con sorgenti caratteristiche: la prova controlla che si sentano davvero.
 
-Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia:
+Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia. Il committente
+apprezza i «mini rompicapi» (completa i versetti, associa, ecc.): il capitolo 16 ne ha
+di più, almeno uno nuovo per ogni punto di vista, in prova; se lo convince diventa lo
+standard per tutti i capitoli. Dove un punto mostra un versetto con `evidenza`, spesso
+può diventare un `completa` o un `trova`.
 
 | Tipo         | Che cosa fa chi gioca                                   | Note |
 | ------------ | ------------------------------------------------------- | ---- |
 | `ordina`     | tocca le voci in ordine; `distrattori` da scartare      | genealogie, sequenze |
 | `componi`    | ricompone un testo a pezzi                              | testo alla lettera |
-| `trova`      | tocca nel testo le parti tra `[[ ]]`                    | ripetizioni, parole chiave |
+| `trova`      | tocca nel testo le parti tra `[[ ]]`                    | il testo è un versetto alla lettera (test); può rivelare un `dettaglio` |
+| `associa`    | unisce ogni voce alla sua coppia (una alla volta)       | es. tribù e ciò che ne dice il canto; le citazioni «» alla lettera (test) |
 | `completa`   | riempie le parole mancanti di un versetto               | il testo senza `[[ ]]` = il versetto (test) |
 | `classifica` | mette ogni voce in una di due categorie                 | ogni voce con fonti; può rivelare un `dettaglio` |
 | `linea`      | porta il cursore su un anno della linea del tempo       | `meta` = una nascita o morte; anni a.E.V. negativi |

@@ -239,9 +239,14 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
           if (id) expect(cap.dettagli[id], `${a.id}: dettaglio ${id}`).toBeDefined();
         };
         switch (a.tipo) {
-          case 'trova':
+          case 'trova': {
             expect(a.testo.match(/\[\[.+?\]\]/g)?.length ?? 0, a.id).toBeGreaterThan(0);
+            // Il testo in cui si cerca è un versetto (o un suo brano) alla lettera.
+            const brano = a.testo.replace(/\[\[|\]\]/g, '').replace(/^…|…$/g, '').replace(/\.$/, '');
+            expect(Object.values(cap.versi).some((v) => v.testo.includes(brano)), a.id).toBe(true);
+            rivela(a.dettaglio);
             break;
+          }
           case 'componi':
             expect(a.pezzi.length, a.id).toBeGreaterThan(2);
             break;
@@ -283,6 +288,22 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
             for (const v of a.voci) fontiValide(v.fonti, `${a.id}: «${v.testo}»`);
             rivela(a.dettaglio);
             break;
+          case 'associa': {
+            expect(a.coppie.length, a.id).toBeGreaterThan(2);
+            // Ogni voce si unisce a una sola coppia: niente doppioni a sinistra né a destra.
+            expect(new Set(a.coppie.map((c) => c.a)).size, a.id).toBe(a.coppie.length);
+            expect(new Set(a.coppie.map((c) => c.b)).size, a.id).toBe(a.coppie.length);
+            for (const c of a.coppie) fontiValide(c.fonti, `${a.id}: «${c.a}»`);
+            // Le parole tra «» sono citazioni: devono stare alla lettera in un versetto del capitolo.
+            for (const c of a.coppie) {
+              for (const m of c.b.match(/«[^»]+»/g) ?? []) {
+                const citazione = m.slice(1, -1);
+                expect(Object.values(cap.versi).some((v) => v.testo.includes(citazione)), `${a.id}: ${m}`).toBe(true);
+              }
+            }
+            rivela(a.dettaglio);
+            break;
+          }
           case 'linea': {
             // La meta è una nascita o una morte di chi compare sulla linea.
             const eventi = a.persone.flatMap((p) => [p.nasce, p.muore]);
@@ -359,10 +380,17 @@ describe('Barac e Debora, Iael: fedeltà al testo', () => {
     }
   });
 
-  it('elenca le tribù come le ricorda il canto (Giudici 5:14-18)', () => {
-    const tribu = classifica(16, 'tribu').voci;
-    expect(tribu.filter((v) => v.cat === 0).map((v) => v.testo)).toEqual(['Efraim', 'Beniamino', 'Machir', 'Zabulon', 'Issacar', 'Neftali']);
-    expect(tribu.filter((v) => v.cat === 1).map((v) => v.testo)).toEqual(['Ruben', 'Galaad', 'Dan', 'Aser']);
+  it('associa ogni tribù a ciò che ne dice il canto, nella sua stessa frase (Giudici 5:14-18)', () => {
+    const a = libro(16).ruoli.flatMap(attivitaDel).find((x) => x.id === 'tribu');
+    if (a?.tipo !== 'associa') throw new Error('manca l’associazione delle tribù');
+    expect(a.coppie.map((c) => c.a)).toEqual(['Machir', 'Issacar', 'Ruben', 'Galaad', 'Dan', 'Aser', 'Zabulon']);
+    // La citazione e il nome della tribù stanno nella stessa frase del canto.
+    const canto = libro(16).versi['gdc-5-1'].testo.normalize('NFD').replace(/\p{M}/gu, '');
+    for (const c of a.coppie) {
+      const citazione = c.b.slice(1, -1).normalize('NFD').replace(/\p{M}/gu, '');
+      const frase = canto.split(/(?<=[.;!])\s+/).find((f) => f.includes(citazione)) ?? '';
+      expect(frase, `${c.a}: ${c.b}`).toContain(c.a);
+    }
   });
 
   it('divide i capitoli come il libro: al 16 Giudici 4:1-16, 23, 24 e 5:1-23; al 17 la tenda di Iael e 5:24-31', () => {

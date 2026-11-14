@@ -90,6 +90,17 @@ export type Attivita =
       /** Testo in cui cercare: le parti da trovare sono racchiuse tra [[ ]]. */
       testo: string;
       spiegazione: string;
+      dettaglio?: string;
+    }
+  | {
+      /** Ogni voce va unita alla sua coppia (es. una tribù e ciò che ne dice il canto). */
+      tipo: 'associa';
+      id: string;
+      consegna: string;
+      /** Le coppie giuste, nell’ordine del testo: `a` si presenta una alla volta, `b` si sceglie. */
+      coppie: { a: string; b: string; fonti: Fonte[] }[];
+      spiegazione?: string;
+      dettaglio?: string;
     }
   | {
       tipo: 'ordina';

@@ -132,11 +132,32 @@ export const sisera: Ruolo = {
           ],
         },
         {
+          id: 're',
+          x: 1700,
+          tipo: 'leggi',
+          etichetta: 'I re che vennero con te',
+          richiede: ['pantano'],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'domanda',
+                id: 're-di-canaan',
+                domanda: 'Il canto di Debora ricorderà i re di Canaan che combatterono a Taanac, presso le acque di Meghiddo. Che cosa dice che ottennero?',
+                opzioni: ['Un grande bottino di carri e cavalli', 'Nessun bottino d’argento', 'Le terre di Zabulon e Neftali'],
+                corretta: 1,
+                spiegazione: '«Vennero re e combatterono […] Non presero alcun bottino d’argento.»',
+                fonti: [b('Giudici', 5, '19')],
+              },
+            },
+          ],
+        },
+        {
           id: 'salta',
           x: 2300,
           tipo: 'agisci',
           etichetta: 'Salta giù dal carro',
-          richiede: ['forze'],
+          richiede: ['forze', 're'],
           passi: [det('abbandona')],
         },
       ],

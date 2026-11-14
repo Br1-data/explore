@@ -295,6 +295,7 @@ export class Scheda {
             if (trovati === totale) {
               testo.classList.add('trova--finito');
               corpo.append(h('p', { class: 'attivita__spiegazione' }, a.spiegazione));
+              if (a.dettaglio) corpo.append(this.rivela(a.dettaglio));
               risolta();
             }
           };
@@ -503,6 +504,60 @@ export class Scheda {
             { class: 'cesti' },
             a.categorie.map((nome, c) => h('section', { class: 'cesto' }, h('h4', null, nome), liste[c])),
           ),
+        );
+        mostra();
+        return;
+      }
+
+      case 'associa': {
+        // Una voce alla volta (come in «classifica»), da unire alla sua coppia fra quelle rimaste.
+        const ordine = mescolaStabile(a.coppie, a.id);
+        let i = 0;
+        const carta = h('p', { class: 'carta-voce', 'aria-live': 'polite' });
+        const stato = h('p', { class: 'attivita__stato' });
+        const fatte = h('ul', { class: 'coppie' });
+        const scelte = mescolaStabile(a.coppie, `${a.id}:b`).map((coppia) => {
+          const b = h('button', { class: 'opzione opzione--coppia', type: 'button' }, coppia.b);
+          b.addEventListener('click', () => {
+            if (coppia !== ordine[i]) {
+              scuoti(b);
+              return;
+            }
+            suono.giusto();
+            b.remove();
+            fatte.append(
+              h('li', { 'data-ordine': a.coppie.indexOf(coppia) }, h('b', null, coppia.a), h('span', null, coppia.b, elencoFonti(coppia.fonti, ''))),
+            );
+            i++;
+            mostra();
+          });
+          return { coppia, b };
+        });
+        const mostra = (): void => {
+          if (i >= ordine.length) {
+            carta.remove();
+            stato.textContent = '';
+            // Finito: le coppie si rileggono nell’ordine del testo.
+            fatte.append(...[...fatte.children].sort((x, y) => Number((x as HTMLElement).dataset['ordine']) - Number((y as HTMLElement).dataset['ordine'])));
+            if (a.spiegazione) corpo.append(h('p', { class: 'attivita__spiegazione' }, a.spiegazione));
+            if (a.dettaglio) corpo.append(this.rivela(a.dettaglio));
+            risolta();
+            return;
+          }
+          carta.textContent = ordine[i].a;
+          for (const { coppia, b } of scelte) {
+            if (coppia === ordine[i]) b.dataset['giusta'] = '1';
+            else delete b.dataset['giusta'];
+          }
+          stato.textContent = `${i + 1} di ${ordine.length}`;
+        };
+        corpo.append(
+          testa('Associa'),
+          h('p', { class: 'scheda__consegna' }, a.consegna),
+          carta,
+          h('div', { class: 'associa__scelte' }, scelte.map((s) => s.b)),
+          stato,
+          fatte,
         );
         mostra();
         return;

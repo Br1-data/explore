@@ -1440,6 +1440,41 @@ mark {
   font-size: 0.72rem;
 }
 
+/* Associa */
+
+.associa__scelte {
+  display: grid;
+  gap: 8px;
+}
+
+.opzione--coppia {
+  font-size: 0.95rem;
+}
+
+.coppie {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.coppie li {
+  display: grid;
+  grid-template-columns: minmax(5.5em, 28%) 1fr;
+  gap: 10px;
+  align-items: baseline;
+  padding: 0.45em 0.7em;
+  border-radius: 10px;
+  background: var(--carta-2);
+  font-size: 0.92rem;
+}
+
+.coppie .fonti {
+  margin: 0.15em 0 0;
+  font-size: 0.72rem;
+}
+
 /* Linea del tempo */
 
 .linea__cursore {

@@ -141,6 +141,13 @@ async function risolviAttivita(scheda, attivita) {
         await scheda.locator('.classifica__scelte [data-giusta]').click();
       }
       break;
+    case 'associa':
+      // Prima una coppia sbagliata, per vedere che non viene accettata.
+      await scheda.locator('.associa__scelte .opzione:not([data-giusta])').first().click();
+      while (await scheda.locator('.associa__scelte [data-giusta]').count()) {
+        await scheda.locator('.associa__scelte [data-giusta]').click();
+      }
+      break;
     case 'linea': {
       const cursore = scheda.locator('.linea__scorri');
       await cursore.evaluate((el) => {
