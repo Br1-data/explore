@@ -212,7 +212,7 @@ async function gioca(cap, id) {
   pagina.on('console', (m) => m.type() === 'error' && errori.push(`${ruolo}: ${m.text()}`));
   pagina.on('pageerror', (e) => errori.push(`${ruolo}: ${e.message}`));
 
-  await pagina.goto(`${base}/#/gioca/${cap}/${id}`);
+  await pagina.goto(`${base}/#/coraggio/${cap}/${id}`);
   await pagina.waitForFunction(() => !!window.__partita);
   const guida = pagina.locator('.pannello .bottone--primario');
   if (await guida.count()) await guida.click();
@@ -221,7 +221,7 @@ async function gioca(cap, id) {
   let scena = -1;
   let passi = 0;
   const limite = Date.now() + 240_000;
-  while (!pagina.url().includes('#/fine/')) {
+  while (!pagina.url().endsWith('/fine')) {
     if (Date.now() > limite) throw new Error(`${ruolo}: tempo scaduto (scena ${scena})`);
     if (await pagina.locator('.scheda').count()) {
       await risolviScheda(pagina, visti, ruolo);
@@ -282,8 +282,8 @@ async function gioca(cap, id) {
   await scatta(pagina, `${ruolo}-quaderno`);
   // …e l’archivio li conserva nell’account.
   await pagina.waitForTimeout(2500);
-  const nellArchivio = salvati(utente)?.dettagli?.[cap]?.length ?? 0;
-  verifica(nellArchivio === fatti && salvati(utente).ruoli[`${cap}:${id}`]?.finito, `l’account conserva i ${nellArchivio} dettagli e il racconto finito`);
+  const nellArchivio = salvati(utente)?.dettagli?.[`coraggio:${cap}`]?.length ?? 0;
+  verifica(nellArchivio === fatti && salvati(utente).ruoli[`coraggio:${cap}:${id}`]?.finito, `l’account conserva i ${nellArchivio} dettagli e il racconto finito`);
   await contesto.close();
 }
 
@@ -369,6 +369,10 @@ async function provaComandi() {
   await pagina.locator('button[value="entra"]').click();
   await pagina.locator('.esci').waitFor();
   verifica(salvati('prova')?.guidaVista === true, 'si esce e si rientra; l’account ricorda la guida già vista');
+  // Gli indirizzi della prima versione (un solo libro) portano ancora allo stesso posto.
+  await pagina.goto(`${base}/#/capitolo/16`);
+  await pagina.locator('.ruolo').first().waitFor();
+  verifica(pagina.url().endsWith('#/coraggio/16'), `un vecchio indirizzo porta al capitolo (${new URL(pagina.url()).hash})`);
   await pagina.close();
 }
 

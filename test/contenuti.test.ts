@@ -1,32 +1,49 @@
 import { describe, expect, it } from 'vitest';
-import { CAPITOLI, dettagliDelRuolo, passiDelRuolo, sensazioniDelRuolo } from '../src/content';
-import { MESSAGGIO, MESSAGGIO_INTERO, VITE } from '../src/content/capitoli/enoc/base';
-import { NASTRO } from '../src/content/capitoli/enoc/enoc';
-import { PARTI, TOTALE_CAPITOLI, URL_LIBRO } from '../src/content/libro';
-import type { Attivita, Fonte, Passo, Ruolo } from '../src/content/tipi';
+import { capitoloDi, dettagliDelRuolo, passiDelRuolo, pubblicazione, PUBBLICAZIONI, sensazioniDelRuolo, totaleCapitoli, tuttiICapitoli } from '../src/contenuti';
+import { MESSAGGIO, MESSAGGIO_INTERO, VITE } from '../src/pubblicazioni/coraggio/capitoli/01-enoc/base';
+import { NASTRO } from '../src/pubblicazioni/coraggio/capitoli/01-enoc/enoc';
+import type { Attivita, Fonte, Passo, Ruolo } from '../src/contenuti/tipi';
 import { ARTI } from '../src/motore/arte';
-import { STILI } from '../src/motore/figure';
 import { TIPI_OGGETTO } from '../src/motore/oggetti';
 import { SUONI_OGGETTI } from '../src/motore/suono';
 import { AMBIENTI } from '../src/motore/tavolozze';
-import { ID_SCHEMI } from '../src/ui/schemi';
 
 const attivitaDel = (ruolo: Ruolo): Attivita[] => passiDelRuolo(ruolo).flatMap((p) => (p.t === 'attivita' ? [p.a] : []));
 
-const capitoli = Object.values(CAPITOLI);
+const capitoli = tuttiICapitoli();
+const coraggio = pubblicazione('coraggio')!;
+/** Un capitolo del libro «Cammina coraggiosamente con Dio». */
+const libro = (numero: number) => capitoloDi(coraggio, numero)!;
 
 describe('indice del libro', () => {
   it('elenca i 54 capitoli in tre parti, numerati di seguito', () => {
-    expect(PARTI.map((p) => p.capitoli.length)).toEqual([21, 19, 14]);
-    expect(TOTALE_CAPITOLI).toBe(54);
-    expect(PARTI.flatMap((p) => p.capitoli.map((c) => c.numero))).toEqual(Array.from({ length: 54 }, (_, i) => i + 1));
+    expect(coraggio.parti.map((p) => p.capitoli.length)).toEqual([21, 19, 14]);
+    expect(totaleCapitoli(coraggio)).toBe(54);
+    expect(coraggio.parti.flatMap((p) => p.capitoli.map((c) => c.numero))).toEqual(Array.from({ length: 54 }, (_, i) => i + 1));
   });
 
   it('collega ogni capitolo al testo del libro su jw.org', () => {
-    for (const c of PARTI.flatMap((p) => p.capitoli)) {
-      expect(c.url.startsWith(URL_LIBRO), `${c.numero} ${c.nome}`).toBe(true);
+    for (const c of coraggio.parti.flatMap((p) => p.capitoli)) {
+      expect(c.url.startsWith(coraggio.url), `${c.numero} ${c.nome}`).toBe(true);
       expect(c.nome.length).toBeGreaterThan(1);
       expect(c.titolo.length).toBeGreaterThan(3);
+    }
+  });
+});
+
+describe('pubblicazioni', () => {
+  it('hanno id distinti e capitoli che stanno nel loro indice', () => {
+    const ids = PUBBLICAZIONI.map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const pub of PUBBLICAZIONI) {
+      const indice = new Set(pub.parti.flatMap((p) => p.capitoli.map((c) => c.numero)));
+      const numeri = pub.capitoli.map((c) => c.numero);
+      expect(new Set(numeri).size, pub.id).toBe(numeri.length);
+      for (const cap of pub.capitoli) {
+        expect(cap.pubblicazione, `${pub.id} ${cap.numero}`).toBe(pub.id);
+        expect(indice.has(cap.numero), `${pub.id} ${cap.numero}`).toBe(true);
+      }
+      expect(capitoloDi(pub, pub.vetrina.capitolo)?.personaggi[pub.vetrina.stile], `${pub.id}: vetrina`).toBeDefined();
     }
   });
 });
@@ -160,11 +177,11 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
       const controlla = (p: Passo, dove: string): void => {
         if (p.t === 'dettaglio') expect(cap.dettagli[p.id], `${dove}: dettaglio ${p.id}`).toBeDefined();
         if (p.t === 'senti') expect(cap.sensazioni[p.id], `${dove}: sensazione ${p.id}`).toBeDefined();
-        if (p.t === 'schema') expect(ID_SCHEMI, dove).toContain(p.id);
         if (p.t === 'narra' && p.arte) expect(ARTI, dove).toContain(p.arte);
       };
       passiDelRuolo(ruolo).forEach((p) => controlla(p, ruolo.id));
-      if (ruolo.modo === 'cammina') expect(STILI[ruolo.stile], ruolo.stile).toBeDefined();
+      if (ruolo.modo === 'cammina') expect(cap.personaggi[ruolo.stile], ruolo.stile).toBeDefined();
+      for (const a of ruolo.scene.flatMap((s) => s.attori ?? [])) expect(cap.personaggi[a.stile], `attore ${a.id}: ${a.stile}`).toBeDefined();
     });
 
     it('ha scene percorribili fino in fondo', () => {
@@ -282,7 +299,7 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
 });
 
 describe('Enoc: fedeltà al testo', () => {
-  const cap = CAPITOLI[1];
+  const cap = libro(1);
   const giuda = cap.versi['giuda-14'].testo;
 
   it('riporta il messaggio di Enoc parola per parola (Giuda 14, 15)', () => {
@@ -326,7 +343,7 @@ describe('Enoc: fedeltà al testo', () => {
 
 describe('Barac e Debora, Iael: fedeltà al testo', () => {
   const classifica = (numero: number, id: string) => {
-    const a = CAPITOLI[numero].ruoli.flatMap(attivitaDel).find((x) => x.id === id);
+    const a = libro(numero).ruoli.flatMap(attivitaDel).find((x) => x.id === id);
     if (a?.tipo !== 'classifica') throw new Error(`manca la classifica ${id}`);
     return a;
   };
@@ -357,7 +374,7 @@ describe('Barac e Debora, Iael: fedeltà al testo', () => {
       [16, nel16],
       [17, nel17],
     ] as const) {
-      const cap = CAPITOLI[numero];
+      const cap = libro(numero);
       const rif = [
         ...Object.values(cap.versi).map((v) => v.rif),
         ...Object.values(cap.dettagli).flatMap((d) => d.fonti.map((f) => f.rif)),
@@ -370,7 +387,7 @@ describe('Barac e Debora, Iael: fedeltà al testo', () => {
   });
 
   it('cita alla lettera le domande di Sisera e la risposta di Iael', () => {
-    const cap = CAPITOLI[17];
+    const cap = libro(17);
     const testo = cap.versi['gdc-4-17'].testo;
     for (const citazione of cap.dettagli['uomo-cercato'].testo.match(/«[^»]+»/g) ?? []) {
       expect(testo).toContain(citazione.slice(1, -1).replace(/\.$/, ''));
@@ -416,7 +433,7 @@ describe('Enoc: i numeri di Genesi 5', () => {
   nascita['Noè'] = anno;
   const diluvio = nascita['Noè'] + 600;
   const presa = morte['Enoc'];
-  const testo = (id: string): string => CAPITOLI[1].dettagli[id].testo;
+  const testo = (id: string): string => libro(1).dettagli[id].testo;
 
   it('conferma ogni calcolo citato nei dettagli', () => {
     expect(testo('adamo-vivo')).toContain(`${morte['Adamo'] - nascita['Enoc']} anni`); // 308

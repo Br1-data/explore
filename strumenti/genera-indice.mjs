@@ -1,8 +1,8 @@
-// Rigenera src/content/libro.ts dall'indice del libro su jw.org.
+// Rigenera src/pubblicazioni/coraggio/indice.ts dall'indice del libro su jw.org.
 //
 // Uso:
 //   curl -L -o indice.html "https://www.jw.org/it/biblioteca-digitale/libri/cammina-coraggiosamente-con-dio/"
-//   node strumenti/genera-indice.mjs indice.html src/content/libro.ts
+//   node strumenti/genera-indice.mjs indice.html src/pubblicazioni/coraggio/indice.ts
 //
 // Dalla pagina prende solo gli indirizzi dei capitoli; nomi e titoli sono scritti qui sotto.
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -108,7 +108,7 @@ if (indirizzi.length !== 54) {
 }
 
 const righe = [];
-righe.push("import type { ParteIndice } from './tipi';", '');
+righe.push("import type { ParteIndice } from '@/contenuti/tipi';", '');
 righe.push(
   '/**',
   ' * Indice del libro «Cammina coraggiosamente con Dio» (54 capitoli in 3 parti).',

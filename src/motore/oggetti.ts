@@ -1,4 +1,4 @@
-import type { Oggetto } from '../content/tipi';
+import type { Oggetto } from '@/contenuti/tipi';
 import { fiamma, type Luce } from './figure';
 import type { Tavolozza } from './tavolozze';
 import { casuale, mescola } from './util';

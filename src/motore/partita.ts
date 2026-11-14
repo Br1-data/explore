@@ -1,5 +1,5 @@
-import type { Attore, Capitolo, Folla, Fx, Oggetto, Passo, Posa, Punto, Ruolo, Scena, TipoPunto } from '../content/tipi';
-import { disegnaFigura, stileFolla, STILI, type Luce, type Stile } from './figure';
+import type { Attore, Capitolo, Folla, Fx, Oggetto, Passo, Posa, Punto, Ruolo, Scena, TipoPunto } from '@/contenuti/tipi';
+import { disegnaFigura, STILE_BASE, stileFolla, type Luce, type Stile } from './figure';
 import { disegnaOggetto, type Pennello } from './oggetti';
 import { SUONI_OGGETTI, type Paesaggio, type SorgenteSonora } from './suono';
 import { quota, sfuma, tavolozza, type Tavolozza } from './tavolozze';
@@ -232,7 +232,7 @@ export class Partita {
     for (const def of s.attori ?? []) {
       this.attori.set(def.id, {
         def,
-        stile: STILI[def.stile] ?? STILI['enoc'],
+        stile: this.capitolo.personaggi[def.stile] ?? STILE_BASE,
         x: def.x,
         verso: def.verso ?? 1,
         posa: def.posa ?? 'fermo',
@@ -956,7 +956,7 @@ export class Partita {
     }
     const g = this.giocatore;
     if (g.visibile) {
-      const stile = STILI[this.ruolo.stile] ?? STILI['enoc'];
+      const stile = this.capitolo.personaggi[this.ruolo.stile] ?? STILE_BASE;
       figure.push({
         prof: 3,
         disegna: () => {

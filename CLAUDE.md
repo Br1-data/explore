@@ -166,45 +166,69 @@ alcune schermate (desktop e telefono) per verificare la grafica. Le schermate
 
 ## Struttura
 
+Tre strati, dal più generale al più specifico: **contenuti** (lo schema e gli strumenti
+comuni a tutte le pubblicazioni), **pubblicazioni** (una cartella per pubblicazione di
+base, con i suoi capitoli), **motore** e **ui** (generici: non conoscono nessun libro).
+Gli import usano l’alias `@/` = `src/` (vite.config.ts, tsconfig.json).
+
 ```
 src/
-  content/
-    tipi.ts              schema dei contenuti (Capitolo, Ruolo, Scena, Punto, Passo, Attivita, Dettaglio…)
-    libro.ts             indice dei 54 capitoli (generato da strumenti/genera-indice.mjs)
-    index.ts             registro dei capitoli giocabili: CAPITOLI = { 1: …Enoc, 16: …Barac, 17: …Iael }
-    fonti.ts             comune: b() per i versetti (aggiungere i libri biblici in LIBRI), verso(), perspicacia(), indirizzi jw.org
-    scenografia.ts       comune: o(), serie(), taglia() per comporre le scenografie
-    capitoli/enoc/
-      base.ts            versetti, VITE (linea del tempo), DETTAGLI (fonti e certezza), SENSAZIONI, STUDIO
-      scenari.ts         scenografie, con larghezza a scelta (mondo, colline, altura, strada, notte, quiete)
-      enoc.ts geova.ts matusalemme.ts empio.ts   un file per punto di vista
-      index.ts           assembla il Capitolo
-    capitoli/barac/      cap. 16 (Giudici 4:1-16, 23, 24; 5:1-23); PAROLE = le frasi pronunciate
-      scenari.ts         palma (di Debora), cimaTabor, pianura (Chison), villaggio, festa (usata anche dal 17)
-      debora.ts barac.ts geova.ts volontario.ts sisera.ts
-    capitoli/iael/       cap. 17 (Giudici 4:9, 11, 17-22; 5:24-31), stessa struttura
-      scenari.ts         accampamento, tendaIael, casaSisera (e festa dal 16)
-      iael.ts geova.ts sisera.ts barac.ts debora.ts madre.ts
-  motore/
-    partita.ts           ciclo di gioco, movimento, tocco sui punti, indizi, folle, sequenze, disegno
-    figure.ts            persone disegnate (senza volto), pose e STILI dei personaggi
-    oggetti.ts           oggetti di scena (casa, tenda, tendone, carro, sala con grata…) — aggiungerne qui
-    tavolozze.ts         ambienti (colori, cielo, terreno)
-    arte.ts              piccole illustrazioni per le schede (Eden, Caino e Abele…)
-    suono.ts             suoni del mondo ricavati dalla scena, generati con Web Audio (nessun file)
-  ui/
-    app.ts               schermate (inizio, libro, capitolo, gioco, fine) e tastiera
-    schede.ts            schede del racconto e tutte le attività
-    quaderno.ts          quaderno di studio (dettagli, sensazioni, passi, domande; scarica/stampa)
-    schemi.ts            schemi di studio («poi morì» di Genesi 5)
-    etichette.ts         contrassegni (certezze, Ricostruzione, Per te) e verbi degli inviti
-  salvataggio.ts         progressi e appunti dell’account, salvati nell’archivio (URL_ARCHIVIO)
-archivio/Codice.gs       l’archivio dei salvataggi (Google Apps Script, da incollare su script.google.com)
-archivio/finto.mjs       esegue Codice.gs in Node con un Google finto (test e prova dal vero)
-test/contenuti.test.ts   fedeltà e coerenza dei contenuti
-test/archivio.test.mjs   registrazione, accesso e salvataggio dell’archivio
-e2e/percorsi.mjs         prova dal vero di tutti i percorsi (accesso compreso, con l’archivio finto)
+  contenuti/                 comune a tutte le pubblicazioni
+    tipi.ts                  schema: Pubblicazione, Capitolo, Ruolo, Scena, Punto, Passo, Attivita, Dettaglio, Schema…
+    index.ts                 registro PUBBLICAZIONI; pubblicazione(id), capitoloDi(), tuttiICapitoli(), chiave(cap)
+    passi.ts                 passiDelRuolo, dettagliDelRuolo, sensazioniDelRuolo
+    fonti.ts                 b() per i versetti (aggiungere i libri biblici in LIBRI), verso(), perspicacia(), indirizzi jw.org
+    scenografia.ts           o(), serie(), taglia() per comporre le scenografie
+  pubblicazioni/
+    coraggio/                il libro «Cammina coraggiosamente con Dio» (id: coraggio)
+      index.ts               la Pubblicazione: titolo, indice, capitoli giocabili, vetrina della schermata iniziale
+      indice.ts              indice dei 54 capitoli (generato da strumenti/genera-indice.mjs)
+      comune.ts              capitolo(): completa ogni capitolo con l’id della pubblicazione e i personaggi
+      personaggi.ts          l’aspetto (Stile) dei personaggi che compaiono nei capitoli
+      capitoli/
+        01-enoc/             base.ts (versetti, VITE, DETTAGLI, SENSAZIONI, STUDIO), scenari.ts,
+                             un file per punto di vista (enoc, geova, matusalemme, empio), index.ts
+        16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
+                             scenari.ts: palma, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
+        17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)
+  motore/                    generico
+    partita.ts               ciclo di gioco, movimento, tocco sui punti, indizi, folle, sequenze, disegno
+    figure.ts                persone disegnate (senza volto), pose; Stile e STILE_BASE (gli stili veri li dà la pubblicazione)
+    oggetti.ts               oggetti di scena (casa, tenda, tendone, carro, sala con grata…) — aggiungerne qui
+    tavolozze.ts             ambienti (colori, cielo, terreno)
+    arte.ts                  piccole illustrazioni per le schede (Eden, Caino e Abele…)
+    suono.ts                 suoni del mondo ricavati dalla scena, generati con Web Audio (nessun file)
+  ui/                        generica
+    app.ts                   il guscio: instrada gli indirizzi, strato dei pannelli, tastiera, aggiornamenti
+    contesto.ts              Contesto: ciò che l’app offre a schermate e pannelli
+    indirizzi.ts             #/coraggio, #/coraggio/16, #/coraggio/16/barac[/fine] (e i vecchi #/gioca/…)
+    schermate/               accesso, inizio, indice (di una pubblicazione), capitolo, gioco, fine: una per file
+    pannelli.ts              guida, fonti, versetto, quaderno, pausa; la barra delle pagine
+    schede.ts                schede del racconto e tutte le attività
+    quaderno.ts              quaderno di studio (dettagli, sensazioni, passi, domande; scarica/stampa)
+    schemi.ts                disegna gli schemi di studio (i dati li dà il capitolo)
+    etichette.ts             contrassegni (certezze, Ricostruzione, Per te) e verbi degli inviti
+  salvataggio.ts             progressi e appunti dell’account; chiavi «pubblicazione:numero» (v2; i dati v1 si convertono)
+archivio/Codice.gs           l’archivio dei salvataggi (Google Apps Script, da incollare su script.google.com)
+archivio/finto.mjs           esegue Codice.gs in Node con un Google finto (test e prova dal vero)
+test/contenuti.test.ts       fedeltà e coerenza dei contenuti, per ogni pubblicazione e capitolo
+test/archivio.test.mjs       registrazione, accesso e salvataggio dell’archivio
+test/salvataggio.test.ts     conversione dei salvataggi alla versione attuale
+e2e/percorsi.mjs             prova dal vero di tutti i percorsi (accesso compreso, con l’archivio finto)
 ```
+
+Dove si mette una cosa nuova:
+
+- un **capitolo**: una cartella in `pubblicazioni/<id>/capitoli/` e una riga in
+  `pubblicazioni/<id>/index.ts` (vedi «Come aggiungere un capitolo»);
+- un **personaggio**: il suo aspetto in `pubblicazioni/<id>/personaggi.ts`;
+- una **pubblicazione**: vedi «Come aggiungere una pubblicazione»;
+- un **oggetto di scena, un ambiente, un suono**: nel motore (`oggetti.ts`,
+  `tavolozze.ts`, `suono.ts`), perché valgono per tutti;
+- un **tipo di attività**: lo schema in `contenuti/tipi.ts`, il disegno in `ui/schede.ts`,
+  il controllo in `test/contenuti.test.ts`, la soluzione automatica in `e2e/percorsi.mjs`;
+- una **schermata**: un file in `ui/schermate/`, il suo indirizzo in `ui/indirizzi.ts`
+  e una riga in `App.instrada()`.
 
 ## Come si costruisce un punto di vista
 
@@ -275,7 +299,7 @@ Punti `facoltativo` (bordo tratteggiato) non bloccano la scena; `richiede` ordin
 punti. La scena è completa quando tutti i punti obbligatori sono fatti; si prosegue
 con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo`.
 
-## Come aggiungere un capitolo (modello: `capitoli/iael/`)
+## Come aggiungere un capitolo (modello: `pubblicazioni/coraggio/capitoli/16-barac-debora/`)
 
 1. Scarica e leggi il capitolo, i passi biblici indicati, le pubblicazioni citate e
    la descrizione delle immagini. I «passi da leggere» segnano i confini del capitolo
@@ -283,22 +307,41 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
    e lascia a lui ciò che gli appartiene.
 2. Elenca i personaggi impersonabili (incluso Geova) e per ciascuno decidi la **lente**:
    che cosa vede e fa solo lui. Distribuisci i dettagli fra i ruoli senza ripetizioni.
-3. Crea `src/content/capitoli/<nome>/` sul modello di `enoc/`: `base.ts` con versetti
+3. Crea `src/pubblicazioni/<id>/capitoli/<NN>-<nome>/` sul modello di `16-barac-debora/`: `base.ts` con versetti
    alla lettera, dettagli con fonti e certezza, sensazioni come domande, sezioni di
    studio; un file per ogni personaggio (Geova in `modo: 'osserva'`, solo con gli atti
-   che il racconto gli attribuisce).
+   che il racconto gli attribuisce) e `index.ts` che esporta `capitolo({ … })` da `../../comune`.
 4. In ogni scena usa le tre forme di interattività (decisione 5): indizi da esaminare,
    attività da manipolare, situazioni di condotta dichiarate come ricostruzioni.
    Attenzione ai modi di dire biblici (camminare, correre la corsa, ecc.): sono
    simbolici, non vanno resi come movimento (decisione 7).
 5. Riusa o aggiungi scenografie (`scenari.ts`), oggetti (`motore/oggetti.ts`),
-   ambienti (`motore/tavolozze.ts`), illustrazioni (`motore/arte.ts`), schemi
-   (`ui/schemi.ts`). Se servono scenografie comuni a più capitoli, spostale fuori
-   dalla cartella del capitolo.
-6. Registralo in `src/content/index.ts`. I test di `contenuti.test.ts` girano su ogni
-   capitolo registrato; aggiungi test specifici (citazioni, calcoli) come per Enoc e Iael.
+   ambienti (`motore/tavolozze.ts`), illustrazioni (`motore/arte.ts`); l’aspetto dei
+   personaggi nuovi va in `personaggi.ts` della pubblicazione; gli schemi di studio sono
+   dati (`Schema`) nel capitolo. Una scenografia comune a più capitoli sta nel primo che
+   la usa e gli altri la importano (es. `festa` del 16, usata dal 17).
+6. Registralo in `capitoli` di `src/pubblicazioni/<id>/index.ts`. I test di
+   `contenuti.test.ts` girano su ogni capitolo registrato; aggiungi test specifici
+   (citazioni, calcoli) come per Enoc, Barac e Debora, Iael.
 7. Aggiungi i suoi punti di vista a `PERCORSI` e le scene con suoni caratteristici a
    `SUONI_ATTESI` in `e2e/percorsi.mjs`; verifica le schermate (desktop e telefono).
+
+## Come aggiungere una pubblicazione (modello: `pubblicazioni/coraggio/`)
+
+1. Scegli un **id** breve e stabile (compare negli indirizzi e nelle chiavi dei
+   salvataggi: non cambiarlo più).
+2. Crea `src/pubblicazioni/<id>/` con `indice.ts` (le parti e i capitoli, con il
+   collegamento a jw.org; `strumenti/genera-indice.mjs` è il modello per ricavarlo
+   dall’indice del sito), `comune.ts` (con `ID` e `capitolo()`), `personaggi.ts` e
+   `index.ts` con la `Pubblicazione` (titolo, `breve` come «il libro», descrizione,
+   capitoli, vetrina).
+3. Aggiungila a `PUBBLICAZIONI` in `src/contenuti/index.ts`: compare nella schermata
+   iniziale e ha il suo indice in `#/<id>`. I test la controllano da sé.
+4. Le decisioni del committente valgono anche per lei; se la pubblicazione richiede
+   regole proprie, scrivile in questo file accanto a quelle esistenti.
+5. In `e2e/percorsi.mjs` i percorsi sono per ora del solo libro `coraggio` (le
+   chiavi di `PERCORSI` sono i numeri dei capitoli): con una seconda pubblicazione,
+   portale alla forma `<id>/<numero>`.
 
 ## Note tecniche
 

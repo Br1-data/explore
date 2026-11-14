@@ -20,7 +20,7 @@ interface Risposta {
   ok: boolean;
   errore?: string;
   chiave?: string;
-  dati?: Partial<Dati> | null;
+  dati?: { v?: number } | null;
 }
 
 async function archivio(corpo: object, chiudendo = false): Promise<Risposta> {
@@ -52,8 +52,12 @@ export interface ProgressoRuolo {
   finito: boolean;
 }
 
+/**
+ * I dati di un account. Le mappe sono per capitolo, con la chiave «pubblicazione:numero»
+ * (es. «coraggio:16»); i progressi dei ruoli con «pubblicazione:numero:ruolo».
+ */
 interface Dati {
-  v: 1;
+  v: 2;
   dettagli: Record<string, string[]>;
   /** Sensazioni incontrate, con l’eventuale appunto. */
   sensazioni: Record<string, Record<string, string>>;
@@ -65,11 +69,29 @@ interface Dati {
 }
 
 function vuoto(): Dati {
-  return { v: 1, dettagli: {}, sensazioni: {}, risposte: {}, versi: {}, ruoli: {}, muto: false, guidaVista: false };
+  return { v: 2, dettagli: {}, sensazioni: {}, risposte: {}, versi: {}, ruoli: {}, muto: false, guidaVista: false };
 }
 
-function completa(d: Partial<Dati> | null | undefined): Dati {
-  return d?.v === 1 ? { ...vuoto(), ...d } : vuoto();
+/** Nella versione 1 c’era un solo libro e le chiavi erano solo numeri («16», «16:barac»). */
+const PRIMA_PUBBLICAZIONE = 'coraggio';
+
+/** Porta dati di qualunque versione a quella attuale; ciò che non si riconosce diventa vuoto. */
+export function normalizza(d: { v?: number } | null | undefined): Dati {
+  if (d?.v === 1) {
+    const v1 = d as Omit<Dati, 'v'>;
+    const prefissa = <T>(m: Record<string, T> | undefined): Record<string, T> =>
+      Object.fromEntries(Object.entries(m ?? {}).map(([k, x]) => [`${PRIMA_PUBBLICAZIONE}:${k}`, x]));
+    d = {
+      ...v1,
+      v: 2,
+      dettagli: prefissa(v1.dettagli),
+      sensazioni: prefissa(v1.sensazioni),
+      risposte: prefissa(v1.risposte),
+      versi: prefissa(v1.versi),
+      ruoli: prefissa(v1.ruoli),
+    } as Dati;
+  }
+  return d?.v === 2 ? { ...vuoto(), ...(d as Partial<Dati>) } : vuoto();
 }
 
 export class Salvataggio {
@@ -103,9 +125,9 @@ export class Salvataggio {
 
   /** Entra o crea l’account; restituisce l’errore da mostrare, o null se è andata. */
   async entra(utente: string, password: string, nuovo: boolean): Promise<string | null> {
-    const vecchi = nuovo ? locale<Dati>(VECCHI) : null;
+    const vecchi = nuovo ? locale<{ v?: number }>(VECCHI) : null;
     try {
-      const r = await archivio({ azione: nuovo ? 'registra' : 'entra', utente, password, dati: completa(vecchi) });
+      const r = await archivio({ azione: nuovo ? 'registra' : 'entra', utente, password, dati: normalizza(vecchi) });
       if (!r.ok || !r.chiave) return r.errore ?? 'Qualcosa non è andato: riprova.';
       this.apri({ utente: utente.trim().toLowerCase(), chiave: r.chiave }, r.dati);
       if (vecchi) ricorda(VECCHI, null);
@@ -121,9 +143,9 @@ export class Salvataggio {
     ricorda(SESSIONE, null);
   }
 
-  private apri(s: Sessione, dati: Partial<Dati> | null | undefined): void {
+  private apri(s: Sessione, dati: { v?: number } | null | undefined): void {
     this.sessione = s;
-    this.d = completa(dati);
+    this.d = normalizza(dati);
     ricorda(SESSIONE, s);
   }
 
@@ -154,63 +176,63 @@ export class Salvataggio {
   }
 
   /** Registra un dettaglio; restituisce true se è nuovo. */
-  scopri(capitolo: number, id: string): boolean {
-    const lista = (this.d.dettagli[capitolo] ??= []);
+  scopri(cap: string, id: string): boolean {
+    const lista = (this.d.dettagli[cap] ??= []);
     if (lista.includes(id)) return false;
     lista.push(id);
     this.scrivi();
     return true;
   }
 
-  dettagli(capitolo: number): string[] {
-    return this.d.dettagli[capitolo] ?? [];
+  dettagli(cap: string): string[] {
+    return this.d.dettagli[cap] ?? [];
   }
 
-  leggiVerso(capitolo: number, id: string): void {
-    const lista = (this.d.versi[capitolo] ??= []);
+  leggiVerso(cap: string, id: string): void {
+    const lista = (this.d.versi[cap] ??= []);
     if (!lista.includes(id)) {
       lista.push(id);
       this.scrivi();
     }
   }
 
-  versi(capitolo: number): string[] {
-    return this.d.versi[capitolo] ?? [];
+  versi(cap: string): string[] {
+    return this.d.versi[cap] ?? [];
   }
 
   /** Registra una sensazione incontrata; `testo` undefined lascia l’appunto com’è. */
-  senti(capitolo: number, id: string, testo?: string): void {
-    const mappa = (this.d.sensazioni[capitolo] ??= {});
+  senti(cap: string, id: string, testo?: string): void {
+    const mappa = (this.d.sensazioni[cap] ??= {});
     if (testo !== undefined) mappa[id] = testo;
     else if (!(id in mappa)) mappa[id] = '';
     this.scrivi();
   }
 
-  sensazioni(capitolo: number): Record<string, string> {
-    return this.d.sensazioni[capitolo] ?? {};
+  sensazioni(cap: string): Record<string, string> {
+    return this.d.sensazioni[cap] ?? {};
   }
 
-  rispondi(capitolo: number, id: string, testo: string): void {
-    (this.d.risposte[capitolo] ??= {})[id] = testo;
+  rispondi(cap: string, id: string, testo: string): void {
+    (this.d.risposte[cap] ??= {})[id] = testo;
     this.scrivi();
   }
 
-  risposte(capitolo: number): Record<string, string> {
-    return this.d.risposte[capitolo] ?? {};
+  risposte(cap: string): Record<string, string> {
+    return this.d.risposte[cap] ?? {};
   }
 
-  ruolo(capitolo: number, ruolo: string): ProgressoRuolo {
-    return this.d.ruoli[`${capitolo}:${ruolo}`] ?? { scena: 0, finito: false };
+  ruolo(cap: string, ruolo: string): ProgressoRuolo {
+    return this.d.ruoli[`${cap}:${ruolo}`] ?? { scena: 0, finito: false };
   }
 
-  segnaScena(capitolo: number, ruolo: string, scena: number): void {
-    const p = (this.d.ruoli[`${capitolo}:${ruolo}`] ??= { scena: 0, finito: false });
+  segnaScena(cap: string, ruolo: string, scena: number): void {
+    const p = (this.d.ruoli[`${cap}:${ruolo}`] ??= { scena: 0, finito: false });
     p.scena = scena;
     this.scrivi();
   }
 
-  segnaFinito(capitolo: number, ruolo: string): void {
-    const p = (this.d.ruoli[`${capitolo}:${ruolo}`] ??= { scena: 0, finito: false });
+  segnaFinito(cap: string, ruolo: string): void {
+    const p = (this.d.ruoli[`${cap}:${ruolo}`] ??= { scena: 0, finito: false });
     p.finito = true;
     p.scena = 0;
     this.scrivi();

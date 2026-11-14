@@ -1,4 +1,4 @@
-import type { Certezza, Fonte, TipoPunto } from '../content/tipi';
+import type { Certezza, Fonte, TipoPunto } from '@/contenuti/tipi';
 import { esterno, h } from './dom';
 
 export const CERTEZZE: Record<Certezza, { etichetta: string; descrizione: string }> = {

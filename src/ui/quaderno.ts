@@ -1,11 +1,12 @@
-import type { Capitolo, Certezza } from '../content/tipi';
+import { chiave } from '@/contenuti';
+import type { Capitolo, Certezza } from '@/contenuti/tipi';
 import type { Salvataggio } from '../salvataggio';
 import { esterno, h, svuota } from './dom';
 import { CERTEZZE, distintivo, elencoFonti, ORDINE_CERTEZZE, PER_TE } from './etichette';
 
 /** Le sezioni di studio del capitolo, con spazio per le proprie risposte. */
 export function sezioniStudio(capitolo: Capitolo, salvataggio: Salvataggio): HTMLElement {
-  const risposte = salvataggio.risposte(capitolo.numero);
+  const risposte = salvataggio.risposte(chiave(capitolo));
   return h(
     'div',
     { class: 'studio' },
@@ -18,7 +19,7 @@ export function sezioniStudio(capitolo: Capitolo, salvataggio: Salvataggio): HTM
         sezione.domande.map((d) => {
           const area = h('textarea', { class: 'appunto', rows: 2, placeholder: 'La tua risposta', 'aria-label': d.testo });
           area.value = risposte[d.id] ?? '';
-          area.addEventListener('input', () => salvataggio.rispondi(capitolo.numero, d.id, area.value));
+          area.addEventListener('input', () => salvataggio.rispondi(chiave(capitolo), d.id, area.value));
           return h('div', { class: 'studio__domanda' }, h('p', null, d.testo), elencoFonti(d.fonti), area);
         }),
       ),
@@ -33,9 +34,9 @@ export function sezioniStudio(capitolo: Capitolo, salvataggio: Salvataggio): HTM
 }
 
 function testoQuaderno(capitolo: Capitolo, salvataggio: Salvataggio): string {
-  const n = capitolo.numero;
+  const n = chiave(capitolo);
   const righe: string[] = [];
-  righe.push(`QUADERNO DI STUDIO — Capitolo ${n}: ${capitolo.nome}, «${capitolo.titolo}»`);
+  righe.push(`QUADERNO DI STUDIO — Capitolo ${capitolo.numero}: ${capitolo.nome}, «${capitolo.titolo}»`);
   righe.push(`Libro «Cammina coraggiosamente con Dio» — ${capitolo.url}`, '');
   const scoperti = new Set(salvataggio.dettagli(n));
   for (const c of ORDINE_CERTEZZE) {
@@ -75,7 +76,7 @@ type Linguetta = 'dettagli' | 'sensazioni' | 'passi' | 'domande';
 
 /** Il quaderno: tutto ciò che si è scoperto e annotato in un capitolo. */
 export function creaQuaderno(capitolo: Capitolo, salvataggio: Salvataggio, chiudi: () => void): HTMLElement {
-  const n = capitolo.numero;
+  const n = chiave(capitolo);
   const contenuto = h('div', { class: 'quaderno__contenuto' });
   const linguette: Record<Linguetta, HTMLButtonElement> = {} as Record<Linguetta, HTMLButtonElement>;
 
@@ -192,7 +193,7 @@ export function creaQuaderno(capitolo: Capitolo, salvataggio: Salvataggio, chiud
     h(
       'header',
       { class: 'pannello__testa' },
-      h('div', null, h('span', { class: 'occhiello' }, `Capitolo ${n} · ${capitolo.nome}`), h('h2', null, 'Quaderno di studio')),
+      h('div', null, h('span', { class: 'occhiello' }, `Capitolo ${capitolo.numero} · ${capitolo.nome}`), h('h2', null, 'Quaderno di studio')),
       h('button', { class: 'bottone bottone--chiudi', type: 'button', onclick: chiudi, 'aria-label': 'Chiudi il quaderno' }, '×'),
     ),
     barra,

@@ -1,4 +1,4 @@
-import type { Posa } from '../content/tipi';
+import type { Posa } from '@/contenuti/tipi';
 import { casuale } from './util';
 
 export interface Stile {
@@ -33,95 +33,15 @@ export interface Luce {
   r: number;
 }
 
-/** Aspetto dei personaggi che hanno un ruolo nel racconto. */
-export const STILI: Record<string, Stile> = {
-  enoc: {
-    tipo: 'uomo',
-    veste: '#efe2c2',
-    fascia: '#b4783a',
-    pelle: '#b98a62',
-    capelli: '#3a2a20',
-    barba: true,
-    accessorio: 'bastone',
-    scala: 1,
-  },
-  matusalemme: {
-    tipo: 'uomo',
-    veste: '#6a9a94',
-    fascia: '#e0c890',
-    pelle: '#b98a62',
-    capelli: '#3a2a20',
-    barba: true,
-    accessorio: 'bastone',
-    scala: 1,
-  },
-  empio: {
-    tipo: 'uomo',
-    veste: '#8f3d30',
-    fascia: '#2c2320',
-    pelle: '#b5835a',
-    capelli: '#241c18',
-    barba: true,
-    accessorio: 'clava',
-    scala: 1,
-  },
-  // Capitolo 16: uno dei 10.000, quasi senza armi (Giudici 5:8).
-  volontario: {
-    tipo: 'uomo',
-    veste: '#7d6a4e',
-    fascia: '#4a3a2c',
-    pelle: '#a36f4a',
-    capelli: '#2a1f1a',
-    barba: true,
-    scala: 0.98,
-  },
-  // Capitoli 16 e 17.
-  iael: {
-    tipo: 'donna',
-    veste: '#6a4f7a',
-    fascia: '#c08a4a',
-    pelle: '#b98a62',
-    capelli: '#2a1f1a',
-    velo: '#c9a77a',
-    scala: 0.97,
-  },
-  sisera: {
-    tipo: 'uomo',
-    veste: '#7a2a24',
-    fascia: '#c9a84a',
-    pelle: '#b5835a',
-    capelli: '#1e1a18',
-    barba: true,
-    scala: 1.04,
-  },
-  barac: {
-    tipo: 'uomo',
-    veste: '#8a7a52',
-    fascia: '#3d4a3a',
-    pelle: '#a36f4a',
-    capelli: '#2a1f1a',
-    barba: true,
-    accessorio: 'lancia',
-    scala: 1,
-  },
-  debora: {
-    tipo: 'donna',
-    veste: '#e6d6b0',
-    fascia: '#6a8a5a',
-    pelle: '#b98a62',
-    capelli: '#3a2a20',
-    velo: '#9fb59a',
-    scala: 0.97,
-  },
-  madre: {
-    tipo: 'donna',
-    veste: '#5a2f4a',
-    fascia: '#d0a040',
-    pelle: '#c79a72',
-    capelli: '#8a8078',
-    velo: '#8a4a6a',
-    scala: 0.95,
-  },
+/** Aspetto di riserva, per un personaggio senza stile (gli stili veri li dà la pubblicazione). */
+export const STILE_BASE: Stile = {
+  tipo: 'uomo',
+  veste: '#8c6f56',
+  fascia: '#3d2e26',
+  pelle: '#b5835a',
+  capelli: '#2a1f1a',
+  barba: true,
+  scala: 1,
 };
 
 const VESTI = ['#8c6f56', '#6f5a4a', '#7a6a52', '#5f6b5a', '#8a5a48', '#6a5870', '#94805c', '#4f5d6b', '#7d4f3f', '#a08a68'];

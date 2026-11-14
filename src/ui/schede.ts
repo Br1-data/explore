@@ -1,4 +1,5 @@
-import type { Attivita, Capitolo } from '../content/tipi';
+import { chiave } from '@/contenuti';
+import type { Attivita, Capitolo } from '@/contenuti/tipi';
 import { creaArte } from '../motore/arte';
 import type { PassoVisibile } from '../motore/partita';
 import type { Suono } from '../motore/suono';
@@ -75,7 +76,7 @@ export class Scheda {
   /** Registra un dettaglio nel quaderno e ne restituisce il contenuto. */
   private dettaglio(id: string): HTMLElement[] {
     const d = this.cx.capitolo.dettagli[id];
-    const nuovo = this.cx.salvataggio.scopri(this.cx.capitolo.numero, id);
+    const nuovo = this.cx.salvataggio.scopri(chiave(this.cx.capitolo), id);
     if (nuovo) {
       this.cx.suono.scoperta();
       this.cx.aggiornato();
@@ -137,7 +138,7 @@ export class Scheda {
       }
       case 'verso': {
         const v = this.cx.capitolo.versi[passo.id];
-        this.cx.salvataggio.leggiVerso(this.cx.capitolo.numero, passo.id);
+        this.cx.salvataggio.leggiVerso(chiave(this.cx.capitolo), passo.id);
         corpo.append(
           h('div', { class: 'scheda__testa' }, h('span', { class: 'occhiello' }, 'Leggi'), esterno(v.rif, v.url, 'rif')),
         );
@@ -153,7 +154,7 @@ export class Scheda {
       }
       case 'senti': {
         const s = this.cx.capitolo.sensazioni[passo.id];
-        const numero = this.cx.capitolo.numero;
+        const numero = chiave(this.cx.capitolo);
         this.cx.salvataggio.senti(numero, passo.id);
         const area = h('textarea', {
           class: 'appunto',
@@ -177,8 +178,7 @@ export class Scheda {
       }
       case 'schema': {
         if (passo.intro) corpo.append(h('p', { class: 'scheda__intro' }, passo.intro));
-        const schema = creaSchema(passo.id);
-        if (schema) corpo.append(schema);
+        corpo.append(creaSchema(passo.schema));
         break;
       }
       case 'attivita': {
