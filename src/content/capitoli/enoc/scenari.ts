@@ -16,9 +16,14 @@ function serie(tipo: string, xs: number[], extra: Partial<Oggetto> = {}): Oggett
   return xs.map((x, i) => ({ tipo, x, variante: i % 3, ...extra }));
 }
 
+/** Accorcia una scenografia: scene brevi, poca strada tra un’azione e l’altra. */
+function taglia(base: Base, larghezza: number): Base {
+  return { ...base, larghezza, oggetti: base.oggetti.filter((x) => x.x < larghezza - 30) };
+}
+
 /** Il mondo intorno a Enoc: un insediamento al tramonto. */
-export function mondo(): Base {
-  return {
+export function mondo(larghezza = 3600): Base {
+  return taglia({
     larghezza: 3600,
     ambiente: 'tramonto',
     seme: 11,
@@ -54,12 +59,12 @@ export function mondo(): Base {
       o('roccia', 1430, { piano: 'primo', scala: 1.6 }),
       o('roccia', 2860, { piano: 'primo', scala: 1.4 }),
     ],
-  };
+  }, larghezza);
 }
 
 /** Lontano dalla folla: colline, la tenda di famiglia, un’altura. */
-export function colline(): Base {
-  return {
+export function colline(larghezza = 3400): Base {
+  return taglia({
     larghezza: 3400,
     ambiente: 'mattino',
     seme: 23,
@@ -90,12 +95,12 @@ export function colline(): Base {
       ...serie('cespuglio', [240, 1260, 2330, 3060], { piano: 'primo', scala: 1.5 }),
       o('roccia', 1840, { piano: 'primo', scala: 1.5 }),
     ],
-  };
+  }, larghezza);
 }
 
 /** Un’altura da cui si vede in lontananza l’abitato. */
-export function altura(): Base {
-  return {
+export function altura(larghezza = 2600): Base {
+  return taglia({
     larghezza: 2600,
     ambiente: 'altura',
     seme: 37,
@@ -117,12 +122,12 @@ export function altura(): Base {
       ...serie('roccia', [620, 1620, 2260], { piano: 'primo', scala: 1.7 }),
       o('cespuglio', 1080, { piano: 'primo', scala: 1.6 }),
     ],
-  };
+  }, larghezza);
 }
 
 /** La strada affollata dell’immagine d’apertura del capitolo. */
-export function strada(): Base {
-  return {
+export function strada(larghezza = 3400): Base {
+  return taglia({
     larghezza: 3400,
     ambiente: 'giorno',
     seme: 41,
@@ -153,12 +158,12 @@ export function strada(): Base {
       o('giare', 2760, { piano: 'primo', scala: 1.6 }),
       o('cespuglio', 420, { piano: 'primo', scala: 1.5 }),
     ],
-  };
+  }, larghezza);
 }
 
 /** Fuori dall’abitato, di notte. */
 export function notte(larghezza = 3200): Base {
-  return {
+  return taglia({
     larghezza,
     ambiente: 'notte',
     seme: 53,
@@ -184,8 +189,8 @@ export function notte(larghezza = 3200): Base {
       o('roccia', 3040),
       ...serie('roccia', [420, 1380, 2360], { piano: 'primo', scala: 1.8 }),
       o('cespuglio', 1960, { piano: 'primo', scala: 1.6 }),
-    ].filter((x) => x.x < larghezza),
-  };
+    ],
+  }, larghezza);
 }
 
 /** Oggetti che compaiono solo durante la visione (variabile «visione»). */
@@ -206,8 +211,8 @@ export function paradiso(x0: number, x1: number): Oggetto[] {
 }
 
 /** Un luogo tranquillo, prima dell’alba. */
-export function quiete(): Base {
-  return {
+export function quiete(larghezza = 2400): Base {
+  return taglia({
     larghezza: 2400,
     ambiente: 'quiete',
     seme: 67,
@@ -227,42 +232,5 @@ export function quiete(): Base {
       o('roccia', 980, { piano: 'primo', scala: 1.6 }),
       o('cespuglio', 2060, { piano: 'primo', scala: 1.6 }),
     ],
-  };
-}
-
-/** La strada degli anni: Genesi 5 percorsa a piedi. */
-export function stradaDegliAnni(pietre: { x: number; testo: string }[]): Base {
-  return {
-    larghezza: 5200,
-    ambiente: 'anni',
-    seme: 79,
-    suono: 'vento',
-    oggetti: [
-      ...serie('albero', [420, 1180, 1900, 2700, 3500, 4200, 4900], { piano: 'fondo', scala: 0.6 }),
-      ...serie('cipresso', [800, 2300, 3900], { piano: 'fondo', scala: 0.6 }),
-      o('tenda', 170, { variante: 0, scala: 1.1 }),
-      o('giare', 60),
-      o('albero', 560, { variante: 1 }),
-      o('recinto', 760),
-      o('pecora', 740),
-      o('pecora', 800, { variante: 1 }),
-      o('cespuglio', 1240),
-      o('albero', 1380, { variante: 2 }),
-      o('roccia', 1840),
-      o('campo', 2000),
-      o('albero', 2560, { variante: 0, scala: 1.2 }),
-      o('cespuglio', 2800),
-      o('roccia', 3340),
-      o('cipresso', 3560),
-      o('albero', 3780, { variante: 1 }),
-      o('campo', 3980),
-      o('roccia', 4520),
-      o('albero', 4640, { variante: 3 }),
-      o('cespuglio', 5020),
-      ...pietre.map((p) => o('stele', p.x + 46, { testo: p.testo })),
-      ...serie('cespuglio', [320, 1560, 2960, 4100], { piano: 'primo', scala: 1.5 }),
-      o('roccia', 2240, { piano: 'primo', scala: 1.6 }),
-      o('roccia', 4760, { piano: 'primo', scala: 1.5 }),
-    ],
-  };
+  }, larghezza);
 }

@@ -22,11 +22,19 @@ export function passiDelRuolo(ruolo: Ruolo): Passo[] {
   return passi;
 }
 
+/** I dettagli che un passo rivela: da una scheda o alla fine di un’attività. */
+export function dettagliDelPasso(p: Passo): string[] {
+  if (p.t === 'dettaglio') return [p.id];
+  if (p.t !== 'attivita') return [];
+  const a = p.a;
+  if (a.tipo === 'condotta') return a.opzioni.flatMap((o) => (o.dettaglio ? [o.dettaglio] : []));
+  if ((a.tipo === 'domanda' || a.tipo === 'linea' || a.tipo === 'classifica') && a.dettaglio) return [a.dettaglio];
+  return [];
+}
+
 /** Gli identificativi dei dettagli che un ruolo permette di scoprire. */
 export function dettagliDelRuolo(ruolo: Ruolo): string[] {
-  const ids = new Set<string>();
-  for (const p of passiDelRuolo(ruolo)) if (p.t === 'dettaglio') ids.add(p.id);
-  return [...ids];
+  return [...new Set(passiDelRuolo(ruolo).flatMap(dettagliDelPasso))];
 }
 
 export function sensazioniDelRuolo(ruolo: Ruolo): string[] {

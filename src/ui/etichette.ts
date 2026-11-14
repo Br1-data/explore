@@ -25,12 +25,23 @@ export const PER_TE = {
   descrizione: 'Una domanda rivolta a te. Non è un fatto del racconto: la Bibbia non dice che cosa provarono.',
 };
 
+export const RICOSTRUZIONE = {
+  etichetta: 'Ricostruzione',
+  descrizione:
+    'Scena non narrata: è costruita su ciò che le fonti dicono di quel tempo. Ciò che fa il personaggio viene sempre dalle fonti; nessuna parola gli è messa in bocca.',
+};
+
+export function distintivoRicostruzione(): HTMLElement {
+  return h('span', { class: 'distintivo distintivo--ricostruzione', title: RICOSTRUZIONE.descrizione }, RICOSTRUZIONE.etichetta);
+}
+
 export const VERBI: Record<TipoPunto, string> = {
   osserva: 'Osserva',
   ascolta: 'Ascolta',
   leggi: 'Leggi',
   agisci: 'Agisci',
   medita: 'Rifletti',
+  esamina: 'Esamina',
 };
 
 export function distintivo(certezza: Certezza): HTMLElement {
@@ -38,12 +49,12 @@ export function distintivo(certezza: Certezza): HTMLElement {
   return h('span', { class: `distintivo distintivo--${certezza}`, title: c.descrizione }, c.etichetta);
 }
 
-export function elencoFonti(fonti: Fonte[] | undefined): HTMLElement | null {
+export function elencoFonti(fonti: Fonte[] | undefined, titolo = 'Fonti: '): HTMLElement | null {
   if (!fonti?.length) return null;
   const voci: (Node | string)[] = [];
   fonti.forEach((f, i) => {
     if (i) voci.push(' · ');
     voci.push(f.url ? esterno(f.rif, f.url) : f.rif);
   });
-  return h('p', { class: 'fonti' }, h('span', { class: 'fonti__titolo' }, 'Fonti: '), voci);
+  return h('p', { class: 'fonti' }, h('span', { class: 'fonti__titolo' }, titolo), voci);
 }

@@ -45,6 +45,29 @@ export interface Verso {
 
 export type Posa = 'fermo' | 'cammina' | 'parla' | 'pugno' | 'indica' | 'alza' | 'sdraiato' | 'proclama';
 
+/** Una persona sulla linea del tempo. Anni a.E.V. negativi, E.V. positivi. */
+export interface Vita {
+  nome: string;
+  nasce: number;
+  muore: number;
+}
+
+/** Una scelta in una situazione di condotta. */
+export interface Opzione {
+  testo: string;
+  /** La condotta che le fonti attribuiscono al personaggio: rivela `dettaglio`. */
+  fedele?: boolean;
+  dettaglio?: string;
+  /** Per le altre scelte: come agivano altri, o perché non fu la sua condotta. */
+  esito?: string;
+  fonti?: Fonte[];
+}
+
+/**
+ * Attività sul racconto. Nessuna cambia la storia: si risolvono tutte, e chi
+ * sbaglia impara perché. `dettaglio`, dove previsto, viene rivelato alla fine
+ * al posto della spiegazione, così la stessa cosa non si legge due volte.
+ */
 export type Attivita =
   | {
       tipo: 'componi';
@@ -69,6 +92,8 @@ export type Attivita =
       consegna: string;
       /** Voci nell'ordine corretto. */
       voci: { testo: string; nota?: string }[];
+      /** Voci che non fanno parte della sequenza. */
+      distrattori?: string[];
       spiegazione: string;
     }
   | {
@@ -77,8 +102,48 @@ export type Attivita =
       domanda: string;
       opzioni: string[];
       corretta: number;
-      spiegazione: string;
+      spiegazione?: string;
+      fonti?: Fonte[];
+      dettaglio?: string;
+    }
+  | {
+      /** Una situazione tipica del tempo, dichiarata come ricostruzione: che cosa fai? */
+      tipo: 'condotta';
+      id: string;
+      situazione: string;
+      /** Le fonti su cui si basa la ricostruzione. */
+      base: Fonte[];
+      domanda?: string;
+      opzioni: Opzione[];
+    }
+  | {
+      /** Un versetto da completare: le parole mancanti tra [[ ]]. */
+      tipo: 'completa';
+      id: string;
+      consegna: string;
+      verso: string;
+      testo: string;
+      distrattori: string[];
+    }
+  | {
+      /** Ogni voce va nella sua categoria. */
+      tipo: 'classifica';
+      id: string;
+      consegna: string;
+      categorie: [string, string];
+      voci: { testo: string; cat: 0 | 1; fonti: Fonte[] }[];
+      spiegazione?: string;
+      dettaglio?: string;
+    }
+  | {
+      /** Portare il cursore sull'anno giusto di una linea del tempo. */
+      tipo: 'linea';
+      id: string;
+      consegna: string;
+      persone: Vita[];
+      meta: number;
       fonti: Fonte[];
+      dettaglio?: string;
     };
 
 export type Fx =
@@ -92,7 +157,16 @@ export type Fx =
   | { k: 'camera'; x: number | null; dur?: number };
 
 export type Passo =
-  | { t: 'narra'; testo: string; titolo?: string; certezza?: Certezza; fonti?: Fonte[]; arte?: string }
+  | {
+      t: 'narra';
+      testo: string;
+      titolo?: string;
+      certezza?: Certezza;
+      fonti?: Fonte[];
+      arte?: string;
+      /** Scena non narrata, costruita su ciò che `fonti` dicono di quel tempo. */
+      ricostruzione?: boolean;
+    }
   | { t: 'verso'; id: string; intro?: string; evidenzia?: string[] }
   | { t: 'dettaglio'; id: string }
   | { t: 'senti'; id: string }
@@ -100,9 +174,13 @@ export type Passo =
   | { t: 'attivita'; a: Attivita }
   | { t: 'fx'; fx: Fx };
 
-export type TipoPunto = 'osserva' | 'ascolta' | 'leggi' | 'agisci' | 'medita';
+/**
+ * «esamina» è un indizio: non ha un segnale visibile da lontano, si scopre
+ * avvicinandosi. Gli altri tipi mostrano il loro segnale.
+ */
+export type TipoPunto = 'osserva' | 'ascolta' | 'leggi' | 'agisci' | 'medita' | 'esamina';
 
-/** Punto d'interesse nel mondo: ci si avvicina e si interagisce. */
+/** Punto d'interesse nel mondo: ci si avvicina (o lo si tocca) e si interagisce. */
 export interface Punto {
   id: string;
   x: number;
@@ -122,7 +200,6 @@ export interface Oggetto {
   piano?: 'fondo' | 'medio' | 'primo';
   scala?: number;
   variante?: number;
-  testo?: string;
   /** Visibile in proporzione a una variabile di scena (0..1). */
   seVar?: string;
 }

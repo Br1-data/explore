@@ -9,6 +9,10 @@ export const ALTEZZA = 540;
 const VELOCITA = 168;
 const VELOCITA_SGUARDO = 340;
 const RAGGIO_PUNTO = 78;
+/** Distanza entro cui un indizio («esamina») comincia a vedersi. */
+const RAGGIO_INDIZIO = 230;
+/** Un tocco sulla scena entro questa distanza da un punto lo sceglie. */
+const RAGGIO_TOCCO = 70;
 const PARALLASSE_FONDO = 0.55;
 const PARALLASSE_PRIMO = 1.32;
 
@@ -25,6 +29,8 @@ export interface StatoScena {
   completa: boolean;
   ultima: boolean;
   modo: 'cammina' | 'osserva';
+  /** Indizi («esamina») trovati e totali nella scena. */
+  indizi: [number, number];
   /** Colore del suolo in fondo alla scena, per raccordare la pagina alla tela. */
   suolo: string;
 }
@@ -96,6 +102,7 @@ const COLORI_PUNTO: Record<TipoPunto, string> = {
   leggi: '#f4e3a8',
   agisci: '#ff9370',
   medita: '#cdacf2',
+  esamina: '#a6ecc8',
 };
 
 export class Partita {
@@ -122,6 +129,8 @@ export class Partita {
   private attese: { t: number; fatto: () => void }[] = [];
   private saltaAttesa: (() => void) | null = null;
   private invitoCorrente: string | null = null;
+  /** Punto toccato sulla scena: si attiva appena lo si raggiunge. */
+  private inArrivo: string | null = null;
   private stelle: { x: number; y: number; r: number; f: number }[] = [];
   private nuvole: { x: number; y: number; w: number; v: number }[] = [];
   private oggettiPerPiano: Record<'fondo' | 'medio' | 'primo', Oggetto[]> = { fondo: [], medio: [], primo: [] };
@@ -196,6 +205,7 @@ export class Partita {
     this.attese = [];
     this.camera.blocco = null;
     this.invitoCorrente = null;
+    this.inArrivo = null;
     this.ui.invito(null);
 
     const g = this.giocatore;
@@ -292,14 +302,30 @@ export class Partita {
   /** Direzione tenuta premuta: -1 sinistra, 1 destra, 0 fermo. */
   muovi(dir: number): void {
     this.direzione = dir;
-    if (dir !== 0) this.giocatore.bersaglio = null;
+    if (dir !== 0) {
+      this.giocatore.bersaglio = null;
+      this.inArrivo = null;
+    }
   }
 
-  /** Cammina fino a un punto della tela (coordinate CSS). */
+  /** Va fino a un punto della tela (coordinate CSS); se lì c’è un punto d’interesse, lo attiva. */
   vaiVerso(xCss: number, larghezzaCss: number): void {
     if (this.modoGioco !== 'esplora') return;
-    const xVista = (xCss / larghezzaCss) * this.vw;
-    this.giocatore.bersaglio = limita(this.camera.x - this.vw / 2 + xVista, 40, this.scena.larghezza - 40);
+    const x = this.camera.x - this.vw / 2 + (xCss / larghezzaCss) * this.vw;
+    const g = this.giocatore;
+    let scelto: Punto | null = null;
+    for (const p of this.scena.punti) {
+      if (!this.visibile(p) || Math.abs(p.x - x) > RAGGIO_TOCCO) continue;
+      // Un indizio si può toccare solo quando lo si vede già.
+      if (p.tipo === 'esamina' && Math.abs(p.x - g.x) > RAGGIO_INDIZIO) continue;
+      if (!scelto || Math.abs(p.x - x) < Math.abs(scelto.x - x)) scelto = p;
+    }
+    this.inArrivo = scelto?.id ?? null;
+    if (scelto && Math.abs(scelto.x - g.x) < RAGGIO_PUNTO) {
+      this.attiva(scelto);
+      return;
+    }
+    g.bersaglio = limita(scelto?.x ?? x, 40, this.scena.larghezza - 40);
   }
 
   /** Tasto azione: interagisce con il punto vicino o salta un’attesa. */
@@ -366,6 +392,7 @@ export class Partita {
 
   private attiva(p: Punto): void {
     this.giocatore.bersaglio = null;
+    this.inArrivo = null;
     this.direzione = 0;
     if (this.ruolo.modo === 'cammina' && Math.abs(p.x - this.giocatore.x) > 4) {
       this.giocatore.verso = p.x > this.giocatore.x ? 1 : -1;
@@ -396,6 +423,7 @@ export class Partita {
 
   private notificaStato(): void {
     const obbl = this.scena.punti.filter((p) => !p.facoltativo);
+    const indizi = this.scena.punti.filter((p) => p.tipo === 'esamina');
     this.ui.stato({
       indice: this.indiceScena,
       totale: this.ruolo.scene.length,
@@ -407,6 +435,7 @@ export class Partita {
       completa: this.completa() && this.modoGioco === 'esplora',
       ultima: this.indiceScena === this.ruolo.scene.length - 1,
       modo: this.ruolo.modo,
+      indizi: [indizi.filter((p) => this.fatti.has(p.id)).length, indizi.length],
       suolo: this.coloreSuolo(),
     });
   }
@@ -560,8 +589,7 @@ export class Partita {
         for (const z of s.zone ?? []) if (g.x >= z.x0 && g.x <= z.x1) vel *= 1 - z.forza;
       }
       const prima = g.x;
-      const margine = osserva ? Math.min(this.vw / 2, s.larghezza / 2) : 40;
-      g.x = limita(g.x + dir * vel * dt, margine, s.larghezza - margine);
+      g.x = limita(g.x + dir * vel * dt, 40, s.larghezza - 40);
       g.verso = dir > 0 ? 1 : -1;
       if (!osserva) {
         g.fase += Math.abs(g.x - prima) * 0.064;
@@ -575,6 +603,11 @@ export class Partita {
       }
     } else if (g.posa === 'cammina') {
       g.posa = 'fermo';
+    }
+    if (this.inArrivo && this.modoGioco === 'esplora' && g.bersaglio === null) {
+      const p = this.scena.punti.find((x) => x.id === this.inArrivo);
+      this.inArrivo = null;
+      if (p && this.visibile(p) && Math.abs(p.x - g.x) < RAGGIO_PUNTO) this.attiva(p);
     }
 
     // Attori con un ruolo nel racconto.
@@ -860,6 +893,7 @@ export class Partita {
     }
     figure.sort((a, b) => a.prof - b.prof);
     for (const f of figure) f.disegna();
+    this.indizi(gy, sinistra);
 
     // Primo piano, scuro e sfocato dalla vicinanza.
     const pp = pennello(tonoPrimo);
@@ -873,7 +907,7 @@ export class Partita {
     }
 
     this.atmosfera(P);
-    if (this.ruolo.modo === 'osserva' && this.modoGioco === 'esplora') this.mirino(gy(cam));
+    if (this.ruolo.modo === 'osserva' && this.modoGioco === 'esplora') this.mirino(g.x - sinistra, gy(g.x));
     this.disegnaNastri(gy, sinistra);
 
     const buio = this.vars['dissolvi'] ?? 0;
@@ -990,8 +1024,10 @@ export class Partita {
       if (sx < -40 || sx > this.vw + 40) continue;
       const fatto = this.fatti.has(p.id);
       if (!fatto && !this.visibile(p)) continue;
-      const y = gy(p.x) - (p.alt ?? 132);
       const colore = COLORI_PUNTO[p.tipo];
+      // Gli indizi si disegnano sopra le figure (vedi indizi()).
+      if (p.tipo === 'esamina') continue;
+      const y = gy(p.x) - (p.alt ?? 132);
       if (fatto) {
         ctx.fillStyle = alfa(colore, 0.4);
         ctx.beginPath();
@@ -1031,6 +1067,53 @@ export class Partita {
       ctx.setLineDash([]);
       this.icona(p.tipo, sx, yy, colore, attivo ? 1.2 : 1);
     }
+  }
+
+  private indizi(gy: (x: number) => number, sinistra: number): void {
+    if (this.modoGioco === 'transizione') return;
+    const vicino = this.modoGioco === 'esplora' ? this.puntoVicino() : null;
+    for (const p of this.scena.punti) {
+      if (p.tipo !== 'esamina') continue;
+      const sx = p.x - sinistra;
+      if (sx < -40 || sx > this.vw + 40) continue;
+      const fatto = this.fatti.has(p.id);
+      if (!fatto && !this.visibile(p)) continue;
+      this.indizio(p, sx, gy(p.x) - (p.alt ?? 118), COLORI_PUNTO.esamina, fatto, vicino === p);
+    }
+  }
+
+  /** Un indizio: invisibile da lontano, luccica man mano che ci si avvicina. */
+  private indizio(p: Punto, sx: number, y: number, colore: string, fatto: boolean, attivo: boolean): void {
+    const { ctx } = this;
+    if (fatto) {
+      ctx.fillStyle = alfa(colore, 0.35);
+      ctx.beginPath();
+      ctx.arc(sx, y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      return;
+    }
+    const vicinanza = 1 - Math.abs(p.x - this.giocatore.x) / RAGGIO_INDIZIO;
+    if (vicinanza <= 0) return;
+    const onda = Math.sin(this.t * 3.4 + p.x);
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, vicinanza * 1.6);
+    // Scintilla a quattro punte.
+    const r = (attivo ? 15 : 10) + onda * 2;
+    ctx.fillStyle = alfa(colore, 0.22);
+    ctx.beginPath();
+    ctx.arc(sx, y, r + 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = colore;
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI) / 4 + this.t * 0.6;
+      const rr = i % 2 ? r * 0.28 : r;
+      ctx.lineTo(sx + Math.cos(a) * rr, y + Math.sin(a) * rr);
+    }
+    ctx.closePath();
+    ctx.fill();
+    if (attivo) this.icona('esamina', sx, y - r - 20, colore, 1);
+    ctx.restore();
   }
 
   private icona(tipo: TipoPunto, x: number, y: number, colore: string, k: number): void {
@@ -1088,6 +1171,14 @@ export class Partita {
         ctx.bezierCurveTo(6, -9, 11, -1, 0, 7);
         ctx.fill();
         break;
+      case 'esamina':
+        // Lente.
+        ctx.beginPath();
+        ctx.arc(-2, -2, 5.5, 0, Math.PI * 2);
+        ctx.moveTo(2.2, 2.2);
+        ctx.lineTo(7.5, 7.5);
+        ctx.stroke();
+        break;
     }
     ctx.restore();
   }
@@ -1131,10 +1222,9 @@ export class Partita {
   }
 
   /** Nel punto di vista di chi osserva: indica dove si sta guardando. */
-  private mirino(suolo: number): void {
+  private mirino(cx: number, suolo: number): void {
     const { ctx } = this;
     const vicino = this.puntoVicino() !== null;
-    const cx = this.vw / 2;
     const cy = suolo - 72;
     const mx = vicino ? 62 : 74;
     const my = vicino ? 92 : 104;
@@ -1205,6 +1295,9 @@ export class Partita {
     scena: string;
     indice: number;
     x: number;
+    /** Centro della vista e sua larghezza, in unità di scena. */
+    camera: number;
+    vista: number;
     larghezza: number;
     completa: boolean;
     attesa: boolean;
@@ -1215,6 +1308,8 @@ export class Partita {
       scena: this.scena.id,
       indice: this.indiceScena,
       x: this.giocatore.x,
+      camera: this.camera.x,
+      vista: this.vw,
       larghezza: this.scena.larghezza,
       completa: this.completa(),
       attesa: this.saltaAttesa !== null,

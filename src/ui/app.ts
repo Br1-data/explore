@@ -6,11 +6,11 @@ import { Partita, type Ascoltatori, type Invito, type StatoScena } from '../moto
 import { Suono } from '../motore/suono';
 import { Salvataggio } from '../salvataggio';
 import { esterno, h, icona, svuota } from './dom';
-import { CERTEZZE, distintivo, ORDINE_CERTEZZE, PER_TE, VERBI } from './etichette';
+import { CERTEZZE, distintivo, distintivoRicostruzione, ORDINE_CERTEZZE, PER_TE, RICOSTRUZIONE, VERBI } from './etichette';
 import { creaQuaderno, sezioniStudio } from './quaderno';
 import { conEvidenza, Scheda } from './schede';
 
-const NOME_GIOCO = 'In cammino';
+const NOME_GIOCO = 'Nei loro panni';
 
 /** Una scena senza punti d’interesse, che scorre dietro al titolo. */
 const RUOLO_VETRINA: Ruolo = {
@@ -151,6 +151,8 @@ export class App {
       'dl',
       { class: 'legenda' },
       ORDINE_CERTEZZE.flatMap((c) => [h('dt', null, distintivo(c)), h('dd', null, CERTEZZE[c].descrizione)]),
+      h('dt', null, distintivoRicostruzione()),
+      h('dd', null, RICOSTRUZIONE.descrizione),
       h('dt', null, h('span', { class: 'distintivo distintivo--per-te' }, PER_TE.etichetta)),
       h('dd', null, PER_TE.descrizione),
     );
@@ -170,9 +172,10 @@ export class App {
           'ul',
           { class: 'guida' },
           h('li', null, h('b', null, 'Muoviti. '), 'Frecce ← → oppure A e D. Con il mouse o il dito: tocca la scena o usa i pulsanti in basso.'),
-          h('li', null, h('b', null, 'Avvicinati ai segnali. '), 'Quando compare l’invito, premi E, Invio o toccalo.'),
-          h('li', null, h('b', null, 'Nota i dettagli. '), 'Ogni cosa che scopri finisce nel quaderno di studio (tasto Q), con la sua fonte.'),
-          h('li', null, h('b', null, 'Il racconto non cambia. '), 'Non ci sono scelte che lo modificano: si gioca per osservare, capire e immedesimarsi.'),
+          h('li', null, h('b', null, 'Segnali. '), 'Toccane uno, oppure avvicinati e premi E o Invio.'),
+          h('li', null, h('b', null, 'Indizi. '), 'Alcune cose non hanno un segnale: avvicinandoti vedrai un luccichio. Esaminale per scoprire i dettagli.'),
+          h('li', null, h('b', null, 'Mettiti nei suoi panni. '), 'Nelle situazioni segnate «Ricostruzione» scegli che cosa fare: scopri che cosa fece il personaggio secondo le fonti, e come agivano gli altri.'),
+          h('li', null, h('b', null, 'Il racconto non cambia. '), 'Le scelte servono a capire, non a cambiare la storia. Ogni dettaglio finisce nel quaderno di studio (tasto Q), con la sua fonte.'),
         ),
         h('h3', null, 'Da dove viene ciò che leggi'),
         h('p', null, 'Ogni scheda porta un contrassegno, così distingui sempre ciò che la Bibbia dice da ciò che se ne deduce.'),
@@ -212,6 +215,8 @@ export class App {
           'ul',
           { class: 'guida' },
           h('li', null, h('b', null, 'Nessuna aggiunta al racconto. '), 'Niente episodi, dialoghi o pensieri inventati. Dove la Bibbia tace, il gioco lo dice.'),
+          h('li', null, h('b', null, 'Le ricostruzioni sono dichiarate. '), 'Le scene tipiche del tempo, non narrate, sono segnate «Ricostruzione» e indicano le fonti su cui si basano.'),
+          h('li', null, h('b', null, '«Camminare con Dio» non è un percorso. '), 'Nella Bibbia significa seguire la condotta che Dio approva: nel gioco lo mostrano le scelte, non gli spostamenti.'),
           h('li', null, h('b', null, 'Ogni affermazione ha la sua fonte. '), 'Versetto, capitolo del libro o pubblicazione citata dal libro, con il collegamento a jw.org.'),
           h('li', null, h('b', null, 'Geova non viene raffigurato. '), 'Quando lo si impersona, si compiono soltanto gli atti che il racconto gli attribuisce.'),
           h('li', null, h('b', null, 'Le sensazioni sono domande. '), 'Che cosa provarono i personaggi, se non è scritto, viene chiesto a te.'),
@@ -340,7 +345,7 @@ export class App {
           h(
             'p',
             { class: 'pagina__intro' },
-            'Ogni capitolo del libro diventa un racconto da percorrere, scegliendo da quale punto di vista viverlo. Per ora si può giocare il primo; gli altri arriveranno con la stessa struttura. ',
+            'Ogni capitolo del libro diventa un racconto da vivere nei panni di chi c’era, scegliendo il punto di vista. Per ora si può giocare il primo; gli altri arriveranno con la stessa struttura. ',
             esterno('Il libro su jw.org', URL_LIBRO),
           ),
         ),
@@ -494,7 +499,7 @@ export class App {
             ? h(
                 'p',
                 { class: 'pagina__intro' },
-                `Ti ${mancanti === 1 ? 'è sfuggito un dettaglio facoltativo' : `sono sfuggiti ${mancanti} dettagli facoltativi`}: sono i segnali con il bordo tratteggiato.`,
+                `Ti ${mancanti === 1 ? 'è sfuggito un dettaglio facoltativo' : `sono sfuggiti ${mancanti} dettagli facoltativi`}: cercali tra i segnali con il bordo tratteggiato.`,
               )
             : h('p', { class: 'pagina__intro' }, 'Hai colto tutti i dettagli di questo punto di vista.'),
           h(
@@ -552,7 +557,9 @@ export class App {
     const aiuto = h(
       'p',
       { class: 'hud__aiuto' },
-      ruolo.modo === 'osserva' ? '← → sposta lo sguardo · E interagisci · Q quaderno' : '← → cammina · E interagisci · Q quaderno',
+      ruolo.modo === 'osserva'
+        ? '← → sposta lo sguardo · tocca o E per interagire · Q quaderno'
+        : '← → cammina · tocca o E per interagire · Q quaderno',
     );
 
     const aggiornaAudio = (): void => {
@@ -632,7 +639,8 @@ export class App {
         for (let i = 0; i < s.totale; i++) {
           tappe.append(h('i', { class: i < s.indice ? 'tappa tappa--fatta' : i === s.indice ? 'tappa tappa--ora' : 'tappa' }));
         }
-        punti.textContent = `${s.fatti} di ${s.obbligatori}`;
+        const [trovati, indizi] = s.indizi;
+        punti.textContent = `${s.fatti} di ${s.obbligatori}${indizi ? ` · indizi ${trovati}/${indizi}` : ''}`;
         prosegui.hidden = !s.completa;
         prosegui.textContent = s.ultima ? 'Concludi il racconto' : 'Prosegui';
         if (s.completa && s.facoltativiRimasti > 0) {
@@ -654,7 +662,7 @@ export class App {
 
     const partita = (this.partita = new Partita(tela, cap, ruolo, ascoltatori));
     // Appiglio per le prove automatiche (e2e/percorsi.mjs).
-    (window as unknown as { __incammino?: unknown }).__incammino = partita;
+    (window as unknown as { __partita?: unknown }).__partita = partita;
 
     invito.addEventListener('click', () => partita.azione());
     prosegui.addEventListener('click', () => partita.prosegui());

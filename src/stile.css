@@ -18,6 +18,7 @@
   --c-libro: #86561b;
   --c-sembra: #76458a;
   --c-per-te: #a03c50;
+  --c-ricostruzione: #5c6470;
   --serif: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   --raggio: 16px;
@@ -710,6 +711,15 @@ button {
 .distintivo--per-te {
   background: var(--c-per-te);
 }
+.distintivo--ricostruzione {
+  background: transparent;
+  color: var(--c-ricostruzione);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+.pannello .distintivo--ricostruzione,
+.legenda .distintivo--ricostruzione {
+  color: inherit;
+}
 
 /* ——————————————————————— Gioco ——————————————————————— */
 
@@ -1257,6 +1267,203 @@ mark {
   animation: scossa 0.3s ease;
 }
 
+.pezzo--fuori {
+  opacity: 0.45;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+/* Il dettaglio rivelato alla fine di un’attività. */
+.rivelato {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.8em 0.95em;
+  border-radius: 14px;
+  background: #fffaf0;
+  box-shadow: inset 0 0 0 1.5px var(--carta-3);
+  animation: compare 0.3s ease-out;
+}
+
+.rivelato .scheda__titolo {
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
+}
+
+/* Situazioni di condotta */
+
+.scheda__situazione {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 2.8vw, 1.25rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.opzione--altra {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.esito-scelta:empty {
+  display: none;
+}
+
+.esito-scelta {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.esito-scelta__testo {
+  padding: 0.6em 0.8em;
+  border-radius: 10px;
+  background: var(--carta-2);
+  text-wrap: pretty;
+  animation: compare 0.25s ease-out;
+}
+
+/* Completa il versetto */
+
+.lacuna {
+  display: inline-block;
+  height: 1.3em;
+  vertical-align: -0.2em;
+  margin: 0 0.1em;
+  border-bottom: 2px solid var(--carta-3);
+  text-align: center;
+}
+
+.lacuna--attiva {
+  border-bottom-color: var(--oro);
+  background: rgba(217, 164, 65, 0.16);
+  border-radius: 4px 4px 0 0;
+}
+
+.lacuna--piena {
+  height: auto;
+  min-width: 0 !important;
+  border-bottom-color: transparent;
+  background: #f6dc8a;
+  border-radius: 4px;
+  padding: 0 0.15em;
+  animation: compare 0.25s ease-out;
+}
+
+/* Classifica */
+
+.carta-voce {
+  padding: 0.9em 1em;
+  border-radius: 14px;
+  background: #fffaf0;
+  box-shadow: 0 6px 18px -10px rgba(42, 33, 24, 0.5), inset 0 0 0 1.5px var(--carta-3);
+  font-family: var(--serif);
+  font-size: clamp(1.08rem, 2.8vw, 1.22rem);
+  text-align: center;
+  text-wrap: balance;
+  animation: compare 0.2s ease-out;
+}
+
+.classifica__scelte {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.opzione--cesto {
+  text-align: center;
+  font-family: var(--sans);
+  font-weight: 650;
+  font-size: 0.95rem;
+}
+
+.cesti {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.cesto {
+  padding: 0.5em 0.6em;
+  border: 1.5px dashed var(--carta-3);
+  border-radius: 12px;
+  font-size: 0.86rem;
+}
+
+.cesto h4 {
+  font-size: 0.72rem;
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--inchiostro-2);
+}
+
+.cesto__voci {
+  margin: 0.3em 0 0;
+  padding-left: 1.1em;
+  display: grid;
+  gap: 0.3em;
+}
+
+.cesto__voci .fonti {
+  margin: 0;
+  font-size: 0.72rem;
+}
+
+/* Linea del tempo */
+
+.linea__cursore {
+  position: absolute;
+  top: -4px;
+  bottom: 0;
+  width: 0;
+  border-left: 2px solid var(--terra);
+}
+
+.linea__cursore::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -6px;
+  border: 5px solid transparent;
+  border-top: 7px solid var(--terra);
+}
+
+.linea__scorri {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--terra);
+}
+
+.linea__lettura {
+  min-height: 2.8em;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  text-wrap: pretty;
+}
+
+.linea__comandi {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.linea__fissa {
+  margin-left: auto;
+  background: var(--terra);
+  border-color: var(--terra);
+  color: #fff;
+}
+
+.linea__fissa:disabled,
+.linea__comandi .tondo:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.tondo--chiaro {
+  background: var(--carta-2);
+  border-color: var(--carta-3);
+  color: var(--inchiostro);
+}
+
 /* Schemi */
 
 .schema {
@@ -1271,67 +1478,11 @@ mark {
   text-wrap: pretty;
 }
 
-.fila {
-  display: grid;
-  gap: 0.3rem;
-}
-
-.fila__titolo {
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--inchiostro-2);
-}
-
-.fila__voci {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px;
-}
-
-.pietra {
-  display: grid;
-  justify-items: center;
-  gap: 1px;
-  padding: 6px 2px;
-  border-radius: 10px 10px 4px 4px;
-  background: var(--carta-2);
-  border: 1px solid var(--carta-3);
-  font-size: clamp(0.62rem, 2.1vw, 0.86rem);
-  overflow: hidden;
-}
-
-.pietra b {
-  font-family: var(--serif);
-  font-size: 1.15em;
-  color: var(--inchiostro-2);
-}
-
-.pietra span {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pietra--evidenza {
-  background: var(--inchiostro);
-  border-color: var(--inchiostro);
-  color: var(--carta);
-}
-
-.pietra--evidenza b {
-  color: var(--oro-chiaro);
-}
-
 .vite {
   position: relative;
   display: grid;
   gap: 4px;
-  padding-bottom: 2.6em;
+  padding-bottom: 0.4em;
 }
 
 .vita {
@@ -1378,34 +1529,6 @@ mark {
   left: calc(6.6em + 8px);
   right: calc(2.6em + 8px);
   pointer-events: none;
-}
-
-.segno {
-  position: absolute;
-  top: 0;
-  bottom: 1.5em;
-  border-left: 1.5px dashed var(--terra);
-}
-
-.segno i {
-  position: absolute;
-  bottom: -1.5em;
-  left: 0;
-  transform: translateX(-50%);
-  font-size: 0.7rem;
-  font-style: normal;
-  font-weight: 650;
-  white-space: nowrap;
-  color: var(--terra);
-}
-
-.segno--b {
-  border-color: var(--c-numeri);
-}
-
-.segno--b i {
-  color: var(--c-numeri);
-  transform: translateX(-88%);
 }
 
 .formule {

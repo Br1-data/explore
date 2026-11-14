@@ -3,7 +3,7 @@
  * Nessun dato lascia il dispositivo.
  */
 
-const CHIAVE = 'in-cammino.v1';
+const CHIAVE = 'nei-loro-panni.v1';
 
 export interface ProgressoRuolo {
   /** Indice della prima scena non ancora completata. */

@@ -348,38 +348,6 @@ const cumulo: Pittore = (p) => {
   });
 };
 
-const stele: Pittore = (p, o) => {
-  const { ctx, P, tono } = p;
-  const base = mescola(P.terra[0], '#b8b2a6', 0.6);
-  ctx.fillStyle = tono(mescola(base, '#000000', 0.22));
-  ctx.beginPath();
-  ctx.ellipse(0, 1, 30, 7, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = tono(base);
-  ctx.beginPath();
-  ctx.moveTo(-21, 0);
-  ctx.lineTo(-19, -66);
-  ctx.quadraticCurveTo(0, -92, 19, -66);
-  ctx.lineTo(21, 0);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = tono(mescola(base, '#000000', 0.16));
-  ctx.beginPath();
-  ctx.moveTo(8, -80);
-  ctx.quadraticCurveTo(16, -74, 19, -66);
-  ctx.lineTo(21, 0);
-  ctx.lineTo(10, 0);
-  ctx.closePath();
-  ctx.fill();
-  if (o.testo) {
-    ctx.fillStyle = tono(mescola(base, '#1c1612', 0.78));
-    ctx.font = `600 ${o.testo.length > 2 ? 17 : 21}px "Fraunces Variable", Georgia, serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(o.testo, -1, -42);
-  }
-};
-
 const idolo: Pittore = (p) => {
   const { ctx, P, tono, t } = p;
   const base = mescola(P.terra[0], '#a09890', 0.5);
@@ -714,7 +682,6 @@ const PITTORI: Record<string, Pittore> = {
   cespuglio,
   roccia,
   cumulo,
-  stele,
   idolo,
   fuoco,
   torcia,

@@ -1,97 +1,134 @@
 import type { Passo, Ruolo } from '../../tipi';
 import { F, b } from './base';
-import { GIUDA_15_DA_TROVARE, NASTRO } from './enoc';
+import { NASTRO } from './enoc';
 import { mondo, notte, strada } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
 
+const LINEE = [b('Genesi', 4, '17, 18'), b('Genesi', 5, '3-18')];
+
 /**
  * Il punto di vista di uno dei contemporanei di Enoc.
  *
  * La Bibbia non riporta nomi né episodi: li chiama «empi» e dice che cosa
- * facevano e dicevano. Il percorso mostra solo questo, per capire a chi era
- * rivolto il messaggio e perché serviva coraggio per portarlo.
+ * facevano e dicevano. Qui si indaga il loro mondo, si ascolta il messaggio
+ * che li riguardava e si cerca un uomo che non si trova più.
  */
 export const empio: Ruolo = {
   id: 'empio',
   nome: 'Uno degli empi',
   titolo: 'Dalla parte di chi ascoltò il messaggio',
   descrizione:
-    'Guarda il racconto dalla parte sbagliata: il mondo violento che sembra normale, le parole di Enoc che ti riguardano, un uomo che a un certo punto non si trova più.',
+    'Indaga il mondo violento che sembra normale, ascolta un messaggio che parla di te, cerca un uomo che a un certo punto non si trova più.',
   fedelta:
-    'La Bibbia non dà nomi né storie a queste persone: riporta ciò che facevano e dicevano (Giuda 14, 15; Genesi 4). Qui non c’è altro. Non è un modello da imitare: serve a capire a chi parlava Enoc.',
+    'La Bibbia non dà nomi né storie a queste persone: riporta ciò che facevano e dicevano (Giuda 14, 15; Genesi 4). Qui non c’è altro, e le ricerche notturne sono una ricostruzione dichiarata. Non è un modello da imitare: serve a capire a chi parlava Enoc.',
   modo: 'cammina',
   stile: 'empio',
-  durata: '8-10 minuti',
+  durata: '12-15 minuti',
   conclusione: 'Hai visto il racconto dalla parte degli empi',
   scene: [
     {
       id: 'empio-mondo',
       titolo: 'Il tuo mondo',
-      luogo: 'La settima generazione da Adamo',
-      ...mondo(),
-      inizioX: 700,
+      luogo: 'Ciò che qui è normale',
+      ...mondo(3000),
+      inizioX: 140,
       folle: [
         { x0: 1080, x1: 1250, n: 5, seme: 3, armati: 0.8, gruppo: 'rissa' },
         { x0: 1400, x1: 1800, n: 6, seme: 5, donne: 0.4, bimbi: 0.15, comportamento: 'vaga' },
         { x0: 2170, x1: 2360, n: 7, seme: 7, gruppo: 'invoca' },
-        { x0: 2420, x1: 2760, n: 6, seme: 9, armati: 0.3, donne: 0.3, comportamento: 'vaga' },
-        { x0: 900, x1: 2800, n: 12, seme: 13, piano: 'fondo', comportamento: 'vaga' },
+        { x0: 900, x1: 2900, n: 12, seme: 13, piano: 'fondo', comportamento: 'vaga' },
       ],
-      attori: [{ id: 'enoc', x: 3000, stile: 'enoc', percorso: [2920, 3350] }],
+      attori: [{ id: 'enoc', x: 2800, stile: 'enoc', percorso: [2740, 2920] }],
       ingresso: [
         {
           t: 'narra',
           titolo: 'Sei uno dei contemporanei di Enoc',
           testo:
-            'La Bibbia non riporta il tuo nome. Dice che cosa fa e che cosa dice la gente come te, e la chiama con una parola sola: «empi».',
+            'La Bibbia non riporta il tuo nome. Dice che cosa fa e che cosa dice la gente come te. Indaga: cerca gli indizi di ciò che, qui, è diventato normale.',
           certezza: 'scritto',
           fonti: [b('Giuda', 1, '15')],
         },
-        det('empi-significato'),
       ],
       punti: [
         {
-          id: 'violenza',
-          x: 1160,
-          tipo: 'osserva',
-          etichetta: 'Così si regolano i conti',
+          id: 'origini',
+          x: 520,
+          tipo: 'esamina',
+          etichetta: 'Il primo omicidio',
           passi: [
-            det('norma'),
+            {
+              t: 'narra',
+              testo: 'Nei campi, Caino aveva aggredito suo fratello Abele e lo aveva ucciso.',
+              arte: 'caino-abele',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 4, '8')],
+            },
             det('caino-abele'),
-            { t: 'verso', id: 'gen-4-23', intro: 'Parole di un discendente di Caino, conservate nella Bibbia.' },
-            det('lamec-versi'),
+            det('spirito-ribelle'),
           ],
         },
         {
-          id: 'citta',
-          x: 1650,
-          tipo: 'osserva',
+          id: 'rissa',
+          x: 1160,
+          tipo: 'esamina',
+          etichetta: 'Così si regolano i conti',
+          passi: [det('norma'), { t: 'verso', id: 'gen-4-23', intro: 'Parole di un discendente di Caino, conservate nella Bibbia.' }, det('lamec-versi')],
+        },
+        {
+          id: 'fucina',
+          x: 1660,
+          tipo: 'esamina',
           etichetta: 'Ciò che sapete costruire',
-          facoltativo: true,
           passi: [det('citta')],
         },
         {
-          id: 'nome',
-          x: 2230,
-          tipo: 'ascolta',
+          id: 'idolo',
+          x: 2260,
+          tipo: 'esamina',
           etichetta: 'Il nome di Dio sulle vostre labbra',
           passi: [
             { t: 'verso', id: 'gen-4-26', evidenzia: ['si cominciò a invocare il nome di Geova'] },
             det('nome-profanato'),
+            det('quattro-secoli'),
             det('nome-come'),
-            det('spirito-ribelle'),
             senti('e-mondo'),
           ],
         },
         {
-          id: 'uomo',
-          x: 2900,
-          tipo: 'osserva',
-          etichetta: 'Un uomo che non fa come voi',
-          richiede: ['violenza', 'nome'],
-          passi: [det('rifiuto-nome'), det('pacifico'), det('solo')],
+          id: 'linee',
+          x: 2560,
+          tipo: 'leggi',
+          etichetta: 'Due discendenze',
+          richiede: ['origini', 'rissa', 'fucina', 'idolo'],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'classifica',
+                id: 'linee',
+                consegna:
+                  'Da Adamo partono due discendenze: quella di Caino e quella di Set. Metti ogni nome nella sua. Attento: un nome compare in entrambe.',
+                categorie: ['Linea di Caino', 'Linea di Set'],
+                voci: [
+                  { testo: 'Caino', cat: 0, fonti: LINEE },
+                  { testo: 'Set', cat: 1, fonti: LINEE },
+                  { testo: 'Enoc, figlio di Caino', cat: 0, fonti: LINEE },
+                  { testo: 'Enos', cat: 1, fonti: LINEE },
+                  { testo: 'Irad', cat: 0, fonti: LINEE },
+                  { testo: 'Chenan', cat: 1, fonti: LINEE },
+                  { testo: 'Mehuiael', cat: 0, fonti: LINEE },
+                  { testo: 'Maalalel', cat: 1, fonti: LINEE },
+                  { testo: 'Metusael', cat: 0, fonti: LINEE },
+                  { testo: 'Iared', cat: 1, fonti: LINEE },
+                  { testo: 'Lamec, figlio di Metusael', cat: 0, fonti: LINEE },
+                  { testo: 'Enoc, figlio di Iared', cat: 1, fonti: LINEE },
+                ],
+              },
+            },
+            det('due-settimi'),
+          ],
         },
       ],
     },
@@ -99,14 +136,14 @@ export const empio: Ruolo = {
       id: 'empio-strada',
       titolo: 'Quell’uomo parla in strada',
       luogo: 'Un messaggio che ti riguarda',
-      ...strada(),
+      ...strada(2900),
       inizioX: 620,
       vars: { agitazione: 0 },
       folle: [
         { x0: 780, x1: 1240, n: 13, seme: 31, reagisce: true, armati: 0.15, donne: 0.3, comportamento: 'vaga' },
         { x0: 1480, x1: 1980, n: 14, seme: 33, reagisce: true, armati: 0.3, donne: 0.25, comportamento: 'vaga' },
         { x0: 2220, x1: 2760, n: 15, seme: 35, reagisce: true, armati: 0.4, donne: 0.2, comportamento: 'vaga' },
-        { x0: 600, x1: 3000, n: 14, seme: 37, piano: 'fondo', comportamento: 'vaga' },
+        { x0: 600, x1: 2900, n: 14, seme: 37, piano: 'fondo', comportamento: 'vaga' },
       ],
       attori: [{ id: 'enoc', x: 1090, stile: 'enoc', verso: -1 }],
       ingresso: [
@@ -128,8 +165,7 @@ export const empio: Ruolo = {
             { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'proclama' } },
             { t: 'fx', fx: { k: 'nastro', chi: 'enoc', testo: NASTRO[0], dur: 5 } },
             { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 0.35, dur: 2.5 } },
-            det('messaggio'),
-            det('miriadi'),
+            det('infastiditi'),
             { t: 'fx', fx: { k: 'vai', chi: 'enoc', x: 1810, vel: 150 } },
           ],
         },
@@ -150,12 +186,13 @@ export const empio: Ruolo = {
                 id: 'quattro-volte',
                 consegna: 'Con quale parola vi descrive? Tocca ogni parola che esprime quel concetto.',
                 rif: 'Giuda 15',
-                testo: GIUDA_15_DA_TROVARE,
-                spiegazione: 'Il concetto di empietà è ripetuto ben quattro volte.',
+                testo:
+                  '…per eseguire il giudizio contro tutti e dimostrare la colpevolezza di tutti gli [[empi]] per tutte le opere [[empie]] che hanno [[empiamente]] compiuto e per tutte le cose offensive che gli [[empi]] peccatori hanno detto contro di lui.',
+                spiegazione: 'Quattro parole, un solo concetto.',
               },
             },
             det('quattro-volte'),
-            det('opere-parole'),
+            det('empi-significato'),
             { t: 'fx', fx: { k: 'vai', chi: 'enoc', x: 2570, vel: 150 } },
           ],
         },
@@ -169,19 +206,18 @@ export const empio: Ruolo = {
             { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'proclama' } },
             { t: 'fx', fx: { k: 'nastro', chi: 'enoc', testo: NASTRO[2], dur: 5 } },
             { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 1, dur: 2.5 } },
-            det('al-passato'),
-            det('non-gradite'),
+            det('opere-parole'),
             senti('e-parole'),
             { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'fermo' } },
           ],
         },
         {
-          id: 'folla',
-          x: 2960,
-          tipo: 'osserva',
-          etichetta: 'Arrabbiati, infastiditi, armati',
+          id: 'reazioni',
+          x: 2740,
+          tipo: 'esamina',
+          etichetta: 'Che cosa succede intorno a te',
           richiede: ['ascolta-3'],
-          passi: [det('strada'), det('infastiditi'), det('scherni')],
+          passi: [det('reazione')],
         },
       ],
     },
@@ -189,7 +225,7 @@ export const empio: Ruolo = {
       id: 'empio-caccia',
       titolo: 'Farlo tacere',
       luogo: 'La Bibbia lo lascia intendere',
-      ...notte(),
+      ...notte(3000),
       inizioX: 460,
       folle: [
         {
@@ -214,33 +250,42 @@ export const empio: Ruolo = {
       ],
       punti: [
         {
-          id: 'tracce',
-          x: 980,
-          tipo: 'osserva',
-          etichetta: 'Lo cercate',
-          passi: [det('reazione'), det('sottratto')],
+          id: 'cerca-1',
+          x: 1080,
+          tipo: 'esamina',
+          etichetta: 'Tra le rocce',
+          passi: [
+            {
+              t: 'narra',
+              testo: 'Lo cercate tra le rocce, con le torce.',
+              ricostruzione: true,
+              fonti: [F.w01, F.libro],
+            },
+            det('scherni'),
+          ],
         },
         {
-          id: 'vuoto',
-          x: 2050,
-          tipo: 'osserva',
-          etichetta: 'Non c’è più',
-          richiede: ['tracce'],
+          id: 'cerca-2',
+          x: 1680,
+          tipo: 'esamina',
+          etichetta: 'Lungo il sentiero',
           passi: [
-            { t: 'verso', id: 'ebr-11-5', evidenzia: ['non fu più trovato perché Dio l’aveva portato via'] },
+            {
+              t: 'narra',
+              testo: 'Lo cercate lungo il sentiero. Nessuna traccia.',
+              ricostruzione: true,
+              fonti: [b('Ebrei', 11, '5')],
+            },
             det('non-trovato'),
-            det('prese'),
-            det('corpo'),
-            det('amore'),
             senti('e-vuoto'),
           ],
         },
         {
           id: 'resta',
-          x: 2780,
+          x: 2500,
           tipo: 'medita',
           etichetta: 'Il messaggio resta',
-          richiede: ['vuoto'],
+          richiede: ['cerca-1', 'cerca-2'],
           passi: [
             det('anche-loro'),
             det('adempimento'),
@@ -251,17 +296,5 @@ export const empio: Ruolo = {
       ],
     },
   ],
-  epilogo: [
-    {
-      t: 'narra',
-      titolo: 'Due settimi',
-      testo:
-        'Enoc e Lamec vivono entrambi alla settima generazione da Adamo. Il libro rimanda a un video il cui titolo dice quale dei due imitare.',
-      certezza: 'numeri',
-      fonti: [F.libro],
-    },
-    { t: 'schema', id: 'due-linee' },
-    det('due-settimi'),
-    det('memoria'),
-  ],
+  epilogo: [],
 };

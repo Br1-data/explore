@@ -1,4 +1,4 @@
-import type { Dettaglio, Fonte, Sensazione, SezioneStudio, Verso } from '../../tipi';
+import type { Dettaglio, Fonte, Sensazione, SezioneStudio, Verso, Vita } from '../../tipi';
 
 /**
  * Capitolo 1 — Enoc: «Camminò con Dio».
@@ -25,6 +25,24 @@ const LIBRI: Record<string, [slug: string, numero: number]> = {
   Giuda: ['giuda', 65],
   Rivelazione: ['rivelazione', 66],
 };
+
+/**
+ * Le vite di Genesi 5 sulla linea del tempo (anni a.E.V., quindi negativi).
+ * Adamo, Enoc e Noè dalla linea del tempo del libro; le altre date sono
+ * calcolate con gli anni di Genesi 5 e 9:29.
+ */
+export const VITE: Vita[] = [
+  { nome: 'Adamo', nasce: -4026, muore: -3096 },
+  { nome: 'Set', nasce: -3896, muore: -2984 },
+  { nome: 'Enos', nasce: -3791, muore: -2886 },
+  { nome: 'Chenan', nasce: -3701, muore: -2791 },
+  { nome: 'Maalalel', nasce: -3631, muore: -2736 },
+  { nome: 'Iared', nasce: -3566, muore: -2604 },
+  { nome: 'Enoc', nasce: -3404, muore: -3039 },
+  { nome: 'Matusalemme', nasce: -3339, muore: -2370 },
+  { nome: 'Lamec', nasce: -3152, muore: -2375 },
+  { nome: 'Noè', nasce: -2970, muore: -2020 },
+];
 
 /** Fonte biblica con collegamento al versetto su jw.org. */
 export function b(libro: string, capitolo: number, versetti: string): Fonte {
@@ -57,6 +75,10 @@ export const F = {
     rif: 'La Torre di Guardia 1/9/2005, pp. 13-17',
     url: `${RIVISTE}/w20050901/Camminate-con-Dio-in-questi-tempi-turbolenti/`,
   } as Fonte,
+  w05p: (par: number): Fonte => ({
+    rif: `La Torre di Guardia 1/9/2005, par. ${par}`,
+    url: `${RIVISTE}/w20050901/Camminate-con-Dio-in-questi-tempi-turbolenti/`,
+  }),
   w06: {
     rif: 'La Torre di Guardia 1/10/2006, p. 19 parr. 13-14',
     url: `${RIVISTE}/w20061001/Coraggiosi-grazie-alla-fede-e-al-santo-timore/#p19`,
@@ -77,16 +99,6 @@ export const VERSI: Record<string, Verso> = {
     b('Genesi', 3, '15'),
     '«Io susciterò ostilità fra te e la donna, e fra la tua discendenza e la discendenza di lei. Lui ti schiaccerà la testa e tu lo colpirai al calcagno».',
     ['«ostilità»: o “inimicizia”.'],
-  ),
-  'gen-3-24': verso(
-    'Genesi 3:24',
-    b('Genesi', 3, '24'),
-    'Così scacciò l’uomo e, per impedire l’accesso all’albero della vita, mise a oriente del giardino di Èden dei cherubini e una spada fiammeggiante che roteava di continuo.',
-  ),
-  'gen-4-8': verso(
-    'Genesi 4:8',
-    b('Genesi', 4, '8'),
-    'In seguito Caino disse a suo fratello Abele: «Andiamo nei campi». Mentre erano nei campi Caino aggredì suo fratello Abele e lo uccise.',
   ),
   'gen-4-23': verso(
     'Genesi 4:23, 24',
@@ -116,17 +128,6 @@ export const VERSI: Record<string, Verso> = {
     b('Genesi', 5, '25-27'),
     'Quanto a Matusalemme, all’età di 187 anni generò Làmec. Dopo la nascita di Làmec, Matusalemme visse 782 anni. E generò figli e figlie. L’intera vita di Matusalemme fu dunque di 969 anni; poi morì.',
   ),
-  'gen-5-28': verso(
-    'Genesi 5:28, 29',
-    b('Genesi', 5, '28, 29'),
-    'Quanto a Làmec, all’età di 182 anni generò un figlio, che chiamò Noè. Infatti disse: «Lui ci consolerà dal duro lavoro e dalle fatiche delle nostre mani a motivo del suolo che Geova ha maledetto».',
-    ['«Noè»: probabilmente significa “riposo”, “consolazione”.'],
-  ),
-  'gen-6-9': verso(
-    'Genesi 6:9',
-    b('Genesi', 6, '9'),
-    'Questa è la storia di Noè. Noè fu un uomo giusto. Si dimostrò integro tra i suoi contemporanei. Noè camminò con il vero Dio.',
-  ),
   'gen-7-6': verso('Genesi 7:6', b('Genesi', 7, '6'), 'Noè aveva 600 anni quando il diluvio si abbatté sulla terra.'),
   'prov-27-11': verso(
     'Proverbi 27:11',
@@ -134,26 +135,11 @@ export const VERSI: Record<string, Verso> = {
     'Sii saggio, figlio mio, e rallegra il mio cuore, perché io possa rispondere a chi mi accusa.',
     ['«mi accusa»: o “sfida”, “biasima”.'],
   ),
-  'giov-3-13': verso(
-    'Giovanni 3:13',
-    b('Giovanni', 3, '13'),
-    'Inoltre nessun uomo è asceso al cielo se non colui che è disceso dal cielo, il Figlio dell’uomo.',
-  ),
   'ebr-11-5': verso(
     'Ebrei 11:5',
     b('Ebrei', 11, '5'),
     'Per fede Ènoc fu portato via in modo da non vedere la morte, e non fu più trovato perché Dio l’aveva portato via; infatti prima che fosse portato via ebbe la conferma di essere gradito a Dio.',
     ['«ebbe la conferma»: lett. “ricevette testimonianza”.'],
-  ),
-  'ebr-11-6': verso(
-    'Ebrei 11:6',
-    b('Ebrei', 11, '6'),
-    'Senza fede è impossibile piacere a Dio, perché chi si avvicina a Dio deve credere che egli esiste e che ricompensa quelli che lo cercano assiduamente.',
-  ),
-  'ebr-11-13': verso(
-    'Ebrei 11:13',
-    b('Ebrei', 11, '13'),
-    'Nella fede morirono tutti questi, anche se non ricevettero le cose promesse, ma le videro da lontano e le salutarono e dichiararono pubblicamente di essere stranieri e forestieri nel paese in cui vivevano.',
   ),
   'giuda-14': verso(
     'Giuda 14, 15',
@@ -197,7 +183,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'settimo',
     'Il settimo da Adamo',
-    'Enoc è «il settimo uomo nella discendenza di Adamo»: Adamo, Set, Enos, Chenan, Maalalel, Iared, Enoc.',
+    'Giuda lo chiama «il settimo uomo nella discendenza di Adamo»: nella genealogia di Genesi 5 la sua è la settima generazione.',
     'scritto',
     [b('Giuda', 1, '14'), b('Genesi', 5, '3-18')],
   ),
@@ -288,7 +274,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'pacifico',
     'Un uomo pacifico',
-    'Enoc rifiutò con coraggio di farsi influenzare dallo spirito violento del suo tempo. Continuò a essere un uomo pacifico, e questo rallegrò tanto Geova.',
+    'Lo spirito violento del suo tempo non riuscì a influenzarlo: con coraggio, Enoc rimase un uomo pacifico.',
     'libro',
     [F.libro],
   ),
@@ -316,23 +302,58 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     [b('Genesi', 5, '21')],
   ),
   d(
-    'trecento',
-    'Trecento anni',
-    'Dopo la nascita di Matusalemme, Enoc continua a camminare con il vero Dio per 300 anni. E genera figli e figlie.',
-    'scritto',
-    [b('Genesi', 5, '22')],
-  ),
-  d(
     'famiglia',
     'Un padre di famiglia',
-    'Enoc era un padre di famiglia: aveva moglie, «figli e figlie». Con tutta l’empietà che lo circondava, non dev’essergli stato facile servire Dio.',
+    'Enoc era un padre di famiglia: aveva moglie, «figli e figlie». Uno di loro era Matusalemme.',
     'libro',
     [F.w01, b('Genesi', 5, '21, 22')],
   ),
   d(
+    'casa',
+    'Dirigere la casa',
+    'Enoc deve aver fatto tutto il possibile per dirigere la sua casa in modo eccellente. Con tutta l’empietà che lo circondava, non dev’essergli stato facile servire Dio.',
+    'sembra',
+    [F.w01],
+  ),
+  d(
+    'linea-condotta',
+    'Non come si cammina con un amico',
+    'Non si cammina con Dio, invisibile e onnipotente, come si cammina con i propri simili. Nella Bibbia «camminare» può significare «seguire una certa linea d’azione»: chi cammina con Dio segue la condotta che Dio ha tracciato e che approva, e questo lo rende diverso da chi gli sta intorno.',
+    'libro',
+    [F.w05p(5)],
+  ),
+  d(
+    'amicizia',
+    'Come in un’amicizia',
+    'Una buona relazione con Geova richiede più che conoscerlo. Come chi tiene a un amico evita ciò che rovinerebbe l’amicizia, così occorre sapere con esattezza che cosa Dio approva e disapprova, e poi lasciarsene guidare. Per camminare con Dio bisogna piacergli: è ciò che Enoc fece per centinaia di anni.',
+    'libro',
+    [F.w01],
+  ),
+  d(
+    'conoscenza',
+    'Su che cosa poggiava la sua fede',
+    'La vera fede si basa sull’accurata conoscenza. Enoc sapeva ciò che era successo in Eden e probabilmente aveva sentito parlare di com’era la vita nel giardino, che forse esisteva ancora anche se nessuno poteva entrarvi. Conosceva anche il proposito di Dio: che i discendenti di Adamo riempissero la terra e la rendessero simile al paradiso.',
+    'sembra',
+    [F.w05p(14), b('Genesi', 1, '28'), b('Genesi', 3, '23, 24')],
+  ),
+  d(
+    'seme',
+    'Il seme promesso',
+    'Enoc deve aver esercitato fede nel «seme» promesso in Eden, che avrebbe schiacciato la testa del serpente. La sua profezia, conservata nella lettera di Giuda, è legata alla distruzione del seme di Satana.',
+    'sembra',
+    [F.w01, F.w05p(14), b('Genesi', 3, '15')],
+  ),
+  d(
+    'sguardo',
+    'Lo sguardo più lontano',
+    'Enoc non riponeva la sua speranza nel mondo in cui viveva: aveva lo sguardo fisso su qualcosa di immensamente più grande.',
+    'libro',
+    [F.w05p(16)],
+  ),
+  d(
     'due-volte',
     'Detto due volte',
-    'In quattro versetti la Bibbia ripete due volte la stessa frase: «Ènoc continuò a camminare con il vero Dio».',
+    'La stessa frase, «Ènoc continuò a camminare con il vero Dio», apre e chiude il racconto dei suoi trecento anni: la Bibbia la scrive due volte in tre versetti.',
     'scritto',
     [b('Genesi', 5, '22, 24')],
   ),
@@ -360,9 +381,16 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'settanta',
     '«Fu gradito a Dio»',
-    'Dove il testo ebraico dice che Enoc «continuò a camminare con il vero Dio», l’antica traduzione greca dei Settanta dice: «Enoc fu gradito a Dio». A quanto pare Paolo allude a questa resa in Ebrei 11:5.',
+    'Geova approvò la devozione di Enoc. Dove il testo ebraico dice che Enoc «continuò a camminare con il vero Dio», l’antica traduzione greca dei Settanta dice: «Enoc fu gradito a Dio». A quanto pare Paolo allude a questa resa in Ebrei 11:5.',
     'libro',
-    [F.apprEbr, b('Genesi', 5, '22')],
+    [F.w01, F.apprEbr, b('Genesi', 5, '22')],
+  ),
+  d(
+    'contesa',
+    'Una sfida',
+    'Il Diavolo sostiene di poter allontanare da Dio tutti gli esseri umani, e a volte dev’essere sembrato che ci riuscisse. Chi cammina con Dio mostra da che parte sta in questa contesa, sorta in Eden: la contesa della sovranità.',
+    'libro',
+    [F.w01, F.w05p(7)],
   ),
   d(
     'eden',
@@ -386,9 +414,9 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     [F.w01],
   ),
   d(
-    'aiuto',
-    'Che cosa lo aiutò',
-    'Senza dubbio Enoc non stava insieme a chi profanava il nome di Geova. Anche chiedere l’aiuto di Geova in preghiera deve aver rafforzato la sua determinazione a evitare ciò che poteva dispiacere al suo Creatore.',
+    'preghiera',
+    'Chiedere aiuto',
+    'Chiedere l’aiuto di Geova in preghiera deve aver rafforzato la determinazione di Enoc a evitare qualunque cosa potesse dispiacere al suo Creatore.',
     'sembra',
     [F.w01],
   ),
@@ -566,8 +594,8 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   ),
   d(
     'prese',
-    'Dio lo prese',
-    '«Poi nessuno lo vide più, perché Dio lo prese». La nota in calce: «O “non fu più”».',
+    'Fu Dio a prenderlo',
+    'Genesi 5:24 attribuisce a Dio ciò che accadde: «Dio lo prese». La nota in calce rende «nessuno lo vide più» anche con «non fu più».',
     'scritto',
     [b('Genesi', 5, '24')],
   ),
@@ -581,7 +609,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'non-trovato',
     'Non fu più trovato',
-    'Enoc «non fu più trovato perché Dio l’aveva portato via».',
+    'La Bibbia non racconta chi lo cercò né dove. Dice soltanto che Enoc «non fu più trovato perché Dio l’aveva portato via».',
     'scritto',
     [b('Ebrei', 11, '5')],
   ),
@@ -630,7 +658,14 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'memoria',
     'Al sicuro nella memoria di Geova',
-    'Enoc rimane al sicuro nella memoria di Geova, dove nessuno può fargli del male. Chiuse gli occhi con la certezza che Geova lo amava e lo aveva benedetto per la sua forte fede e per il suo grande coraggio.',
+    'Portandolo via così, Geova fece in modo che Enoc rimanesse al sicuro nella sua memoria, dove nessuno avrebbe potuto fargli del male.',
+    'libro',
+    [F.libro],
+  ),
+  d(
+    'certezza-amore',
+    'Chiuse gli occhi',
+    'Enoc chiuse gli occhi sapendo che Geova lo amava e che lo aveva benedetto per la sua forte fede e per il suo grande coraggio.',
     'libro',
     [F.libro],
   ),
@@ -644,9 +679,9 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'rallegra',
     'Rallegra il cuore di Geova',
-    '«Sii saggio, figlio mio, e rallegra il mio cuore». Il libro collega questo versetto a come si sente Geova quando camminiamo coraggiosamente con lui.',
+    'Il libro dice che il fatto che Enoc restasse un uomo pacifico rallegrò tanto Geova, e collega Proverbi 27:11 a come si sente Geova quando camminiamo coraggiosamente con lui.',
     'libro',
-    [b('Proverbi', 27, '11'), F.riguarda],
+    [F.libro, F.riguarda, b('Proverbi', 27, '11')],
   ),
 
   // ——— I numeri di Genesi 5 (Matusalemme) ———
@@ -660,7 +695,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'm-adamo',
     'La morte di Adamo',
-    'Adamo muore a 930 anni, quando Matusalemme ne ha 243 ed Enoc 308. È il primo della genealogia di Genesi 5 a morire.',
+    'Adamo muore a 930 anni, quando Matusalemme ne ha 243. È il primo della genealogia di Genesi 5 a morire.',
     'numeri',
     [b('Genesi', 5, '3-21')],
   ),
@@ -752,9 +787,16 @@ function s(id: string, domanda: string): [string, Sensazione] {
 export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('solo', 'Intorno a te nessun altro cammina con Dio. Che cosa provi?'),
   s('pacifico', 'Intorno a te alla violenza si risponde con la violenza. Che cosa ti costa restare un uomo pacifico?'),
-  s('nome', 'Senti il nome di Geova usato per profanarlo. Che effetto ti fa?'),
+  s('nome', 'Il nome di Geova viene usato per profanarlo, proprio vicino a te. Che effetto ti fa?'),
   s('famiglia', 'Cresci dei figli in un mondo empio. Quale pensiero ti accompagna ogni giorno?'),
-  s('trecento', 'Trecento anni, un giorno dopo l’altro. Che cosa rende possibile continuare a camminare?'),
+  s(
+    'trecento',
+    'Trecento anni, un giorno dopo l’altro, seguendo la condotta che Dio approva. Che cosa ti aiuta a non smettere?',
+  ),
+  s(
+    'amicizia',
+    'Pensa a una persona a cui tieni molto: che cosa eviti di fare per non rovinare il vostro rapporto? E con Geova?',
+  ),
   s(
     'medita',
     'Pensi a Eden, ad Adamo ed Eva invecchiati, ad Abele. Sai che il tuo coraggio sarà messo alla prova. Che cosa decidi?',

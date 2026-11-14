@@ -149,24 +149,6 @@ const TAVOLOZZE: Record<string, Tavolozza> = {
     velo: ['#ffffff', 0],
     rilievo: 9,
   },
-  anni: {
-    cielo: ['#86a3b6', '#d7d3bf', '#f5e5c6'],
-    astro: { x: 0.62, y: 118, r: 36, colore: '#fff7de', alone: '#ffe9b0' },
-    stelle: 0,
-    nuvole: '#fffaf0',
-    monti: ['#b2b29e', '#9d9d85', '#87896d'],
-    nebbia: '#f3e7ce',
-    terra: ['#a29262', '#685a3c'],
-    sentiero: '#dac89c',
-    erba: '#8c915a',
-    foglia: ['#7f9152', '#576941'],
-    fiore: '#e8c878',
-    tronco: '#57452f',
-    muro: ['#d0b48a', '#a08260'],
-    tela: ['#c4a26a', '#a8604b', '#7a8a86'],
-    velo: ['#d8c090', 0.08],
-    rilievo: 9,
-  },
 };
 
 export function tavolozza(id: string): Tavolozza {

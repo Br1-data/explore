@@ -58,7 +58,55 @@ async function scatta(pagina, nome) {
   if (schermate) await pagina.screenshot({ path: `${schermate}/${nome}.png` });
 }
 
-const stato = (pagina) => pagina.evaluate(() => window.__incammino?.istantanea());
+const stato = (pagina) => pagina.evaluate(() => window.__partita?.istantanea());
+
+/** Risolve l’attività della scheda aperta, come farebbe chi gioca. */
+async function risolviAttivita(scheda, attivita) {
+  switch (attivita) {
+    case 'componi':
+    case 'ordina': {
+      const n = await scheda.locator('.pezzo[data-indice]').count();
+      for (let i = 0; i < n; i++) await scheda.locator(`.pezzo[data-indice="${i}"]`).click();
+      break;
+    }
+    case 'trova': {
+      const bersagli = scheda.locator('[data-bersaglio]');
+      const n = await bersagli.count();
+      for (let i = 0; i < n; i++) await bersagli.nth(i).click();
+      break;
+    }
+    case 'domanda':
+      await scheda.locator('[data-corretta]').click();
+      break;
+    case 'condotta':
+      // Prima una scelta diversa da quella di Enoc, per vedere come agivano gli altri.
+      await scheda.locator('.opzione:not([data-fedele])').first().click();
+      await scheda.locator('.esito-scelta__testo').waitFor();
+      await scheda.locator('[data-fedele]').click();
+      break;
+    case 'completa': {
+      const n = await scheda.locator('.lacuna').count();
+      for (let i = 0; i < n; i++) await scheda.locator(`.pezzo[data-ordine="${i}"]`).click();
+      break;
+    }
+    case 'classifica':
+      while (await scheda.locator('.classifica__scelte [data-giusta]').count()) {
+        await scheda.locator('.classifica__scelte [data-giusta]').click();
+      }
+      break;
+    case 'linea': {
+      const cursore = scheda.locator('.linea__scorri');
+      await cursore.evaluate((el) => {
+        el.value = el.dataset.meta;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      await scheda.locator('.linea__fissa').click();
+      break;
+    }
+    default:
+      throw new Error(`Attività sconosciuta: ${attivita}`);
+  }
+}
 
 /** Risolve la scheda aperta e prosegue. */
 async function risolviScheda(pagina, visti, ruolo) {
@@ -68,16 +116,8 @@ async function risolviScheda(pagina, visti, ruolo) {
   const chiave = attivita ? `attivita-${attivita}` : tipo;
   if (tipo === 'attivita') {
     if (!visti.has(chiave)) await scatta(pagina, `${ruolo}-scheda-${chiave}-prima`);
-    if (attivita === 'componi' || attivita === 'ordina') {
-      const n = await scheda.locator('.pezzo').count();
-      for (let i = 0; i < n; i++) await scheda.locator(`.pezzo[data-indice="${i}"]`).click();
-    } else if (attivita === 'trova') {
-      const bersagli = scheda.locator('[data-bersaglio]');
-      const n = await bersagli.count();
-      for (let i = 0; i < n; i++) await bersagli.nth(i).click();
-    } else {
-      await scheda.locator('[data-corretta]').click();
-    }
+    await risolviAttivita(scheda, attivita);
+    if ((await scheda.locator('.bottone--primario').isDisabled())) throw new Error(`${ruolo}: attività ${attivita} non risolta`);
   } else if (tipo === 'senti') {
     await scheda.locator('textarea').fill('Appunto di prova.');
   }
@@ -100,7 +140,7 @@ async function gioca(ruolo) {
   pagina.on('pageerror', (e) => errori.push(`${ruolo}: ${e.message}`));
 
   await pagina.goto(`${base}/#/gioca/1/${ruolo}`);
-  await pagina.waitForFunction(() => !!window.__incammino);
+  await pagina.waitForFunction(() => !!window.__partita);
   const guida = pagina.locator('.pannello .bottone--primario');
   if (await guida.count()) await guida.click();
 
@@ -139,7 +179,7 @@ async function gioca(ruolo) {
     }
     const prossimo = s.punti.find((p) => p.visibile);
     if (prossimo) {
-      await pagina.evaluate((x) => window.__incammino.teletrasporta(x), prossimo.x);
+      await pagina.evaluate((x) => window.__partita.teletrasporta(x), prossimo.x);
       await pagina.locator(`.invito[data-punto="${prossimo.id}"]`).waitFor({ timeout: 5000 });
       if (schermate) {
         await pagina.waitForTimeout(350);
@@ -180,10 +220,10 @@ async function provaComandi() {
   await pagina.locator('.ruolo').first().waitFor();
   verifica((await pagina.locator('.ruolo').count()) === 4, 'il capitolo di Enoc offre quattro punti di vista');
   await pagina.locator('.ruolo[data-ruolo="enoc"] .bottone--primario').click();
-  await pagina.waitForFunction(() => !!window.__incammino);
+  await pagina.waitForFunction(() => !!window.__partita);
   await pagina.locator('.pannello .bottone--primario').click();
   await pagina.locator('.scheda .bottone--primario').click();
-  await pagina.waitForFunction(() => window.__incammino.istantanea().modo === 'esplora');
+  await pagina.waitForFunction(() => window.__partita.istantanea().modo === 'esplora');
   const prima = (await stato(pagina)).x;
   await pagina.keyboard.down('ArrowRight');
   await pagina.waitForTimeout(700);
@@ -202,6 +242,14 @@ async function provaComandi() {
   verifica((await pagina.locator('.quaderno').count()) === 1, 'il tasto Q apre il quaderno');
   await pagina.keyboard.press('Escape');
   verifica((await pagina.locator('.quaderno').count()) === 0, 'Esc lo chiude');
+  // Toccare un segnale porta lì e lo apre.
+  await pagina.evaluate(() => window.__partita.teletrasporta(160));
+  await pagina.waitForTimeout(1200);
+  const s = await stato(pagina);
+  const punto = s.punti.find((p) => p.visibile && p.x > s.camera - s.vista / 2 + 80);
+  await pagina.mouse.click(tela.x + ((punto.x - (s.camera - s.vista / 2)) / s.vista) * tela.width, tela.y + tela.height * 0.5);
+  await pagina.locator('.scheda').waitFor({ timeout: 5000 });
+  verifica(true, `toccando un segnale ci si va e si apre (${punto.id})`);
   await pagina.close();
 }
 
