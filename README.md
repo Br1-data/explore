@@ -44,7 +44,11 @@ collegato all'originale su jw.org.
   - **Barac**: arriva alla tenda e vede adempiersi la profezia di Debora;
   - **Debora**: la lode a Iael, senza invidia;
   - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
-- **193 dettagli** (84 + 29 + 46 + 34), ognuno con la sua fonte e un contrassegno che dice quanto
+- **Capitolo 18, Gedeone** (Giudici 6:1–7:22; 8:4-23, 28), da cinque punti di vista: Gedeone
+  (il grano nel torchio, l’altare di Baal di notte, il rifiuto di regnare), Geova (il profeta,
+  i segni, i 300, il sogno), Ioas (il padre che lo difese), uno dei 300 (Harod, corni giare e
+  torce, l’inseguimento) e un soldato madianita (il sogno del pane d’orzo).
+- **218 dettagli** (84 + 29 + 46 + 34 + 25), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

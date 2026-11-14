@@ -14,7 +14,8 @@ sono generici, un capitolo nuovo aggiunge solo contenuti (ed eventualmente sceno
 cinque: Noè, Geova, la moglie di Noè, uno dei figli, uno dei contemporanei), il capitolo 16
 (Barac e Debora, cinque punti di vista: Debora, Barac, Geova, uno dei 10.000, Sisera) e
 il capitolo 17 (Iael, sei punti di vista: Iael, Geova, Sisera, Barac, Debora, la madre di
-Sisera). Gli altri 50 capitoli compaiono nell’indice come «in preparazione».
+Sisera) e il capitolo 18 (Gedeone, cinque: Gedeone, Geova, Ioas, uno dei 300, un soldato
+madianita). Gli altri 49 capitoli compaiono nell’indice come «in preparazione».
 **Prossimo passo:** il capitolo che indicherà il committente, con la stessa struttura.
 
 Lingua del progetto: italiano (codice, commenti, testi, commit).
@@ -194,6 +195,8 @@ src/
         16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
                              scenari.ts: palma, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
         17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)
+        18-gedeone/          Giudici 6:1–7:22; 8:4-23, 28 (gedeone, geova, ioas, trecento, madianita);
+                             scenari.ts: ofra (giorno o notte), harod, campoMadian (e villaggio dal 16)
   motore/                    generico
     partita.ts               ciclo di gioco, movimento, tocco sui punti, indizi, folle, sequenze, disegno
     figure.ts                persone disegnate (senza volto), pose; Stile e STILE_BASE (gli stili veri li dà la pubblicazione)

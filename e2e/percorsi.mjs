@@ -20,6 +20,7 @@ const PERCORSI = {
   2: ['noe', 'geova', 'moglie', 'figlio', 'contemporaneo'],
   16: ['debora', 'barac', 'geova', 'volontario', 'sisera'],
   17: ['iael', 'geova', 'sisera', 'barac', 'debora', 'madre'],
+  18: ['gedeone', 'geova', 'ioas', 'trecento', 'madianita'],
 };
 
 /**
@@ -48,6 +49,9 @@ const SUONI_ATTESI = {
   '17/geova-canto': { sorgenti: ['danza'] },
   '17/debora-lode': { sorgenti: ['danza', 'folla'] },
   '17/madre-finestra': { sorgenti: ['folla'] },
+  '18/gedeone-notte': { luce: 'notte' },
+  '18/trecento-notte': { sorgenti: ['fuoco', 'torcia'], luce: 'notte' },
+  '18/geova-harod': { sorgenti: ['acqua', 'folla'] },
 };
 /** Ciò che si sentiva all’inizio di ogni scena giocata. */
 const ascoltati = new Map();

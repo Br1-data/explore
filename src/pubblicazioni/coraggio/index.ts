@@ -4,6 +4,7 @@ import { colline } from './capitoli/01-enoc/scenari';
 import { capitoloNoe } from './capitoli/02-noe';
 import { capitoloBarac } from './capitoli/16-barac-debora';
 import { capitoloIael } from './capitoli/17-iael';
+import { capitoloGedeone } from './capitoli/18-gedeone';
 import { ID } from './comune';
 import { PARTI, URL_LIBRO } from './indice';
 
@@ -17,6 +18,6 @@ export const coraggio: Pubblicazione = {
     'Ogni capitolo del libro diventa un racconto da vivere nei panni di chi c’era, scegliendo il punto di vista. I capitoli non ancora pronti si possono leggere su jw.org.',
   parti: PARTI,
   // I capitoli giocabili, in ordine: per aggiungerne uno basta importarlo qui.
-  capitoli: [capitoloEnoc, capitoloNoe, capitoloBarac, capitoloIael],
+  capitoli: [capitoloEnoc, capitoloNoe, capitoloBarac, capitoloIael, capitoloGedeone],
   vetrina: { capitolo: 1, stile: 'enoc', scena: colline() },
 };

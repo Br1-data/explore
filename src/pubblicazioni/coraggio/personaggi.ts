@@ -6,6 +6,46 @@ import type { Stile } from '@/contenuti/tipi';
  * in comune.ts: aggiungere qui chi compare in un capitolo nuovo.
  */
 export const PERSONAGGI: Record<string, Stile> = {
+  // Capitolo 18.
+  gedeone: {
+    tipo: 'uomo',
+    veste: '#7a6a4a',
+    fascia: '#a04a2a',
+    pelle: '#b5835a',
+    capelli: '#2a1f1a',
+    barba: true,
+    scala: 1,
+  },
+  ioas: {
+    tipo: 'uomo',
+    veste: '#5a6a7a',
+    fascia: '#c8a060',
+    pelle: '#b98a62',
+    capelli: '#cfc8bc',
+    barba: true,
+    accessorio: 'bastone',
+    scala: 0.98,
+  },
+  trecento: {
+    tipo: 'uomo',
+    veste: '#6f5a4a',
+    fascia: '#2f3a3a',
+    pelle: '#a36f4a',
+    capelli: '#1e1a18',
+    barba: true,
+    accessorio: 'torcia',
+    scala: 1,
+  },
+  madianita: {
+    tipo: 'uomo',
+    veste: '#5a3a5a',
+    fascia: '#d0a040',
+    pelle: '#a36f4a',
+    capelli: '#1e1a18',
+    barba: true,
+    accessorio: 'lancia',
+    scala: 1,
+  },
   // Capitolo 2.
   noe: {
     tipo: 'uomo',
