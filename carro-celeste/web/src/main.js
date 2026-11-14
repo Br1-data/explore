@@ -497,10 +497,29 @@ function buildInterface() {
 }
 
 // ------------------------------------------------------------------ downloads
-async function fetchBytes(path, onProgress) {
+// Inside a claude.ai Artifact the page cannot be served .stl or .glb files: there the models
+// are published gzipped, as base64 text (see scripts/dev/pack-for-artifact.mjs).
+const hosted = typeof window.claude?.use === 'function';
+
+async function fetchPlain(path) {
   const response = await fetch(path);
   if (!response.ok) throw new Error(`${path}: ${response.status}`);
-  const bytes = new Uint8Array(await response.arrayBuffer());
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+async function fetchPacked(path) {
+  const response = await fetch(`${path}.gz.b64.txt`);
+  if (!response.ok) throw new Error(`${path}: ${response.status}`);
+  const binary = atob((await response.text()).trim());
+  const packed = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) packed[i] = binary.charCodeAt(i);
+  const stream = new Blob([packed]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function fetchBytes(path, onProgress) {
+  const [first, second] = hosted ? [fetchPacked, fetchPlain] : [fetchPlain, fetchPacked];
+  const bytes = await first(path).catch(() => second(path));
   onProgress?.();
   return bytes;
 }
@@ -509,9 +528,8 @@ async function setupDownloads() {
   const button = $('download-all');
   const status = $('download-status');
   const links = $('download-links');
-  // Inside a claude.ai artifact a page cannot start a download by itself: it has to ask the
+  // Inside a claude.ai Artifact a page cannot start a download by itself: it has to ask the
   // host. Anywhere else, plain links work.
-  const hosted = typeof window.claude?.use === 'function';
   let saver = null;
   if (hosted) {
     saver = await window.claude.use('downloads').catch(() => null);
@@ -589,10 +607,8 @@ async function start() {
   setupDownloads();
 
   try {
-    const response = await fetch(MODEL_URL);
-    if (!response.ok) throw new Error(String(response.status));
-    const buffer = await response.arrayBuffer();
-    const gltf = await new GLTFLoader().parseAsync(buffer, '');
+    const bytes = await fetchBytes(MODEL_URL);
+    const gltf = await new GLTFLoader().parseAsync(bytes.buffer, '');
     prepareModel(gltf);
     applyMode();
     applyLayers();

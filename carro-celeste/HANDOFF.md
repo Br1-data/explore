@@ -14,17 +14,17 @@ L’utente ha chiesto, a partire da Ezechiele 1:1-28 (Traduzione del Nuovo Mondo
 
 ## Stato attuale
 
-Funziona ed è verificato:
+Fatto e verificato:
 
-- `npm run build:model` genera in circa 15 secondi il modello in un pezzo unico, il kit in cinque parti e il GLB a colori. Lo script si ferma con un errore se un file non è un unico solido connesso: tutti e sei gli STL passano il controllo.
-- Il visualizzatore (`index.html` + `web/app.bundle.js`) carica il GLB e lo mostra. Le immagini in `docs/` sono catture reali fatte con Chromium senza interfaccia grafica.
+- `npm run build:model` genera in circa 15 secondi il modello in un pezzo unico (235 × 180 × 148 mm, circa 260.000 triangoli, 13 MB), il kit in cinque parti e il GLB a colori. Lo script si ferma con un errore se un file non è un unico solido connesso: tutti e sei gli STL passano il controllo.
+- **Pianta rettangolare**, chiesta dall’utente perché il carro somigli all’illustrazione del capitolo 3 del libro _Pura adorazione_: ruote ai vertici di un rettangolo 148 × 90 mm, cerchi a fascia con file di occhi, distesa a lastra rettangolare spessa 6 mm. Le illustrazioni di riferimento sono `https://cms-imgp.jw-cdn.org/img/p/1102017163/univ/art/1102017163_univ_cnt_6_md.jpg` (carro), `…_cnt_7_md.jpg` (ruote), `…_cnt_8_md.jpg` (una ruota), `…_cnt_9_md.jpg` (arcobaleno); l’host è nell’elenco dell’ambiente `explore`.
+- Visualizzatore provato con Chromium: vista d’insieme, le dodici viste di dettaglio, vista di stampa, separazione delle parti, pannelli, larghezza da telefono (400 px), download dello ZIP (archivio integro, otto file).
+- **Artifact pubblicato**: <https://claude.ai/artifact/2By3PSNDFpRXZT5756A5QW>, privato, con la capacità `downloads`. Per ripubblicarlo: `node scripts/dev/pack-for-artifact.mjs <cartella>` e poi lo strumento Artifact con `file_path` = `<cartella>/carro-celeste.html`, `root` = `<cartella>`, `files` = l’elenco in `<cartella>/files.json` (più `web/app.bundle.js` copiato in `<cartella>/web/`), `url` = il link qui sopra, `capabilities: {downloads: true}`.
 - `npm run format:check` e `npm run lint` dalla radice del repository passano.
 
-Non ancora fatto o non ancora controllato:
+Non verificato:
 
-- **Nessun Artifact pubblicato**: l’utente non ha ancora un link per aprire il modello dal web. È il primo punto da chiudere (vedi più sotto).
-- Del visualizzatore sono state guardate solo la vista d’insieme a 1280 × 800 e le viste isolate di una creatura. Non sono stati provati: vista di stampa, cursore «Separa le parti», pannelli «Parti» e «Scarica», download dello ZIP, larghezza da telefono, gli altri undici punti di vista dell’elenco.
-- Le ali ripiegate sono state cambiate nell’ultimo passaggio (`ALA_RIPIEGATA` in `src/parts/ali.mjs`) e **non sono state riguardate** dopo la modifica: `docs/anteprima-creatura.png` mostra la versione precedente.
+- Il download dentro l’Artifact vero: la pagina è stata provata in locale con un sostituto di `window.claude.use('downloads')`. La conferma di salvataggio la mostra claude.ai e si può provare solo aprendo il link.
 
 ## Come si lavora
 
@@ -71,11 +71,11 @@ SHOT_DIR=/tmp/viste SHOT_NOUI=1 SHOT_SIZE=700x700 node scripts/dev/screenshot.cj
 Convenzioni geometriche, da non cambiare senza motivo:
 
 - Millimetri, Z in alto. Il terreno su cui poggiano le ruote è `z = 4` (faccia superiore della base). Il trono guarda verso `-Y`.
-- Ruote con l’asse in `(±45, ±45)`, raggio esterno 41. Ogni ruota è fatta di due cerchi uguali, uno nel piano X-Z e uno nel piano Y-Z: da ognuno dei quattro lati il carro mostra due ruote affiancate. Le ruote affondano 1,5 mm nella base e nella distesa, così l’unione è robusta.
-- Creature in `(±25, ±25)`, dentro il quadrato delle ruote, ognuna accanto alla propria ruota e rivolta in diagonale verso l’esterno. Nel sistema locale della creatura la faccia d’uomo guarda `+Y` e la destra è `+X`: leone a `+X`, toro a `-X`, aquila a `-Y`.
-- Le due ali spiegate di ogni creatura stanno nei piani verticali `x = ±25` e `y = ±25` e le punte si sovrappongono di 1,4 mm con quelle delle vicine: le otto ali formano un quadrato chiuso attorno al fuoco. La lunghezza dell’ala è calcolata in `cherubino.mjs` perché le punte si incontrino; se si sposta una creatura si adatta da sola.
+- Ruote con l’asse in `(±74, ±45)`, raggio esterno 41. Ogni ruota è fatta di due cerchi uguali a fascia (10 mm di larghezza, 3,4 di spessore), uno nel piano X-Z e uno nel piano Y-Z: da ognuno dei quattro lati il carro mostra due ruote affiancate. Le ruote affondano 1,5 mm nella base e nella distesa, così l’unione è robusta.
+- Creature in `(±36, ±25)`, dentro il rettangolo delle ruote, ognuna accanto alla propria ruota e rivolta in diagonale verso l’esterno. Nel sistema locale della creatura la faccia d’uomo guarda `+Y` e la destra è `+X`: leone a `+X`, toro a `-X`, aquila a `-Y`.
+- Le due ali spiegate di ogni creatura stanno nei piani verticali `x = ±36` e `y = ±25` e le punte si sovrappongono di 1,4 mm con quelle delle vicine: le otto ali formano un rettangolo chiuso attorno al fuoco. Sul lato lungo l’ala è più lunga e meno inclinata; per questo esistono due serie di ali (`aliA`, `aliB`) che si alternano da una creatura all’altra. Le lunghezze sono calcolate in `cherubino.mjs` perché le punte si incontrino; se si sposta una creatura si adattano da sole.
 - Quattro braccia sulle diagonali del corpo, una mano per lato (v. 8). Le due ali ripiegate pendono sui fianchi (vv. 11, 23).
-- La distesa è un disco di raggio 80 con la faccia superiore a faccette irregolari; base e parte inferiore sono piatte.
+- La distesa è una lastra di 204 × 136 × 6 mm con la faccia superiore a faccette irregolari; la faccia inferiore è piatta.
 - La figura sul trono è volutamente senza lineamenti (v. 27 e il capitolo 3 del libro _Pura adorazione_: la figura non si distingue nei dettagli). È un nodo a parte (`figura`), che nel visualizzatore si può nascondere.
 
 ## Trappole già incontrate
@@ -85,20 +85,14 @@ Convenzioni geometriche, da non cambiare senza motivo:
 - **`Manifold.levelSet`** vuole valori positivi all’interno; `sdf.mjs` usa la convenzione opposta e inverte il segno in `toSolid()`.
 - **`rotate([x, y, z])`** applica X, poi Y, poi Z. Per altri ordini servono chiamate separate.
 - **Ogni faccia della testa** è confinata al proprio spicchio di 90° (`wedge` in `testa.mjs`): criniera, corna e orecchie non possono allargarsi oltre le diagonali, altrimenti invadono le facce vicine.
+- **Un Artifact non serve file `.stl` o `.glb`** e non può avviare download da solo. Per questo i modelli vengono pubblicati compressi come testo base64 (`*.gz.b64.txt`) e il pulsante «Scarica tutto (ZIP)» costruisce l’archivio nel browser e lo consegna con la capacità `downloads`, che fra le estensioni ammesse ha `.zip` ma non `.stl`. `main.js` sceglie da solo fra file compressi (dentro un Artifact) e file normali (altrove).
 - **`wol.jw.org`** è nell’elenco dei domini dell’ambiente `explore` (aggiunto in questa sessione con l’approvazione dell’utente) ma risponde con una verifica anti-bot: non va aggirata. Lo stesso testo, con le note in calce, si legge su `www.jw.org/it/biblioteca-digitale/bibbia/bibbia-per-lo-studio/libri/ezechiele/1/`; i capitoli del libro sono sotto `www.jw.org/it/biblioteca-digitale/libri/pura-adorazione/cieli/`.
 - **Testo biblico**: nell’interfaccia i versetti sono riassunti con parole proprie e citati per numero. Non riportare il testo della traduzione per esteso.
 
-## Cosa resta da fare, in ordine
+## Rifiniture possibili
 
-1. **Alleggerire le mesh.** Il pezzo unico ha 331.684 triangoli (16,6 MB), il kit 1 ne ha 197.938 (9,9 MB). Obiettivo: pezzo unico sotto i 10 MB, cioè circa 200.000 triangoli. Per l’Artifact il limite è rigido: 15 MB per file binario. Dove stanno i triangoli, per singola copia: creatura circa 75.000 (corpo SDF, testa, braccia), ruota circa 28.000 (quasi tutti negli occhi). Leve: tolleranza di `simplify` in `toSolid()` (testa: 0,05 → circa 10.000 triangoli, 0,08 → circa 6.000), `quality.edge` in `build.mjs`, segmenti degli occhi in `ruota.mjs`, segmenti delle piume in `ali.mjs`. Controllare a schermo che le facce restino leggibili.
-2. **Pubblicare l’Artifact** così l’utente apre il modello dal web. Vincoli già verificati:
-   - la pagina va scritta senza `<!doctype>`, `<html>`, `<head>`, `<body>`: partire da `index.html` e tenere `<title>`, il `<meta name="claude:viewport-fit-sides">`, il `<link>` ai font, lo `<style>` e il contenuto del `<body>`;
-   - `web/app.bundle.js` e i file di `modelli/` si pubblicano accanto alla pagina con il parametro `files`, agli stessi percorsi relativi;
-   - un Artifact non può avviare download da solo: serve la capacità `downloads` (`capabilities: {downloads: true}`), che accetta solo alcune estensioni. **`.stl` e `.glb` non sono ammesse, `.zip` sì**: per questo il pulsante «Scarica tutto (ZIP)» costruisce l’archivio nel browser. `main.js` gestisce già i due casi (`window.claude.use('downloads')` dentro un Artifact, link diretti altrove);
-   - non è verificato che `files` accetti i tipi `model/stl` e `model/gltf-binary`. Se li rifiuta, incorporare i binari in file `.js` come base64 (massimo 16 MB per file di testo);
-   - dopo la pubblicazione, provare il download una volta e dire all’utente che cosa è stato provato.
-3. **Rifinire le facce** (`src/parts/testa.mjs`, vedi `docs/anteprima-facce.png`). Uomo, leone e toro si riconoscono. **L’aquila no**: il becco sporge poco e la testa sembra un secondo leone; va allungato e incurvato, con arcate più marcate. Un corno del toro spunta accanto alla fronte dell’uomo: accorciarlo o portarlo più avanti. Gli occhi delle quattro facce sono poco definiti.
-4. **Riguardare le ali ripiegate** dopo l’ultima modifica e aggiornare `docs/anteprima-creatura.png`.
-5. **Provare il visualizzatore per intero**: tutte le dodici viste di `details.js` (le posizioni della camera sono state scritte a tavolino), vista di stampa, separazione delle parti, pannelli, download, larghezza 400 px. Nella vista d’insieme il modello finisce sotto la didascalia: spostare il centro ottico con `camera.setViewOffset` in `resize()` (a destra dell’indice e sopra la didascalia su desktop, verso l’alto su telefono).
-6. **Aggiornare README e questo file**, sostituire le anteprime in `docs/`, togliere l’avviso «Lavoro in corso».
-7. Facoltativo: occhi anche su corpo, mani e ali delle creature (Ezechiele 10:12); pubblicazione su GitHub Pages. Il workflow attuale pubblica il gioco dal branch `claude/funny-allen-d6a9za`: non va toccato senza chiedere all’utente.
+1. **Facce** (`src/parts/testa.mjs`, vedi `docs/anteprima-facce.png`). Uomo, leone e toro si riconoscono; l’aquila ha il becco ma vista di fronte resta la meno leggibile. Le superfici sono un po’ sfaccettate per via della semplificazione (`toSolid`, tolleranza 0,06): abbassarla migliora l’aspetto e aumenta i triangoli.
+2. **Peso dei file.** Il pezzo unico è 13 MB. Dove stanno i triangoli, per singola copia: creatura circa 28.000, ruota circa 25.000 (quasi tutti negli occhi). Leve: tolleranza di `simplify` in `toSolid()`, `quality.edge` in `build.mjs`, numero e segmenti degli occhi in `ruota.mjs`.
+3. **Occhi anche sulle creature** (corpo, mani, ali), come in Ezechiele 10:12.
+4. **Nell’illustrazione del libro** la lastra sporge molto oltre le ruote e le ruote non la toccano. Nel modello la lastra poggia sulle ruote perché si possa stampare; se l’utente vuole la versione «sospesa» per il solo visualizzatore, si può alzare la distesa nel GLB lasciando invariati gli STL.
+5. **GitHub Pages.** Il workflow attuale pubblica il gioco dal branch `claude/funny-allen-d6a9za`: non va toccato senza chiedere all’utente.
