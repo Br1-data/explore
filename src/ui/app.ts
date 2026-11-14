@@ -49,6 +49,7 @@ export class App {
   private smonta: (() => void)[] = [];
   private aggiornaConteggio: (() => void) | null = null;
   private nuovaVersione = false;
+  private avvisoAccesso: string | null = null;
 
   constructor(radice: HTMLElement) {
     radice.append(this.schermo, this.gioco, this.strato);
@@ -64,9 +65,15 @@ export class App {
       const nascosto = document.hidden;
       this.partita?.pausa(nascosto || !this.strato.hidden);
       this.suono.sospendi(nascosto);
-      if (!nascosto) void this.cercaAggiornamento();
+      if (nascosto) this.salvataggio.salvaOra(true);
+      else void this.cercaAggiornamento();
     });
-    this.instrada();
+    this.schermo.append(h('p', { class: 'inizio__testo' }, 'Apro i tuoi progressi…'));
+    void this.salvataggio.riprendi().then((avviso) => {
+      this.avvisoAccesso = avviso;
+      this.suono.muto = this.salvataggio.muto;
+      this.instrada();
+    });
     void this.cercaAggiornamento();
   }
 
@@ -105,7 +112,8 @@ export class App {
     const [dove, a, b] = parti;
     const cap = a ? trovaCapitolo(Number(a)) : undefined;
     const ruolo = cap && b ? cap.ruoli.find((r) => r.id === b) : undefined;
-    if (dove === 'libro') this.schermoLibro();
+    if (!this.salvataggio.utente) this.schermoAccesso();
+    else if (dove === 'libro') this.schermoLibro();
     else if (dove === 'capitolo' && cap) this.schermoCapitolo(cap);
     else if (dove === 'gioca' && cap && ruolo) this.avviaGioco(cap, ruolo);
     else if (dove === 'fine' && cap && ruolo) this.schermoFine(cap, ruolo);
@@ -252,7 +260,11 @@ export class App {
           'Le citazioni bibliche sono tratte dalla Traduzione del Nuovo Mondo delle Sacre Scritture (edizione per lo studio), consultabile su jw.org. Il testo del libro non è riprodotto: viene riassunto e sempre collegato all’originale. Le illustrazioni sono originali e generiche; non riproducono quelle del libro.',
         ),
         h('h3', null, 'I tuoi dati'),
-        h('p', null, 'Progressi e appunti restano solo in questo browser. Nulla viene inviato altrove.'),
+        h(
+          'p',
+          null,
+          'Progressi e appunti sono salvati nel tuo account, in un archivio privato del progetto su Google Drive: li ritrovi su ogni dispositivo entrando con nome utente e password. La password non viene conservata, solo una sua impronta.',
+        ),
         azzera,
       ]),
     );
@@ -284,6 +296,44 @@ export class App {
       }
     }
     return null;
+  }
+
+  /** Si gioca con un account: i progressi stanno nell’archivio, non nel browser. */
+  private schermoAccesso(): void {
+    this.schermo.className = 'schermo schermo--inizio';
+    const campo = (etichetta: string, attributi: Record<string, unknown>): [HTMLLabelElement, HTMLInputElement] => {
+      const input = h('input', { class: 'appunto', required: true, ...attributi });
+      return [h('label', null, etichetta, input), input];
+    };
+    const [etNome, nome] = campo('Nome utente', { name: 'utente', autocomplete: 'username', autocapitalize: 'none', spellcheck: 'false', minlength: 3, maxlength: 30 });
+    const [etPassword, password] = campo('Password', { name: 'password', type: 'password', autocomplete: 'current-password', minlength: 4 });
+    const avviso = h('p', { class: 'accesso__avviso', role: 'alert' }, this.avvisoAccesso ?? '');
+    this.avvisoAccesso = null;
+    const entra = h('button', { class: 'bottone bottone--primario bottone--grande', type: 'submit', value: 'entra' }, 'Entra');
+    const crea = h('button', { class: 'bottone bottone--grande', type: 'submit', value: 'crea' }, 'Crea un account');
+    const modulo = h(
+      'form',
+      { class: 'inizio accesso' },
+      h('p', { class: 'occhiello' }, 'Avventura di studio'),
+      h('h1', { class: 'inizio__titolo' }, NOME_GIOCO),
+      h('p', { class: 'inizio__testo' }, 'Entra con il tuo account: progressi e appunti si salvano lì e li ritrovi su ogni dispositivo.'),
+      h('div', { class: 'accesso__campi' }, etNome, etPassword),
+      avviso,
+      h('div', { class: 'inizio__azioni' }, entra, crea),
+    );
+    modulo.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nuovo = (e.submitter as HTMLButtonElement | null)?.value === 'crea';
+      entra.disabled = crea.disabled = true;
+      avviso.textContent = nuovo ? 'Creo il tuo account…' : 'Apro i tuoi progressi…';
+      const errore = await this.salvataggio.entra(nome.value, password.value, nuovo);
+      entra.disabled = crea.disabled = false;
+      avviso.textContent = errore ?? '';
+      if (errore) return;
+      this.suono.muto = this.salvataggio.muto;
+      this.instrada();
+    });
+    this.schermo.append(modulo);
   }
 
   private schermoIniziale(): void {
@@ -319,6 +369,18 @@ export class App {
           { class: 'inizio__secondarie' },
           h('button', { class: 'bottone bottone--testo', type: 'button', onclick: () => this.apriGuida() }, 'Come si gioca'),
           h('button', { class: 'bottone bottone--testo', type: 'button', onclick: () => this.apriFonti() }, 'Fonti e fedeltà'),
+          h(
+            'button',
+            {
+              class: 'bottone bottone--testo esci',
+              type: 'button',
+              onclick: () => {
+                this.salvataggio.esci();
+                this.instrada();
+              },
+            },
+            `Esci (${this.salvataggio.utente})`,
+          ),
         ),
       ),
       h('p', { class: 'inizio__nota' }, 'Progetto di studio personale, non ufficiale. Testo, audio e immagini del libro si trovano su jw.org.'),

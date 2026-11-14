@@ -12,6 +12,7 @@
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
+import { archivioFinto } from '../archivio/finto.mjs';
 
 /** I punti di vista di ogni capitolo giocabile (src/content/index.ts). */
 const PERCORSI = {
@@ -86,6 +87,18 @@ async function scatta(pagina, nome) {
 }
 
 const stato = (pagina) => pagina.evaluate(() => window.__partita?.istantanea());
+
+/** L’archivio dei salvataggi: il vero Codice.gs, con un Google finto al posto di quello vero. */
+const archivio = archivioFinto();
+const collegaArchivio = (contesto) =>
+  contesto.route('https://script.google.com/macros/**', (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      headers: { 'access-control-allow-origin': '*' },
+      body: archivio.richiesta(route.request().postData() ?? ''),
+    }),
+  );
+const salvati = (utente) => JSON.parse(archivio.file.get(`${utente}.json`) ?? 'null')?.dati;
 
 /** Risolve l’attività della scheda aperta, come farebbe chi gioca. */
 async function risolviAttivita(scheda, attivita) {
@@ -164,6 +177,11 @@ async function gioca(cap, id) {
     hasTouch: larghezza < 600,
     isMobile: larghezza < 600,
   });
+  // Un account per ogni punto di vista, già entrato (l’accesso lo prova provaComandi).
+  await collegaArchivio(contesto);
+  const utente = `prova-${ruolo}`;
+  const { chiave } = JSON.parse(archivio.richiesta(JSON.stringify({ azione: 'registra', utente, password: 'prova' })));
+  await contesto.addInitScript((s) => localStorage.setItem('nei-loro-panni.sessione', s), JSON.stringify({ utente, chiave }));
   const pagina = await contesto.newPage();
   pagina.on('console', (m) => m.type() === 'error' && errori.push(`${ruolo}: ${m.text()}`));
   pagina.on('pageerror', (e) => errori.push(`${ruolo}: ${e.message}`));
@@ -236,6 +254,10 @@ async function gioca(cap, id) {
   const voci = await pagina.locator('.quaderno .voce').count();
   verifica(voci >= fatti, `il quaderno elenca i dettagli scoperti (${voci})`);
   await scatta(pagina, `${ruolo}-quaderno`);
+  // …e l’archivio li conserva nell’account.
+  await pagina.waitForTimeout(2500);
+  const nellArchivio = salvati(utente)?.dettagli?.[cap]?.length ?? 0;
+  verifica(nellArchivio === fatti && salvati(utente).ruoli[`${cap}:${id}`]?.finito, `l’account conserva i ${nellArchivio} dettagli e il racconto finito`);
   await contesto.close();
 }
 
@@ -243,7 +265,18 @@ async function provaComandi() {
   console.log('\ncomandi');
   const pagina = await browser.newPage({ viewport: { width: larghezza, height: altezza } });
   pagina.on('pageerror', (e) => errori.push(`comandi: ${e.message}`));
-  await pagina.goto(`${base}/`, { waitUntil: 'networkidle' });
+  await collegaArchivio(pagina);
+  await pagina.goto(`${base}/`);
+  // Senza account non si entra: lo si crea.
+  await pagina.locator('.accesso').waitFor();
+  verifica((await pagina.locator('.esci').count()) === 0, 'senza account si vede solo l’accesso');
+  await pagina.locator('input[name="utente"]').fill('Prova');
+  await pagina.locator('input[name="password"]').fill('abcd');
+  await pagina.locator('button[value="crea"]').click();
+  await pagina.locator('.esci').waitFor();
+  verifica(!!salvati('prova'), 'creando un account si entra, e l’archivio lo registra');
+  await scatta(pagina, 'accesso-entrato');
+  await pagina.waitForLoadState('networkidle');
   // Esce una versione nuova mentre il gioco è aperto (webapp sulla schermata Home):
   // tornandoci, si ricarica da sé.
   const indice = new URL(pagina.url()).pathname;
@@ -298,6 +331,18 @@ async function provaComandi() {
   await pagina.mouse.click(tela.x + ((punto.x - (s.camera - s.vista / 2)) / s.vista) * tela.width, tela.y + tela.height * 0.5);
   await pagina.locator('.scheda').waitFor({ timeout: 5000 });
   verifica(true, `toccando un segnale ci si va e si apre (${punto.id})`);
+  // Uscire e rientrare: la password sbagliata non apre, quella giusta sì.
+  await pagina.goto(`${base}/#/`);
+  await pagina.locator('.esci').click();
+  await pagina.locator('input[name="utente"]').fill('prova');
+  await pagina.locator('input[name="password"]').fill('abce');
+  await pagina.locator('button[value="entra"]').click();
+  await pagina.locator('.accesso__avviso', { hasText: 'sbagliati' }).waitFor();
+  await scatta(pagina, 'accesso-sbagliato');
+  await pagina.locator('input[name="password"]').fill('abcd');
+  await pagina.locator('button[value="entra"]').click();
+  await pagina.locator('.esci').waitFor();
+  verifica(salvati('prova')?.guidaVista === true, 'si esce e si rientra; l’account ricorda la guida già vista');
   await pagina.close();
 }
 

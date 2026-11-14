@@ -83,6 +83,19 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
       danze in Giudici 5, cetra e flauto in Genesi 4:21), e solo strumenti dell’epoca;
     - anche l’interfaccia usa suoni dell’epoca: fruscio di un rotolo, corda di cetra.
     Si fa per ogni capitolo senza scrivere codice audio: vedi «Suoni» più sotto.
+11. **Salvataggi nell’account, non nel browser** («sistema di salvataggio persistente,
+    indipendente per ogni utente, non nella cache locale»; scelte del committente:
+    soluzione «maccheronica» con un JSON, nome utente e password senza email,
+    account obbligatorio). Quindi:
+    - l’archivio è uno script Google Apps Script (`archivio/Codice.gs`, un JSON per
+      utente su Drive; come pubblicarlo: README, «Salvataggi»). Un JSON su GitHub
+      Pages era stato scartato: non si scrive dal browser senza esporre una chiave
+      che permette di modificare il sito;
+    - delle password si conserva solo l’impronta (SHA-256 con sale); il dispositivo
+      ricorda solo la sessione (`nei-loro-panni.sessione`: nome e chiave);
+    - si salva 1,5 s dopo ogni modifica, uno alla volta, e subito quando la pagina
+      viene nascosta; i progressi del vecchio salvataggio nel browser passano al
+      primo account creato.
 
 Scelte di progetto conseguenti (applicate dal capitolo 17 in poi):
 
@@ -175,9 +188,12 @@ src/
     quaderno.ts          quaderno di studio (dettagli, sensazioni, passi, domande; scarica/stampa)
     schemi.ts            schemi di studio («poi morì» di Genesi 5)
     etichette.ts         contrassegni (certezze, Ricostruzione, Per te) e verbi degli inviti
-  salvataggio.ts         progressi e appunti in localStorage (chiave `nei-loro-panni.v1`)
+  salvataggio.ts         progressi e appunti dell’account, salvati nell’archivio (URL_ARCHIVIO)
+archivio/Codice.gs       l’archivio dei salvataggi (Google Apps Script, da incollare su script.google.com)
+archivio/finto.mjs       esegue Codice.gs in Node con un Google finto (test e prova dal vero)
 test/contenuti.test.ts   fedeltà e coerenza dei contenuti
-e2e/percorsi.mjs         prova dal vero di tutti i percorsi
+test/archivio.test.mjs   registrazione, accesso e salvataggio dell’archivio
+e2e/percorsi.mjs         prova dal vero di tutti i percorsi (accesso compreso, con l’archivio finto)
 ```
 
 ## Come si costruisce un punto di vista

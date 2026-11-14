@@ -40,7 +40,9 @@ collegato all'originale su jw.org.
   - *attività sul testo*: ricomporre il messaggio di Enoc, completare i versetti,
     ricostruire le genealogie, classificare, usare la linea del tempo.
 - **Quaderno di studio**: dettagli scoperti, riflessioni personali, passi biblici
-  e domande del capitolo; si può scaricare o stampare. Resta nel browser.
+  e domande del capitolo; si può scaricare o stampare. Si salva nell’account.
+- **Account obbligatorio** (nome utente e password): progressi e quaderno stanno
+  nell’archivio dei salvataggi, non nel browser, e si ritrovano su ogni dispositivo.
 
 ## Comandi di gioco
 
@@ -65,6 +67,27 @@ npm run check      # controllo dei tipi e test dei contenuti
 npm run build      # sito statico in dist/
 npm run e2e        # gioca tutti i percorsi in Chromium (dopo la build)
 ```
+
+## Salvataggi
+
+L’archivio è uno script Google (`archivio/Codice.gs`) che tiene un file JSON per
+utente in una cartella del Drive di chi lo pubblica; delle password conserva solo
+un’impronta. Per pubblicarlo:
+
+1. Su [script.google.com](https://script.google.com) crea un **Nuovo progetto**
+   (per esempio «Nei loro panni – archivio»).
+2. Sostituisci il contenuto di `Codice.gs` con quello di `archivio/Codice.gs` e salva.
+3. **Distribuisci → Nuovo deployment**, tipo **App web**: «Esegui come» **Io**,
+   «Chi ha accesso» **Chiunque**. Premi **Distribuisci**.
+4. Autorizza con il tuo account. Google avvisa che l’app non è verificata (è tua):
+   **Avanzate → Vai a … (non sicuro) → Consenti**. Serve Drive per creare la
+   cartella «Nei loro panni - salvataggi».
+5. Copia l’**URL dell’app web** (finisce con `/exec`) in `URL_ARCHIVIO`, in
+   `src/salvataggio.ts`.
+
+Per aggiornare lo script senza cambiare indirizzo: **Distribuisci → Gestisci
+deployment → modifica → Versione: nuova versione**. I salvataggi si vedono (e si
+possono cancellare) nella cartella su Drive: un file `<nome utente>.json` per utente.
 
 Per lo sviluppo, le decisioni di progetto e come aggiungere i prossimi capitoli,
 vedi [`CLAUDE.md`](CLAUDE.md).
