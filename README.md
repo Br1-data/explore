@@ -21,16 +21,25 @@ collegato all'originale su jw.org.
     affidare l’incarico, dare la forza, confermare, sottrarre Enoc al pericolo;
   - **Matusalemme**: che cosa rivelano i numeri di Genesi 5, sulla linea del tempo;
   - **Uno degli empi**: il loro mondo e il messaggio, dalla parte di chi lo ascoltò.
-- **Capitolo 17, Iael**, giocabile da sei punti di vista:
+- **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista:
+  - **Debora**: profetessa e giudice sotto la palma, il comando di Geova trasmesso a
+    Barac, «Verrò senz’altro», il segnale sul Tabor, il canto e le tribù;
+  - **Barac**: la condizione posta a Debora (fede, non debolezza), il Tabor, la scelta
+    di scendere nella pianura, l’inseguimento;
+  - **Geova**: non raffigurato; risponde al grido del popolo, comanda tramite Debora,
+    va davanti a Barac, getta nello scompiglio l’esercito di Sisera;
+  - **Uno dei 10.000**: il paese oppresso, la chiamata a offrirsi, la battaglia sotto
+    la pioggia;
+  - **Sisera**: il nemico che contava sui suoi carri, fino alla disfatta.
+- **Capitolo 17, Iael** (Giudici 4:17-22; 5:24-31), da sei punti di vista:
   - **Iael**: da che parte sta ciascuno, che cosa fare quando Sisera arriva alla sua
     tenda, il coraggio di agire da sola, il canto che la chiama benedetta;
-  - **Geova**: non raffigurato; risponde al grido del popolo, getta nello scompiglio
-    l’esercito di Sisera presso le acque di Meghiddo, lo consegna nelle mani di una donna;
-  - **Sisera**: il nemico che contava sui suoi carri e sulle alleanze;
-  - **Barac**: l’inseguimento e la profezia di Debora che si adempie;
-  - **Debora**: il canto di vittoria, le tribù, la lode a Iael senza invidia;
+  - **Geova**: non raffigurato; consegna Sisera nelle mani di una donna e ispira il canto;
+  - **Sisera**: la fuga e il rifugio in cui credeva di essere al sicuro;
+  - **Barac**: arriva alla tenda e vede adempiersi la profezia di Debora;
+  - **Debora**: la lode a Iael, senza invidia;
   - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
-- **141 dettagli** (84 + 57), ognuno con la sua fonte e un contrassegno che dice quanto
+- **166 dettagli** (84 + 48 + 34), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

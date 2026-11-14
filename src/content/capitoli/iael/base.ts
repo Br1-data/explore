@@ -6,7 +6,9 @@ export { b };
 /**
  * Capitolo 17 — Iael: «Benedetta fra le donne».
  *
- * Tutto ciò che il gioco afferma su questo racconto sta qui, con la fonte.
+ * Il capitolo copre Giudici 4:9, 11, 17-22 e 5:24-31: la fuga di Sisera fino alla
+ * tenda di Iael, ciò che accade lì, la lode del canto, la madre di Sisera. L’oppressione,
+ * la chiamata di Barac, il Tabor e la battaglia sono il capitolo 16.
  * Le parole messe tra «» sono citazioni; il resto è riassunto con parole nostre.
  */
 
@@ -40,12 +42,6 @@ export const F = {
 };
 
 export const VERSI: Record<string, Verso> = {
-  'gdc-4-2': verso(
-    'Giudici 4:2, 3',
-    b('Giudici', 4, '2, 3'),
-    'Geova li diede dunque in mano a Iàbin, re di Cànaan, che regnava ad Hàzor. A capo del suo esercito c’era Sìsera, il quale dimorava ad Aròset-Goìm. Poi gli israeliti implorarono Geova, perché Iàbin aveva 900 carri da guerra muniti di falci di ferro e da 20 anni li opprimeva duramente.',
-    ['«li diede»: lett. “vendette”.', '«Aròset-Goìm»: o “Aròset delle Nazioni”.', '«carri da guerra muniti di falci di ferro»: lett. “carri di ferro”.'],
-  ),
   'gdc-4-9': verso(
     'Giudici 4:9',
     b('Giudici', 4, '9'),
@@ -55,11 +51,6 @@ export const VERSI: Record<string, Verso> = {
     'Giudici 4:11',
     b('Giudici', 4, '11'),
     'Per inciso, Hèber il chenita si era separato dai cheniti (i discendenti di Obàb, suocero di Mosè) e aveva piantato la sua tenda vicino al grande albero di Zaanannìm, che è nei pressi di Chèdes.',
-  ),
-  'gdc-4-14': verso(
-    'Giudici 4:14, 15',
-    b('Giudici', 4, '14, 15'),
-    'Debora disse ora a Bàrac: “Va’, perché questo è il giorno in cui Geova ti darà in mano Sìsera. Geova non sta forse andando davanti a te?” E Bàrac scese dal monte Tàbor alla testa dei 10.000 uomini. Allora Geova gettò nello scompiglio Sìsera, tutti i suoi carri da guerra e tutto l’esercito, consegnandoli alla spada di Bàrac. Infine Sìsera saltò giù dal carro e fuggì a piedi.',
   ),
   'gdc-4-17': verso(
     'Giudici 4:17-22',
@@ -71,12 +62,6 @@ export const VERSI: Record<string, Verso> = {
     'Giudici 4:18',
     b('Giudici', 4, '18'),
     'Iàel uscì incontro a Sìsera e gli disse: “Vieni, mio signore, entra qui da me. Non aver paura”. Sìsera allora entrò nella sua tenda, e lei lo coprì con una coperta.',
-  ),
-  'gdc-4-23': verso('Giudici 4:23', b('Giudici', 4, '23'), 'Così quel giorno Dio sottomise Iàbin, re di Cànaan, agli israeliti.'),
-  'gdc-5-6': verso(
-    'Giudici 5:6, 7',
-    b('Giudici', 5, '6, 7'),
-    'Ai giorni di Samgàr, figlio di Anàt, ai giorni di Iàel, le strade erano deserte; si viaggiava per sentieri isolati. Non c’erano più abitanti nei villaggi d’Israele; non ce n’erano più, finché sorsi io, Debora, finché sorsi come madre in Israele.',
   ),
   'gdc-5-24': verso(
     'Giudici 5:24',
@@ -116,11 +101,6 @@ export const VERSI: Record<string, Verso> = {
     b('Salmo', 83, '9, 10'),
     'Fa’ a loro come facesti a Màdian, come facesti a Sìsera e a Iàbin presso il torrente Chìson. Furono annientati a En-Dor; divennero concime per la terra.',
     ['«torrente»: o “uadi”.'],
-  ),
-  'ebr-11-32': verso(
-    'Ebrei 11:32-34',
-    b('Ebrei', 11, '32-34'),
-    'E cos’altro posso dire? Non mi basterebbe il tempo se volessi raccontare di Gedeone, di Bàrac, di Sansone, di Iefte, di Davide, di Samuele e degli altri profeti. Grazie alla fede sconfissero regni, stabilirono la giustizia, ottennero promesse, chiusero la bocca dei leoni, spensero la violenza del fuoco, sfuggirono al taglio della spada, da deboli furono resi forti, diventarono valorosi in guerra, misero in fuga eserciti invasori.',
   ),
 };
 
@@ -165,13 +145,6 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'Heber però non era come gli altri cheniti. Invece che con Israele, si era alleato con Iabin, il re cananeo che opprimeva il popolo di Dio.',
     'libro',
     [F.libro, b('Giudici', 4, '17')],
-  ),
-  d(
-    'paura',
-    'Un paese impaurito',
-    'Sotto il dominio cananeo forse molti si nascondevano nei boschi e sulle colline: avevano paura di coltivare la terra, di vivere in villaggi senza mura, di viaggiare su strade aperte dove potevano essere aggrediti.',
-    'sembra',
-    [F.wp15, b('Giudici', 5, '6, 7')],
   ),
   d(
     'non-israelita',
@@ -260,48 +233,6 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
 
   // ——— Geova: ciò che fa e perché ———
   d(
-    'nuovi-dei',
-    'Si scelsero nuovi dèi',
-    'Il canto lo dice così: «Si scelsero nuovi dèi, e allora ci fu guerra alle porte». Poiché gli israeliti avevano abbandonato Geova per servire altri dèi, Geova li abbandonò ai loro nemici.',
-    'libro',
-    [F.wp15, b('Giudici', 5, '8')],
-  ),
-  d(
-    'disposti',
-    'Quando il popolo fu disposto a cambiare',
-    'Il terrore durò finché Geova vide che il suo popolo, ostinato, era disposto a cambiare. Allora suscitò Barac e Debora per guidare Israele alla vittoria.',
-    'libro',
-    [F.wp15, F.it('Iabin')],
-  ),
-  d(
-    'una-donna',
-    'Una donna, per sua decisione',
-    'Geova permise a Debora di andare con Barac, come lui aveva chiesto, ma la ispirò anche a profetizzare che la gloria finale non sarebbe andata a un uomo: aveva stabilito che fosse una donna a giustiziare il malvagio Sisera.',
-    'libro',
-    [F.wp15, b('Giudici', 4, '9')],
-  ),
-  d(
-    'stelle',
-    'Dal cielo',
-    'Il canto descrive l’intervento di Geova: «dai cieli caddero scrosci», «dal cielo combatterono le stelle», e il torrente Chison spazzò via i nemici.',
-    'scritto',
-    [b('Giudici', 5, '4'), b('Giudici', 5, '20, 21')],
-  ),
-  d(
-    'chison',
-    'Le acque di Meghiddo',
-    'D’estate il letto del Chison è asciutto, ma dopo un acquazzone invernale il fiume allaga la pianura: forse per questo è chiamato «le acque di Meghiddo». Probabilmente fu un acquazzone improvviso a farlo straripare.',
-    'sembra',
-    [F.w08, b('Giudici', 5, '19')],
-  ),
-  d(
-    'merito',
-    'Tutto il merito a Geova',
-    'Il canto di Debora e Barac attribuisce a Geova tutto il merito e tutta la lode per la vittoria che diede al suo popolo.',
-    'libro',
-    [F.it('Debora')],
-  ),
-  d(
     'armaghedon',
     'Il «monte di Meghiddo»',
     '«Armaghedon» viene da un’espressione ebraica che significa «monte di Meghiddo». Geova ha messo in relazione la guerra finale con Meghiddo, dove in alcune battaglie intervenne direttamente: là, «presso le acque di Meghiddo», aiutò Barac a sconfiggere Sisera.',
@@ -341,7 +272,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'Un canto ispirato',
     'Dopo la vittoria Debora compose un canto per ispirazione divina, e in quel canto Iael viene lodata.',
     'libro',
-    [F.libro, b('Giudici', 5, '1')],
+    [F.libro, b('Giudici', 5, '24')],
   ),
   d(
     'fede-rafforzata',
@@ -351,56 +282,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     [F.w08, F.fondo(3)],
   ),
 
-  // ——— Sisera: su che cosa contava ———
-  d(
-    'novecento',
-    'Novecento carri',
-    'L’esercito di Iabin aveva 900 carri da guerra muniti di falci di ferro. Alla lettera il testo dice «carri di ferro».',
-    'scritto',
-    [b('Giudici', 4, '3'), b('Giudici', 4, '13')],
-  ),
-  d(
-    'falci',
-    'Il fiore all’occhiello',
-    'Le falci di ferro sporgevano dai mozzi delle ruote: i carri erano il fiore all’occhiello dell’esercito di Sisera.',
-    'libro',
-    [F.wp15],
-  ),
-  d(
-    'aroset',
-    'Più in vista del re',
-    'Sisera abitava ad Aroset-Goim, «Aroset delle Nazioni», non ad Hazor, la città del re. Nel racconto biblico ha più rilievo dello stesso re Iabin.',
-    'libro',
-    [F.it('Sisera'), b('Giudici', 4, '2')],
-  ),
-  d(
-    'terrore',
-    'Un nome che faceva paura',
-    'In Israele il solo nome di Sisera suscitava terrore e panico. Insieme a Iabin, oppresse duramente Israele per 20 anni.',
-    'libro',
-    [F.wp15, F.it('Sisera'), b('Giudici', 4, '3')],
-  ),
-  d(
-    'radunati',
-    'Sicuri di vincere',
-    'Quando seppe che Barac era salito sul monte Tabor, Sisera radunò subito tutti i suoi carri e le sue truppe, e alcuni re cananei si unirono a lui. Erano convinti di sconfiggere in un attimo l’esercito di Israele.',
-    'libro',
-    [F.wp15, b('Giudici', 4, '12, 13'), b('Giudici', 5, '19')],
-  ),
-  d(
-    'pioggia',
-    'Un pantano',
-    'Si abbatté una pioggia torrenziale e il terreno diventò un pantano. I carri appesantiti dal ferro affondarono nel fango: più un ostacolo che un punto di forza.',
-    'libro',
-    [F.wp15, b('Giudici', 5, '4')],
-  ),
-  d(
-    'abbandona',
-    'Solo, senza il suo carro',
-    'Sisera saltò giù dal carro e fuggì, abbandonando i suoi uomini.',
-    'libro',
-    [b('Giudici', 4, '15'), F.libro],
-  ),
+  // ——— Sisera: la fuga, un rifugio che non lo era ———
   d(
     'mal-equipaggiato',
     'Non riusciva a crederci',
@@ -436,36 +318,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'scritto',
     [b('Giudici', 4, '21')],
   ),
-  d(
-    'nessuno',
-    'Nessun superstite',
-    'Dell’esercito di Sisera non si salvò nessuno: cadde tutto sotto la spada. Lui era l’unico ad essere scappato.',
-    'scritto',
-    [b('Giudici', 4, '16'), F.wp15],
-  ),
-
   // ——— Barac: la profezia che si adempie ———
-  d(
-    'tabor',
-    'Dalla cima del Tabor',
-    'Il monte Tabor ha la forma di un grande cono con la cima smussata. Dalla vetta piatta si domina la pianura di Esdrelon, circa 400 metri più in basso, dove scorre il Chison.',
-    'libro',
-    [F.wp15],
-  ),
-  d(
-    'inseguimento',
-    'Fino ad Aroset-Goim',
-    'Barac inseguì i carri da guerra e l’esercito nemico fino ad Aroset-Goim.',
-    'scritto',
-    [b('Giudici', 4, '16')],
-  ),
-  d(
-    'bellezza',
-    'La «bellezza» della vittoria',
-    'Barac aveva voluto Debora con sé, come rappresentante di Dio. Lei accettò, ma predisse che la «bellezza» della vittoria sarebbe andata a una donna.',
-    'libro',
-    [F.it('Debora'), b('Giudici', 4, '8, 9')],
-  ),
   d(
     'adempiute',
     'Parole adempiute',
@@ -473,49 +326,14 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'libro',
     [F.libro, F.wp15],
   ),
-  d(
-    'annientato',
-    'Fino in fondo',
-    'Da quel giorno la mano degli israeliti si fece sempre più dura su Iabin, re di Canaan, finché non lo annientarono.',
-    'scritto',
-    [b('Giudici', 4, '24')],
-  ),
 
-  // ——— Debora: il canto ———
+  // ——— Debora: la lode a Iael ———
   d(
     'celebrare',
     'Canti e danze',
     'Le donne erano solite celebrare le vittorie con canti e danze. Un’immagine del capitolo mostra Debora e Barac che cantano mentre gli altri israeliti danzano e suonano i tamburelli.',
     'libro',
     [F.it('Debora'), F.immagineA, b('Esodo', 15, '20, 21')],
-  ),
-  d(
-    'prima-persona',
-    '«Finché sorsi io, Debora»',
-    'Una parte del canto è in prima persona: segno che almeno in parte lo compose Debora.',
-    'libro',
-    [F.it('Debora'), b('Giudici', 5, '7')],
-  ),
-  d(
-    'madre',
-    'Madre in Israele',
-    'Non sappiamo se Debora fosse madre in senso letterale: l’espressione «madre in Israele» va intesa in senso figurato. Geova le aveva affidato il compito di proteggere la nazione con le cure di una madre.',
-    'libro',
-    [F.wp15, b('Giudici', 5, '7')],
-  ),
-  d(
-    'domande',
-    'Domande alle tribù',
-    'Il canto loda le tribù che risposero alla chiamata e rivolge domande indagatrici a quelle che non lo fecero.',
-    'libro',
-    [F.it('Debora'), b('Giudici', 5, '14-18')],
-  ),
-  d(
-    'complementari',
-    'Due racconti che si completano',
-    'La battaglia è descritta due volte: nella narrazione di Giudici 4 e nel canto di Giudici 5. I due resoconti si completano, e ognuno riporta particolari che l’altro non menziona.',
-    'libro',
-    [F.wp15, F.it('Barac')],
   ),
   d(
     'prodiga',
@@ -566,7 +384,6 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('i-coraggio', 'Un solo movimento sbagliato, e saresti morta. Da dove può venire un coraggio così?'),
   s('i-limiti', 'Iael non era profetessa né soldato, eppure fece quello che poteva. Pensa a un tuo limite: che cosa puoi fare comunque per Geova?'),
 
-  s('g-scelta', 'Il popolo che lo aveva abbandonato implora aiuto, e Geova risponde. Che cosa ti dice questo di lui?'),
   s('g-donna', 'Geova si serve di una donna che non è israelita, né profetessa, né soldato. Che cosa dice questo a chi pensa di contare poco?'),
   s('g-nemici', '«Quelli che ti amano siano come il sole che sorge nella sua gloria.» Che cosa vorresti che Geova vedesse in te?'),
 

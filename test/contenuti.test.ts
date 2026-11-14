@@ -323,37 +323,62 @@ describe('Enoc: fedeltà al testo', () => {
   });
 });
 
-describe('Iael: fedeltà al testo', () => {
-  const cap = CAPITOLI[17];
-  const tutte = cap.ruoli.flatMap(attivitaDel);
-  const classifica = (id: string) => {
-    const a = tutte.find((x) => x.id === id);
+describe('Barac e Debora, Iael: fedeltà al testo', () => {
+  const classifica = (numero: number, id: string) => {
+    const a = CAPITOLI[numero].ruoli.flatMap(attivitaDel).find((x) => x.id === id);
     if (a?.tipo !== 'classifica') throw new Error(`manca la classifica ${id}`);
     return a;
   };
 
   it('mette ogni particolare nel resoconto giusto (Giudici 4 o 5)', () => {
-    for (const v of classifica('resoconti').voci) {
-      for (const f of v.fonti) expect(f.rif, v.testo).toMatch(v.cat === 0 ? /^Giudici 4:/ : /^Giudici 5:/);
+    for (const [numero, id] of [
+      [16, 'resoconti'],
+      [17, 'resoconti-tenda'],
+    ] as const) {
+      for (const v of classifica(numero, id).voci) {
+        for (const f of v.fonti) expect(f.rif, v.testo).toMatch(v.cat === 0 ? /^Giudici 4:/ : /^Giudici 5:/);
+      }
     }
   });
 
   it('elenca le tribù come le ricorda il canto (Giudici 5:14-18)', () => {
-    const tribu = classifica('tribu').voci;
+    const tribu = classifica(16, 'tribu').voci;
     expect(tribu.filter((v) => v.cat === 0).map((v) => v.testo)).toEqual(['Efraim', 'Beniamino', 'Machir', 'Zabulon', 'Issacar', 'Neftali']);
     expect(tribu.filter((v) => v.cat === 1).map((v) => v.testo)).toEqual(['Ruben', 'Galaad', 'Dan', 'Aser']);
   });
 
+  it('divide i capitoli come il libro: al 16 Giudici 4:1-16, 23, 24 e 5:1-23; al 17 la tenda di Iael e 5:24-31', () => {
+    // Ogni versetto biblico citato dai contenuti deve stare nei passi del suo capitolo
+    // (o fuori da Giudici 4-5, come Ebrei 11 o il Salmo 83).
+    const nel16 = (c: number, v: number) => (c === 4 && (v <= 16 || v >= 23)) || (c === 5 && v <= 23);
+    const nel17 = (c: number, v: number) => (c === 4 && (v === 9 || v === 11 || (v >= 17 && v <= 22))) || (c === 5 && v >= 24);
+    for (const [numero, dentro] of [
+      [16, nel16],
+      [17, nel17],
+    ] as const) {
+      const cap = CAPITOLI[numero];
+      const rif = [
+        ...Object.values(cap.versi).map((v) => v.rif),
+        ...Object.values(cap.dettagli).flatMap((d) => d.fonti.map((f) => f.rif)),
+      ];
+      for (const r of rif) {
+        const m = /^Giudici ([45]):(\d+)/.exec(r);
+        if (m) expect(dentro(Number(m[1]), Number(m[2])), `cap. ${numero}: ${r}`).toBe(true);
+      }
+    }
+  });
+
   it('cita alla lettera le domande di Sisera e la risposta di Iael', () => {
+    const cap = CAPITOLI[17];
     const testo = cap.versi['gdc-4-17'].testo;
     for (const citazione of cap.dettagli['uomo-cercato'].testo.match(/«[^»]+»/g) ?? []) {
       expect(testo).toContain(citazione.slice(1, -1).replace(/\.$/, ''));
     }
   });
 
-  it('non mostra il momento in cui Sisera viene ucciso', () => {
+  it('non mostra il momento in cui qualcuno viene ucciso', () => {
     // Dove il racconto arriva a quel punto, la scena si oscura prima.
-    for (const ruolo of cap.ruoli) {
+    for (const ruolo of capitoli.flatMap((c) => c.ruoli)) {
       for (const scena of ruolo.scene) {
         for (const p of scena.punti) {
           const i = p.passi.findIndex((x) => x.t === 'narra' && /muore|morì/.test(x.testo));

@@ -1,3 +1,4 @@
+import { capitoloBarac } from './capitoli/barac';
 import { capitoloEnoc } from './capitoli/enoc';
 import { capitoloIael } from './capitoli/iael';
 import type { Capitolo, Passo, Ruolo } from './tipi';
@@ -5,6 +6,7 @@ import type { Capitolo, Passo, Ruolo } from './tipi';
 /** I capitoli giocabili, per numero. Gli altri compaiono nell’indice come «in preparazione». */
 export const CAPITOLI: Record<number, Capitolo> = {
   1: capitoloEnoc,
+  16: capitoloBarac,
   17: capitoloIael,
 };
 

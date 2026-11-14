@@ -10,12 +10,11 @@ cambiato perché spingeva a leggere alla lettera il «camminare con Dio» (decis
 sono architetturali e valgono per ogni capitolo: il motore e lo schema dei contenuti
 sono generici, un capitolo nuovo aggiunge solo contenuti (ed eventualmente scenografie).
 
-**Stato:** giocabili il capitolo 1 (Enoc, quattro punti di vista) e il capitolo 17
-(Iael, sei punti di vista: Iael, Geova, Sisera, Barac, Debora, la madre di Sisera).
-Gli altri 52 capitoli compaiono nell’indice come «in preparazione».
+**Stato:** giocabili il capitolo 1 (Enoc, quattro punti di vista), il capitolo 16
+(Barac e Debora, cinque punti di vista: Debora, Barac, Geova, uno dei 10.000, Sisera) e
+il capitolo 17 (Iael, sei punti di vista: Iael, Geova, Sisera, Barac, Debora, la madre di
+Sisera). Gli altri 51 capitoli compaiono nell’indice come «in preparazione».
 **Prossimo passo:** il capitolo che indicherà il committente, con la stessa struttura.
-Nota per il capitolo 16 (Barac e Debora): nel 17 i due compaiono solo per l’inseguimento,
-la profezia adempiuta e il canto; la loro chiamata e la fede di Barac restano al 16.
 
 Lingua del progetto: italiano (codice, commenti, testi, commit).
 
@@ -96,6 +95,14 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
     - si salva 1,5 s dopo ogni modifica, uno alla volta, e subito quando la pagina
       viene nascosta; i progressi del vecchio salvataggio nel browser passano al
       primo account creato.
+12. **Capitoli divisi come il libro** («Ho notato che alcune cose nell’episodio di Iael
+    venivano da quello [il 16]. Dobbiamo dividere più nettamente i capitoli»). Ogni
+    capitolo contiene solo ciò che copre il capitolo del libro, cioè i suoi «passi da
+    leggere» e le pubblicazioni che cita; ciò che appartiene al capitolo vicino si
+    rimanda a quello («lo racconta il capitolo 17»), non si anticipa né si ripete.
+    Quando due capitoli raccontano la stessa vicenda (16 e 17: Giudici 4-5) un test
+    verifica che ogni versetto citato stia nei passi del suo capitolo. Gli stessi
+    personaggi possono comparire in entrambi, ciascuno con la parte di quel capitolo.
 
 Scelte di progetto conseguenti (applicate dal capitolo 17 in poi):
 
@@ -164,7 +171,7 @@ src/
   content/
     tipi.ts              schema dei contenuti (Capitolo, Ruolo, Scena, Punto, Passo, Attivita, Dettaglio…)
     libro.ts             indice dei 54 capitoli (generato da strumenti/genera-indice.mjs)
-    index.ts             registro dei capitoli giocabili: CAPITOLI = { 1: capitoloEnoc, 17: capitoloIael }
+    index.ts             registro dei capitoli giocabili: CAPITOLI = { 1: …Enoc, 16: …Barac, 17: …Iael }
     fonti.ts             comune: b() per i versetti (aggiungere i libri biblici in LIBRI), verso(), perspicacia(), indirizzi jw.org
     scenografia.ts       comune: o(), serie(), taglia() per comporre le scenografie
     capitoli/enoc/
@@ -172,8 +179,11 @@ src/
       scenari.ts         scenografie, con larghezza a scelta (mondo, colline, altura, strada, notte, quiete)
       enoc.ts geova.ts matusalemme.ts empio.ts   un file per punto di vista
       index.ts           assembla il Capitolo
-    capitoli/iael/       stessa struttura; PAROLE in base.ts = le frasi pronunciate (Giudici 4)
-      scenari.ts         accampamento, tendaIael, pianura (Chison e Tabor), villaggio, festa, casaSisera
+    capitoli/barac/      cap. 16 (Giudici 4:1-16, 23, 24; 5:1-23); PAROLE = le frasi pronunciate
+      scenari.ts         palma (di Debora), cimaTabor, pianura (Chison), villaggio, festa (usata anche dal 17)
+      debora.ts barac.ts geova.ts volontario.ts sisera.ts
+    capitoli/iael/       cap. 17 (Giudici 4:9, 11, 17-22; 5:24-31), stessa struttura
+      scenari.ts         accampamento, tendaIael, casaSisera (e festa dal 16)
       iael.ts geova.ts sisera.ts barac.ts debora.ts madre.ts
   motore/
     partita.ts           ciclo di gioco, movimento, tocco sui punti, indizi, folle, sequenze, disegno
@@ -268,7 +278,9 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
 ## Come aggiungere un capitolo (modello: `capitoli/iael/`)
 
 1. Scarica e leggi il capitolo, i passi biblici indicati, le pubblicazioni citate e
-   la descrizione delle immagini.
+   la descrizione delle immagini. I «passi da leggere» segnano i confini del capitolo
+   (decisione 12): se il capitolo vicino racconta la stessa vicenda, leggi anche quello
+   e lascia a lui ciò che gli appartiene.
 2. Elenca i personaggi impersonabili (incluso Geova) e per ciascuno decidi la **lente**:
    che cosa vede e fa solo lui. Distribuisci i dettagli fra i ruoli senza ripetizioni.
 3. Crea `src/content/capitoli/<nome>/` sul modello di `enoc/`: `base.ts` con versetti

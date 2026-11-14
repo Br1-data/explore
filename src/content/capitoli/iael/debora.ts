@@ -5,30 +5,28 @@ import { festa } from './scenari';
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
 
-const TRIBU = (v: string) => [b('Giudici', 5, v)];
-
 /**
- * Il punto di vista di Debora, in questo capitolo: il canto di vittoria
- * (Giudici 5) e la lode a Iael. (La sua chiamata di Barac e il suo incarico di
- * profetessa sono il tema del capitolo 16.)
+ * Il punto di vista di Debora, in questo capitolo: la parte del canto che loda Iael
+ * (Giudici 5:24-31). La sua chiamata di Barac, il Tabor e la prima parte del canto
+ * (5:1-23) sono il capitolo 16.
  */
 export const debora: Ruolo = {
   id: 'debora',
   nome: 'Debora',
   titolo: 'La profetessa che lodò Iael',
   descrizione:
-    'Intona il canto di vittoria con Barac, ricorda chi rispose alla chiamata e chi no, confronta il racconto e il canto e loda un’altra donna senza invidia.',
+    'Nel canto di vittoria ricordi che cosa fece Iael: confronta il racconto e il canto e loda un’altra donna senza invidia.',
   fedelta:
-    'Giudici 5, Perspicacia e La Torre di Guardia 1/8/2015, citata dal libro. Le parole del canto sono quelle della Bibbia; nessun’altra parola le viene attribuita.',
+    'Giudici 5:24-31, Perspicacia e La Torre di Guardia 1/8/2015, citata dal libro. Le parole del canto sono quelle della Bibbia; nessun’altra parola le viene attribuita.',
   modo: 'cammina',
   stile: 'debora',
-  durata: '8-10 minuti',
+  durata: '5-6 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Debora',
   scene: [
     {
-      id: 'debora-canto',
-      titolo: 'Il canto di vittoria',
-      luogo: 'Quel giorno',
+      id: 'debora-lode',
+      titolo: 'Benedetta fra le donne',
+      luogo: 'Il canto di vittoria',
       ...festa(2000),
       inizioX: 170,
       attori: [{ id: 'barac', x: 470, stile: 'barac', verso: -1 }],
@@ -41,19 +39,12 @@ export const debora: Ruolo = {
         {
           t: 'narra',
           titolo: 'Sei Debora',
-          testo: 'Sei Debora, profetessa. Quel giorno, dopo la vittoria, intoni un canto insieme a Barac.',
+          testo: 'Sei Debora, profetessa. Nel canto che intoni con Barac, dopo la vittoria, ricordi anche Iael.',
           certezza: 'scritto',
-          fonti: [b('Giudici', 4, '4'), b('Giudici', 5, '1')],
+          fonti: [b('Giudici', 4, '4'), b('Giudici', 5, '1'), b('Giudici', 5, '24')],
         },
       ],
       punti: [
-        {
-          id: 'intona',
-          x: 420,
-          tipo: 'agisci',
-          etichetta: 'Intona il canto con Barac',
-          passi: [{ t: 'fx', fx: { k: 'posa', chi: 'barac', posa: 'alza' } }, det('prima-persona'), det('madre')],
-        },
         {
           id: 'danze',
           x: 880,
@@ -62,62 +53,31 @@ export const debora: Ruolo = {
           passi: [det('celebrare')],
         },
         {
-          id: 'tribu',
-          x: 1180,
-          tipo: 'leggi',
-          etichetta: 'Chi venne e chi no',
-          richiede: ['intona'],
-          passi: [
-            {
-              t: 'attivita',
-              a: {
-                tipo: 'classifica',
-                id: 'tribu',
-                consegna: 'Nel canto ricordi le tribù di Israele. Quali scesero a combattere e quali rimasero lontane?',
-                categorie: ['Scesero a combattere', 'Rimasero lontane'],
-                voci: [
-                  { testo: 'Efraim', cat: 0, fonti: TRIBU('14') },
-                  { testo: 'Beniamino', cat: 0, fonti: TRIBU('14') },
-                  { testo: 'Machir', cat: 0, fonti: TRIBU('14') },
-                  { testo: 'Zabulon', cat: 0, fonti: TRIBU('14, 18') },
-                  { testo: 'Issacar', cat: 0, fonti: TRIBU('15') },
-                  { testo: 'Neftali', cat: 0, fonti: TRIBU('18') },
-                  { testo: 'Ruben', cat: 1, fonti: TRIBU('15, 16') },
-                  { testo: 'Galaad', cat: 1, fonti: TRIBU('17') },
-                  { testo: 'Dan', cat: 1, fonti: TRIBU('17') },
-                  { testo: 'Aser', cat: 1, fonti: TRIBU('17') },
-                ],
-                dettaglio: 'domande',
-              },
-            },
-          ],
-        },
-        {
           id: 'racconti',
-          x: 1460,
+          x: 1300,
           tipo: 'leggi',
           etichetta: 'Il racconto e il canto',
-          richiede: ['intona'],
           passi: [
             {
               t: 'attivita',
               a: {
                 tipo: 'classifica',
-                id: 'resoconti',
+                id: 'resoconti-tenda',
                 consegna:
-                  'La Bibbia descrive questi fatti due volte: nel racconto di Giudici 4 e nel tuo canto, in Giudici 5. Dove si trova ciascun particolare?',
+                  'Ciò che accadde nella tenda di Iael è descritto due volte: nel racconto di Giudici 4 e nel tuo canto, in Giudici 5. Dove si trova ciascun particolare?',
                 categorie: ['Solo nel racconto (Giudici 4)', 'Solo nel canto (Giudici 5)'],
                 voci: [
-                  { testo: 'Barac ha con sé 10.000 uomini', cat: 0, fonti: [b('Giudici', 4, '10')] },
                   { testo: 'Iael copre Sisera con una coperta', cat: 0, fonti: [b('Giudici', 4, '18')] },
+                  { testo: 'Iael apre un otre', cat: 0, fonti: [b('Giudici', 4, '19')] },
                   { testo: 'Sisera le chiede di rispondere di no', cat: 0, fonti: [b('Giudici', 4, '20')] },
                   { testo: 'Iael va incontro a Barac', cat: 0, fonti: [b('Giudici', 4, '22')] },
-                  { testo: 'Dal cielo combatterono le stelle', cat: 1, fonti: [b('Giudici', 5, '20')] },
                   { testo: 'Una splendida coppa', cat: 1, fonti: [b('Giudici', 5, '25')] },
+                  { testo: 'Un bottino di stoffe tinte', cat: 1, fonti: [b('Giudici', 5, '30')] },
                   { testo: 'La madre di Sisera alla finestra', cat: 1, fonti: [b('Giudici', 5, '28')] },
-                  { testo: 'Le tribù che rimasero lontane', cat: 1, fonti: [b('Giudici', 5, '15-17')] },
+                  { testo: 'Le dame che la rassicurano', cat: 1, fonti: [b('Giudici', 5, '29')] },
                 ],
-                dettaglio: 'complementari',
+                spiegazione:
+                  'Il racconto e il canto si completano: ognuno riporta particolari che l’altro non menziona, e per avere un quadro completo vanno letti l’uno accanto all’altro.',
               },
             },
           ],
@@ -127,7 +87,7 @@ export const debora: Ruolo = {
           x: 1760,
           tipo: 'agisci',
           etichetta: 'Loda Iael',
-          richiede: ['danze', 'tribu', 'racconti'],
+          richiede: ['danze', 'racconti'],
           passi: [det('prodiga'), senti('d-lode')],
         },
       ],

@@ -1,10 +1,12 @@
 import { type Base, o, serie, taglia } from '../../scenografia';
 
+/** La festa del canto è la stessa del capitolo 16. */
+export { festa } from '../barac/scenari';
+
 /**
  * Scenografie del capitolo 17. Dal testo vengono le tende di Heber vicino al grande
  * albero di Zaanannim (Giudici 4:11), l’otre, la coppa, il martello e il piolo
- * (4:19, 21; 5:25), i carri con le falci di ferro, il torrente Chison e il monte
- * Tabor (4:13-15; 5:21), la finestra con la grata (5:28). Il resto è ambientazione.
+ * (4:19, 21; 5:25), la finestra con la grata (5:28). Il resto è ambientazione.
  */
 
 /** L’accampamento di Heber: alcune tende vicino a un grande albero, la tenda di Iael. */
@@ -61,89 +63,6 @@ export function tendaIael(larghezza = 1500): Base {
         o('tenda', 1290, { variante: 1 }),
         o('cespuglio', 1440, { piano: 'primo', scala: 1.5 }),
         o('roccia', 380, { piano: 'primo', scala: 1.4 }),
-      ],
-    },
-    larghezza,
-  );
-}
-
-/** La pianura del Chison, sotto il monte Tabor. Fango e acqua compaiono con la pioggia. */
-export function pianura(larghezza = 2800): Base {
-  return taglia(
-    {
-      larghezza: 2800,
-      ambiente: 'giorno',
-      seme: 29,
-      suono: 'vento',
-      oggetti: [
-        o('tabor', 520, { piano: 'fondo' }),
-        ...serie('albero', [1300, 1900, 2500], { piano: 'fondo', scala: 0.55 }),
-        o('roccia', 160, { scala: 1.4 }),
-        o('cespuglio', 330),
-        o('albero', 520, { variante: 2 }),
-        o('cespuglio', 760),
-        o('carro', 1180),
-        o('fango', 1300, { seVar: 'pioggia' }),
-        o('carro', 1480, { variante: 1 }),
-        o('carro', 1760),
-        o('fango', 1880, { seVar: 'pioggia' }),
-        o('carro', 2020, { variante: 1 }),
-        o('acqua', 2400, { seVar: 'pioggia' }),
-        o('roccia', 2640),
-        ...serie('cespuglio', [420, 1640, 2300], { piano: 'primo', scala: 1.5 }),
-        o('roccia', 980, { piano: 'primo', scala: 1.6 }),
-      ],
-    },
-    larghezza,
-  );
-}
-
-/** Un villaggio di Israele sotto l’oppressione: case vuote, un idolo, una porta. */
-export function villaggio(larghezza = 2400): Base {
-  return taglia(
-    {
-      larghezza: 2400,
-      ambiente: 'quiete',
-      seme: 31,
-      suono: 'vento',
-      oggetti: [
-        ...serie('albero', [200, 760, 1400, 2000], { piano: 'fondo', scala: 0.6 }),
-        o('porta', 330),
-        o('casa', 640, { variante: 0 }),
-        o('casa', 860, { variante: 2 }),
-        o('campo', 1100),
-        o('idolo', 1360),
-        o('casa', 1560, { variante: 1 }),
-        o('giare', 1700),
-        o('casa', 1860, { variante: 3 }),
-        o('albero', 2120, { variante: 3 }),
-        o('roccia', 2280),
-        ...serie('cespuglio', [500, 1250, 2050], { piano: 'primo', scala: 1.5 }),
-      ],
-    },
-    larghezza,
-  );
-}
-
-/** Dove si canta la vittoria, con il Tabor sullo sfondo. */
-export function festa(larghezza = 2000): Base {
-  return taglia(
-    {
-      larghezza: 2000,
-      ambiente: 'giorno',
-      seme: 43,
-      suono: 'folla',
-      oggetti: [
-        o('tabor', 1100, { piano: 'fondo' }),
-        ...serie('palma', [300, 1500], { piano: 'fondo', scala: 0.6 }),
-        o('palma', 180),
-        o('roccia', 420),
-        o('cespuglio', 760),
-        o('palma', 1260),
-        o('giare', 1400),
-        o('albero', 1700, { variante: 0, scala: 1.2 }),
-        o('roccia', 1880),
-        ...serie('cespuglio', [600, 1560], { piano: 'primo', scala: 1.5 }),
       ],
     },
     larghezza,

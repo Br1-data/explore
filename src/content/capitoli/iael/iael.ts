@@ -68,18 +68,11 @@ export const iael: Ruolo = {
           passi: [det('alleato'), senti('i-casa')],
         },
         {
-          id: 'giorni',
-          x: 1480,
-          tipo: 'esamina',
-          etichetta: 'I tuoi giorni',
-          passi: [{ t: 'verso', id: 'gdc-5-6', evidenzia: ['ai giorni di Iàel, le strade erano deserte'] }, det('paura')],
-        },
-        {
           id: 'alleanze',
           x: 1880,
           tipo: 'leggi',
           etichetta: 'Da che parte sta ciascuno',
-          richiede: ['albero', 'famiglia', 'accordi', 'giorni'],
+          richiede: ['albero', 'famiglia', 'accordi'],
           passi: [
             {
               t: 'attivita',

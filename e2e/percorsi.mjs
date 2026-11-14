@@ -17,6 +17,7 @@ import { archivioFinto } from '../archivio/finto.mjs';
 /** I punti di vista di ogni capitolo giocabile (src/content/index.ts). */
 const PERCORSI = {
   1: ['enoc', 'geova', 'matusalemme', 'empio'],
+  16: ['debora', 'barac', 'geova', 'volontario', 'sisera'],
   17: ['iael', 'geova', 'sisera', 'barac', 'debora', 'madre'],
 };
 
@@ -30,13 +31,18 @@ const SUONI_ATTESI = {
   '1/enoc-strada': { sorgenti: ['folla', 'torcia'] },
   '1/enoc-pericolo': { luce: 'notte' },
   '1/empio-caccia': { sorgenti: ['insegue', 'torcia'], luce: 'notte' },
+  '16/debora-palma': { sorgenti: ['pecora', 'folla'], luce: 'giorno' },
+  '16/debora-canto': { sorgenti: ['danza', 'folla'] },
+  '16/geova-oppressione': { sorgenti: ['invoca'] },
+  '16/geova-chison': { sorgenti: ['folla'] },
+  '16/barac-inseguimento': { sorgenti: ['insegue'], pioggia: true },
+  '16/sisera-disfatta': { sorgenti: ['insegue'], pioggia: true },
+  '16/volontario-battaglia': { sorgenti: ['insegue', 'folla'] },
   '17/iael-accampamento': { sorgenti: ['fuoco', 'pecora'], luce: 'giorno' },
   '17/iael-tenda': { sorgenti: ['fuoco'] },
-  '17/geova-oppressione': { sorgenti: ['invoca'] },
-  '17/geova-chison': { sorgenti: ['folla'] },
-  '17/sisera-fuga': { sorgenti: ['insegue'], pioggia: true },
-  '17/barac-inseguimento': { sorgenti: ['insegue'], pioggia: true },
-  '17/debora-canto': { sorgenti: ['danza', 'folla'] },
+  '17/sisera-fuga': { sorgenti: ['fuoco', 'pecora'] },
+  '17/geova-canto': { sorgenti: ['danza'] },
+  '17/debora-lode': { sorgenti: ['danza', 'folla'] },
   '17/madre-finestra': { sorgenti: ['folla'] },
 };
 /** Ciò che si sentiva all’inizio di ogni scena giocata. */

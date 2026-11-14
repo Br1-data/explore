@@ -65,7 +65,17 @@ export const STILI: Record<string, Stile> = {
     accessorio: 'clava',
     scala: 1,
   },
-  // Capitolo 17.
+  // Capitolo 16: uno dei 10.000, quasi senza armi (Giudici 5:8).
+  volontario: {
+    tipo: 'uomo',
+    veste: '#7d6a4e',
+    fascia: '#4a3a2c',
+    pelle: '#a36f4a',
+    capelli: '#2a1f1a',
+    barba: true,
+    scala: 0.98,
+  },
+  // Capitoli 16 e 17.
   iael: {
     tipo: 'donna',
     veste: '#6a4f7a',
