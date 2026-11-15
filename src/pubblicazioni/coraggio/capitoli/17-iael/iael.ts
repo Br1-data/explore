@@ -193,7 +193,10 @@ export const iael: Ruolo = {
       titolo: 'Nella tua tenda',
       luogo: 'Un guerriero stanco',
       ...tendaIael(1500),
+      // La coperta con cui Iael copre Sisera (Giudici 4:18): sparisce quando la prende.
+      oggetti: [...tendaIael(1500).oggetti, { tipo: 'coperta', x: 960, seVar: 'coperta' }],
       inizioX: 900,
+      vars: { coperta: 1 },
       attori: [{ id: 'sisera', x: 770, stile: 'sisera', verso: 1 }],
       ingresso: [
         {
@@ -205,11 +208,23 @@ export const iael: Ruolo = {
       ],
       punti: [
         {
+          id: 'prendi-coperta',
+          x: 960,
+          tipo: 'agisci',
+          etichetta: 'Prendi una coperta',
+          passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'coperta', a: 0, dur: 0.3 } },
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'coperta' } },
+          ],
+        },
+        {
           id: 'coperta',
           x: 840,
           tipo: 'agisci',
-          etichetta: 'Coprilo con una coperta',
+          etichetta: 'Coprilo con la coperta',
+          richiede: ['prendi-coperta'],
           passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
             { t: 'fx', fx: { k: 'posa', chi: 'sisera', posa: 'coperto' } },
             { t: 'fx', fx: { k: 'attendi', dur: 1.2 } },
           ],
@@ -229,6 +244,7 @@ export const iael: Ruolo = {
           etichetta: 'Apri l’otre',
           richiede: ['acqua'],
           passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'coppa' } },
             {
               t: 'attivita',
               a: {
@@ -250,6 +266,8 @@ export const iael: Ruolo = {
           etichetta: 'Ti dà un ordine',
           richiede: ['otre'],
           passi: [
+            // Gli ha dato da bere: la coppa resta a lui.
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
             { t: 'fx', fx: { k: 'nastro', chi: 'sisera', testo: PAROLE.entrata, dur: 3 } },
             { t: 'fx', fx: { k: 'nastro', chi: 'sisera', testo: PAROLE.rispondi, dur: 5 } },
             {

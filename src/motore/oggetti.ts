@@ -1233,6 +1233,16 @@ const vello: Pittore = (p, o) => {
   ctx.globalAlpha = 1;
 };
 
+/** Una coperta piegata (Giudici 4:18); anche portata in mano. */
+const coperta: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#7a5a6a');
+  rettTondo(ctx, -22, -18, 44, 18, 4);
+  ctx.fillStyle = tono('#c9b28a');
+  ctx.fillRect(-22, -12, 44, 3);
+  ctx.fillRect(-22, -6, 44, 2);
+};
+
 /** Un corno di montone, per i segnali (Giudici 6:34; 7:8, 20); anche portato in mano. */
 const corno: Pittore = (p) => {
   const { ctx, tono } = p;
@@ -1397,6 +1407,7 @@ const PITTORI: Record<string, Pittore> = {
   uccello,
   vello,
   corno,
+  coperta,
 };
 
 export const TIPI_OGGETTO = Object.keys(PITTORI);
