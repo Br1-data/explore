@@ -34,6 +34,34 @@ export function palma(larghezza = 2000): Base {
   );
 }
 
+/**
+ * Chedes, nella regione montuosa di Neftali (Giosuè 20:7), su un’altura che dà su una
+ * piccola pianura fertile (Perspicacia «Chedes»): la città dove Barac convoca i suoi uomini.
+ */
+export function chedes(larghezza = 2000): Base {
+  return taglia(
+    {
+      larghezza: 2000,
+      ambiente: 'mattino',
+      seme: 61,
+      suono: 'vento',
+      oggetti: [
+        ...serie('casa', [180, 330, 480], { piano: 'fondo', scala: 0.5 }),
+        ...serie('albero', [900, 1500], { piano: 'fondo', scala: 0.55 }),
+        o('casa', 200, { variante: 0 }),
+        o('casa', 400, { variante: 2 }),
+        o('giare', 520),
+        o('porta', 680),
+        o('campo', 1400),
+        o('albero', 1760, { variante: 1 }),
+        o('roccia', 1900),
+        ...serie('cespuglio', [820, 1620], { piano: 'primo', scala: 1.5 }),
+      ],
+    },
+    larghezza,
+  );
+}
+
 /** La cima del Tabor: in basso, lontano, la pianura con i carri di Sisera. */
 export function cimaTabor(larghezza = 2200): Base {
   return taglia(

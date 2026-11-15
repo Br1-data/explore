@@ -1,6 +1,6 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, PAROLE, b } from './base';
-import { cimaTabor, palma, pianura } from './scenari';
+import { chedes, cimaTabor, palma, pianura } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -15,12 +15,12 @@ export const barac: Ruolo = {
   nome: 'Barac',
   titolo: 'L’uomo di fede che accettò l’aiuto di una donna',
   descrizione:
-    'Ricevi da Debora il comando di Geova, decidi come rispondere, raduna i tuoi uomini sul Tabor e scegli se scendere nella pianura contro 900 carri.',
+    'Ricevi da Debora il comando di Geova, decidi come rispondere, convoca e arma i tuoi uomini a Chedes, sali sul Tabor e scegli se scendere nella pianura contro 900 carri.',
   fedelta:
     'Giudici 4:6-16, 24 ed Ebrei 11:32-34, come li spiega il capitolo 16 del libro con le pubblicazioni che cita. Le parole di Barac e di Debora sono quelle del testo; le scelte riguardano momenti che il racconto descrive.',
   modo: 'cammina',
   stile: 'barac',
-  durata: '12-15 minuti',
+  durata: '14-17 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Barac',
   scene: [
     {
@@ -104,6 +104,65 @@ export const barac: Ruolo = {
       ],
     },
     {
+      id: 'barac-chedes',
+      titolo: 'A Chedes',
+      luogo: 'Nella regione montuosa di Neftali',
+      ...chedes(2000),
+      inizioX: 300,
+      // Gli stessi uomini, prima disarmati e poi con le armi che Barac riesce a dar loro.
+      vars: { radunati: 0, armati: 0 },
+      attori: [{ id: 'debora', x: 600, stile: 'debora', verso: 1 }],
+      folle: [
+        { x0: 1080, x1: 1700, n: 16, seme: 131, comportamento: 'fermo', seVar: 'radunati' },
+        { x0: 1080, x1: 1700, n: 16, seme: 131, armati: 0.6, comportamento: 'fermo', seVar: 'armati' },
+      ],
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Debora si è alzata ed è venuta con te a Chedes.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '9')],
+        },
+      ],
+      punti: [
+        { id: 'citta', x: 420, tipo: 'esamina', etichetta: 'La città', passi: [det('chedes')] },
+        {
+          id: 'convoca',
+          x: 960,
+          tipo: 'agisci',
+          etichetta: 'Convoca Zabulon e Neftali',
+          richiede: ['citta'],
+          passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'radunati', a: 1, dur: 4 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 2 } },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'convocazione',
+                consegna: 'Chi rispose alla tua chiamata? Completa il versetto.',
+                verso: 'gdc-4-10',
+                testo: 'Bàrac convocò [[Zàbulon]] e [[Nèftali]] a Chèdes, e [[10.000]] uomini lo seguirono. Anche Debora salì con lui.',
+                distrattori: ['Ruben', 'Àser', '900'],
+              },
+            },
+          ],
+        },
+        {
+          id: 'arma',
+          x: 1300,
+          tipo: 'agisci',
+          etichetta: 'Arma i tuoi uomini',
+          richiede: ['convoca'],
+          passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'armati', a: 1, dur: 2 } },
+            { t: 'fx', fx: { k: 'var', nome: 'radunati', a: 0, dur: 0 } },
+            det('armi'),
+          ],
+        },
+      ],
+    },
+    {
       id: 'barac-tabor',
       titolo: 'Sul monte Tabor',
       luogo: 'Con 10.000 uomini',
@@ -117,9 +176,9 @@ export const barac: Ruolo = {
       ingresso: [
         {
           t: 'narra',
-          testo: 'Hai convocato Zabulon e Neftali a Chedes: 10.000 uomini ti hanno seguito, e Debora è salita con te.',
+          testo: 'Con i 10.000 uomini sei salito sul monte Tabor, e Debora è salita con te.',
           certezza: 'scritto',
-          fonti: [b('Giudici', 4, '10')],
+          fonti: [b('Giudici', 4, '10'), b('Giudici', 4, '12')],
         },
       ],
       punti: [

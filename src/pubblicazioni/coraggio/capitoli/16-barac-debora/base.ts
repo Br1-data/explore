@@ -76,6 +76,11 @@ export const VERSI: Record<string, Verso> = {
     b('Giudici', 4, '8, 9'),
     'Bàrac le rispose: “Se verrai con me, ci andrò; ma se non verrai, non ci andrò”. E lei gli disse: “Verrò senz’altro. Ma non ti procurerai gloria tramite questa impresa, perché sarà nelle mani di una donna che Geova consegnerà Sìsera”. Dopodiché Debora si alzò e andò con Bàrac a Chèdes.',
   ),
+  'gdc-4-10': verso(
+    'Giudici 4:10',
+    b('Giudici', 4, '10'),
+    'Bàrac convocò Zàbulon e Nèftali a Chèdes, e 10.000 uomini lo seguirono. Anche Debora salì con lui.',
+  ),
   'gdc-4-14': verso(
     'Giudici 4:14, 15',
     b('Giudici', 4, '14, 15'),
@@ -256,6 +261,20 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'Barac aveva voluto Debora con sé, come rappresentante di Dio. Lei accettò, ma predisse che la «bellezza» della vittoria sarebbe andata a una donna.',
     'libro',
     [F.it('Debora'), b('Giudici', 4, '8, 9')],
+  ),
+  d(
+    'chedes',
+    'Chedes-Neftali',
+    'Chedes, nella regione montuosa di Neftali, era una delle città di rifugio, data ai leviti con i suoi pascoli. Sembra che fosse la città di Barac: è lì che convocò i suoi uomini.',
+    'sembra',
+    [F.it('Chedes'), b('Giosuè', 20, '7'), b('Giosuè', 21, '32')],
+  ),
+  d(
+    'armi',
+    'Le armi che poteva',
+    'Barac non perse tempo: chiamati a raccolta 10.000 uomini coraggiosi, li fornì delle armi che riuscì a procurare.',
+    'libro',
+    [F.libro],
   ),
   d(
     'tabor',

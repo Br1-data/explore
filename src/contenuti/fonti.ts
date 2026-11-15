@@ -12,6 +12,7 @@ const LIBRI: Record<string, [slug: string, numero: number]> = {
   Genesi: ['genesi', 1],
   Esodo: ['esodo', 2],
   Deuteronomio: ['deuteronomio', 5],
+  Giosuè: ['giosue', 6],
   Giudici: ['giudici', 7],
   Salmo: ['salmi', 19],
   Proverbi: ['proverbi', 20],

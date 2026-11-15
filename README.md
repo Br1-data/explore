@@ -35,8 +35,8 @@ collegato all'originale su jw.org.
 - **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista:
   - **Debora**: profetessa e giudice sotto la palma, il comando di Geova trasmesso a
     Barac, «Verrò senz’altro», il segnale sul Tabor, il canto e le tribù;
-  - **Barac**: la condizione posta a Debora (fede, non debolezza), il Tabor, la scelta
-    di scendere nella pianura, l’inseguimento;
+  - **Barac**: la condizione posta a Debora (fede, non debolezza), convoca e arma i suoi
+    uomini a Chedes, il Tabor, la scelta di scendere nella pianura, l’inseguimento;
   - **Geova**: non raffigurato; risponde al grido del popolo, comanda tramite Debora,
     va davanti a Barac, getta nello scompiglio l’esercito di Sisera;
   - **Uno dei 10.000**: il paese oppresso, la chiamata a offrirsi, la battaglia sotto
@@ -56,7 +56,7 @@ collegato all'originale su jw.org.
   e fracassa la giara, rifiuta di regnare), Geova (il profeta,
   i segni, i 300, il sogno), Ioas (il padre che lo difese), uno dei 300 (Harod, corni giare e
   torce, l’inseguimento) e un soldato madianita (il sogno del pane d’orzo).
-- **248 dettagli** (84 + 49 + 46 + 34 + 35), ognuno con la sua fonte e un contrassegno che dice quanto
+- **250 dettagli** (84 + 49 + 48 + 34 + 35), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;
