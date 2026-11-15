@@ -51,10 +51,12 @@ collegato all'originale su jw.org.
   - **Debora**: la lode a Iael, senza invidia;
   - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
 - **Capitolo 18, Gedeone** (Giudici 6:1–7:22; 8:4-23, 28), da cinque punti di vista: Gedeone
-  (il grano nel torchio, l’altare di Baal di notte, il rifiuto di regnare), Geova (il profeta,
+  (batte il grano nel torchio, prepara il dono e vede il fuoco dalla roccia, demolisce di notte
+  l’altare di Baal, stende e strizza il vello, scende con Pura all’accampamento, suona il corno
+  e fracassa la giara, rifiuta di regnare), Geova (il profeta,
   i segni, i 300, il sogno), Ioas (il padre che lo difese), uno dei 300 (Harod, corni giare e
   torce, l’inseguimento) e un soldato madianita (il sogno del pane d’orzo).
-- **238 dettagli** (84 + 49 + 46 + 34 + 25), ognuno con la sua fonte e un contrassegno che dice quanto
+- **248 dettagli** (84 + 49 + 46 + 34 + 35), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

@@ -348,9 +348,37 @@ const cumulo: Pittore = (p) => {
   });
 };
 
-const idolo: Pittore = (p) => {
+/**
+ * Un idolo su un altare, con la ciotola che fuma. Varianti 2 e 3 (l’altare di Baal di
+ * Giudici 6:25-28): 2 con il palo sacro accanto, 3 demolito, con il palo abbattuto.
+ */
+const idolo: Pittore = (p, o) => {
   const { ctx, P, tono, t } = p;
   const base = mescola(P.terra[0], '#a09890', 0.5);
+  const legno = tono(mescola(P.tronco, '#8a6a48', 0.4));
+  if (o.variante === 3) {
+    // Le pietre dell’altare a terra e il palo sacro abbattuto.
+    ctx.fillStyle = legno;
+    ctx.save();
+    ctx.translate(-70, -6);
+    ctx.rotate(-0.06);
+    ctx.fillRect(0, -6, 130, 9);
+    ctx.restore();
+    const pietre: [number, number, number, number][] = [[-20, -6, 13, 7], [4, -5, 11, 6], [24, -4, 9, 5], [-6, -15, 10, 6], [14, -13, 8, 5]];
+    pietre.forEach(([x, y, rx, ry], i) => {
+      ctx.fillStyle = tono(mescola(base, i % 2 ? '#ffffff' : '#000000', 0.12));
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, 0.3 * i, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    return;
+  }
+  if (o.variante === 2) {
+    // Il palo sacro, accanto all’altare.
+    ctx.fillStyle = legno;
+    ctx.fillRect(-52, -128, 9, 128);
+    ctx.fillRect(-60, -112, 25, 5);
+  }
   ctx.fillStyle = tono(mescola(base, '#000000', 0.2));
   ctx.fillRect(-26, -10, 52, 12);
   ctx.fillStyle = tono(base);
@@ -1179,6 +1207,49 @@ const arca: Pittore = (p, o) => {
   }
 };
 
+/**
+ * Un vello di lana steso a terra (Giudici 6:37-40). Varianti: 0 asciutto, 1 bagnato di
+ * rugiada, 2 asciutto con la rugiada sul terreno intorno.
+ */
+const vello: Pittore = (p, o) => {
+  const { ctx, tono, t } = p;
+  const v = o.variante ?? 0;
+  ctx.fillStyle = tono(v === 1 ? '#c9c3b4' : '#ece6d6');
+  ctx.beginPath();
+  ctx.ellipse(0, -5, 34, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = tono(v === 1 ? '#b4ad9c' : '#ddd5c2');
+  for (let i = 0; i < 7; i++) cerchio(ctx, -26 + i * 9, -8 - (i % 2) * 2, 4);
+  if (v === 0) return;
+  // Gocce di rugiada che luccicano: sul vello o sul terreno intorno.
+  ctx.fillStyle = 'rgba(220,240,255,0.9)';
+  for (let i = 0; i < 14; i++) {
+    const brilla = 0.5 + 0.5 * Math.sin(t * 3 + i * 1.7);
+    const x = v === 1 ? -28 + i * 4.2 : (i % 2 ? 1 : -1) * (44 + (i * 13) % 50);
+    const y = v === 1 ? -9 + (i % 3) * 2 : -1 - (i % 3);
+    ctx.globalAlpha = 0.4 + brilla * 0.6;
+    cerchio(ctx, x, y, 1.4);
+  }
+  ctx.globalAlpha = 1;
+};
+
+/** Un corno di montone, per i segnali (Giudici 6:34; 7:8, 20); anche portato in mano. */
+const corno: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.strokeStyle = tono('#c8a46a');
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 4; i++) {
+    ctx.lineWidth = 3 + i * 2;
+    ctx.beginPath();
+    ctx.arc(0, -22, 22 - i * 1.5, Math.PI * (0.55 + i * 0.12), Math.PI * (0.75 + i * 0.12));
+    ctx.stroke();
+  }
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, -22, 22, Math.PI * 0.15, Math.PI * 0.95);
+  ctx.stroke();
+};
+
 /** Un altare di pietre con il fuoco degli olocausti (Genesi 8:20). */
 const altare: Pittore = (p, o) => {
   const { ctx, tono, t } = p;
@@ -1324,6 +1395,8 @@ const PITTORI: Record<string, Pittore> = {
   fiori,
   uccelli,
   uccello,
+  vello,
+  corno,
 };
 
 export const TIPI_OGGETTO = Object.keys(PITTORI);

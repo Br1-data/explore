@@ -25,7 +25,8 @@ export const ioas: Ruolo = {
       id: 'ioas-mattina',
       titolo: '«Porta fuori tuo figlio!»',
       luogo: 'Ofra, il mattino dopo',
-      ...ofra(false, 2200),
+      // Al mattino l’altare di Baal è a terra e c’è il nuovo altare con il toro offerto (Giudici 6:28).
+      ...ofra(false, 2200, 'demolito'),
       inizioX: 1350,
       vars: { agitazione: 0 },
       folle: [{ x0: 1750, x1: 2100, n: 10, seme: 321, comportamento: 'vaga', reagisce: true }],

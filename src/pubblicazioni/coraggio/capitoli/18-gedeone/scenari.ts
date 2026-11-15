@@ -9,8 +9,13 @@ export { villaggio } from '../16-barac-debora/scenari';
  * sorgente di Harod e il colle di More (7:1), l’accampamento nella pianura (7:12).
  */
 
-/** Ofra: il grande albero di Ioas, il torchio scavato nella roccia, la casa. */
-export function ofra(notte: boolean, larghezza = 2200): Base {
+/**
+ * Ofra: il grande albero di Ioas, il torchio scavato nella roccia, la casa e l’altare di
+ * Baal con il palo sacro (`id: 'baal'`). `baal` dice a che punto è la storia: 'in piedi'
+ * prima di quella notte; 'notte' mentre Gedeone lo demolisce (l’altare a Geova compare
+ * con la variabile `altareGeova`); 'demolito' dal mattino dopo (Giudici 6:25-28).
+ */
+export function ofra(notte: boolean, larghezza = 2200, baal: 'in piedi' | 'notte' | 'demolito' = 'in piedi'): Base {
   return taglia(
     {
       larghezza: 2200,
@@ -24,8 +29,9 @@ export function ofra(notte: boolean, larghezza = 2200): Base {
         o('roccia', 900, { scala: 1.9 }),
         o('giare', 1020),
         o('casa', 1350, { variante: 1 }),
-        o('idolo', 1650),
+        o('idolo', 1650, { variante: baal === 'demolito' ? 3 : 2, id: 'baal' }),
         o('roccia', 1750),
+        ...(baal === 'in piedi' ? [] : [o('altare', 1790, baal === 'notte' ? { seVar: 'altareGeova' } : {})]),
         o('cespuglio', 2050),
         ...serie('cespuglio', [480, 1500], { piano: 'primo', scala: 1.5 }),
       ],
