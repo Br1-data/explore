@@ -28,6 +28,14 @@ export const F = {
     rif: 'La Torre di Guardia 15/4/2012, p. 23 parr. 5-8',
     url: `${RIVISTE}/w20120415/Geova-sa-liberare-il-suo-popolo/#p12`,
   } as Fonte,
+  w13: {
+    rif: 'La Torre di Guardia 1/8/2013, «Salvato insieme alla sua famiglia»',
+    url: 'https://wol.jw.org/it/wol/d/r6/lp-i/2013566',
+  } as Fonte,
+  w01: {
+    rif: 'La Torre di Guardia 15/11/2001, «La fede di Noè condanna il mondo»',
+    url: 'https://wol.jw.org/it/wol/d/r6/lp-i/2001848',
+  } as Fonte,
   diluvio: {
     rif: '«Noè e il diluvio universale: solo una leggenda?», jw.org',
     url: 'https://www.jw.org/it/cosa-dice-la-Bibbia/domande/diluvio-universale/',
@@ -234,12 +242,67 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d('derisi', 'Ancora più scherni', 'È possibile che, mentre finivate di caricare l’arca, la gente vi deridesse ancora di più.', 'sembra', [F.libro]),
 
   // ——— Uno dei figli: il cantiere, l’anno nell’arca, la nuova terra ———
+  d('resinoso', 'Legno resinoso', 'Dio aveva detto di costruire l’arca di legno resinoso.', 'scritto', [b('Genesi', 6, '14')]),
   d(
-    'resinoso',
-    'Legno e catrame',
-    'L’arca era di legno resinoso, divisa in scompartimenti, coperta di catrame dentro e fuori, con tre piani e la porta d’ingresso da un lato.',
-    'scritto',
-    [b('Genesi', 6, '14-16')],
+    'scompartimenti',
+    'Tre piani di scompartimenti',
+    'Dentro, l’arca era divisa in scompartimenti, su tre piani: uno inferiore, un secondo e un terzo. I due piani aggiunti la rinforzavano internamente.',
+    'libro',
+    [b('Genesi', 6, '14, 16'), F.it('Arca')],
+  ),
+  d('catrame', 'Dentro e fuori', 'Dio aveva detto di coprire l’arca di catrame, o bitume, dentro e fuori.', 'scritto', [b('Genesi', 6, '14')]),
+  d(
+    'scorte',
+    'Cibo per più di un anno',
+    'Bisognava imbarcare una gran quantità e varietà di cibo per tutte le creature, sufficiente per più di un anno.',
+    'libro',
+    [F.it('Arca'), b('Genesi', 6, '21')],
+  ),
+
+  // ——— Dentro l’arca (ricostruzione, con la cautela delle pubblicazioni) ———
+  d(
+    'fiducia',
+    'Le travi scricchiolano',
+    'Probabilmente la pioggia batteva forte sul tetto e le travi scricchiolavano. Ma Noè non temeva per l’arca: confidava nella promessa di Dio.',
+    'sembra',
+    [F.w13],
+  ),
+  d(
+    'culto',
+    'Le cose di Dio, in famiglia',
+    'Nell’arca senza dubbio Noè prese l’iniziativa nel parlare con la famiglia di argomenti spirituali, e ringraziava Dio.',
+    'libro',
+    [F.w01],
+  ),
+  d(
+    'lampada',
+    'Una lampada a olio',
+    'Probabilmente dentro l’arca c’era soltanto la luce fioca di una lampada a olio. Luce e aria fresca entrarono di più quando Noè tolse una parte del tetto.',
+    'sembra',
+    [F.w13, b('Genesi', 8, '13')],
+  ),
+  d('assordante', 'La pioggia sul tetto', 'Forse il rumore della pioggia torrenziale sul tetto e sui fianchi dell’arca era assordante.', 'sembra', [F.w13]),
+  d(
+    'preghiera',
+    'Insieme, per pregare',
+    'Probabilmente la famiglia si riuniva per pregare e parlare della protezione di Dio.',
+    'sembra',
+    [F.w13],
+  ),
+  d(
+    'occupati',
+    'Un anno di lavoro',
+    'Nell’arca la famiglia fu occupata a sfamare e abbeverare gli animali, a eliminare i rifiuti e a tenere il conto del tempo, per un anno lunare e dieci giorni.',
+    'libro',
+    [F.w01],
+  ),
+  d('tranquilli', 'Animali più tranquilli', 'Forse Dio rese gli animali più tranquilli, in una specie di torpore simile al letargo.', 'sembra', [F.w13]),
+  d(
+    'compiti',
+    'I lavori più pesanti',
+    'Probabilmente Noè affidò ai figli i lavori più pesanti: nutrire gli animali e tenerli puliti e in salute.',
+    'sembra',
+    [F.w13],
   ),
   d(
     'tsohar',
@@ -306,6 +369,9 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('g-segno', 'Geova lega una promessa a un segno che si vede ancora oggi. Che cosa provi quando vedi un arcobaleno?'),
   s('m-derisa', 'La gente ride di voi mentre caricate le provviste. Che cosa ti aiuta a non vergognarti di ciò che fai per Geova?'),
   s('f-diverso', 'Sei cresciuto in una famiglia diversa da tutte le altre. Che cosa ti costa essere diverso dai tuoi coetanei, e che cosa ci guadagni?'),
+  s('n-arca', 'Le travi scricchiolano e fuori c’è solo acqua. Su quale promessa ti appoggi quando non vedi come andrà a finire?'),
+  s('m-arca', 'Siete chiusi nell’arca da mesi, e fuori piove senza sosta. Che cosa aiuta una famiglia ad andare avanti, giorno dopo giorno?'),
+  s('f-lavoro', 'Ogni giorno lo stesso lavoro faticoso, per mesi. Che cosa rende prezioso un lavoro così, quando è Geova ad averlo chiesto?'),
   s('c-avvertimento', 'Hai sentito l’avvertimento di Noè per anni. Che cosa ti ha impedito di prenderlo sul serio?'),
 ]);
 

@@ -117,6 +117,10 @@ export class Partita {
   private attori = new Map<string, AttoreVivo>();
   private giocatore = { x: 0, verso: 1 as 1 | -1, posa: 'fermo' as Posa, fase: 0, visibile: true, bersaglio: null as number | null };
   private vars: Record<string, number> = {};
+  /** Aspetto cambiato degli oggetti di scena (effetto `oggetto`), per `id`. */
+  private varianti = new Map<string, number>();
+  /** Che cosa ha in mano chi (effetto `carico`): «giocatore» o l’id di un attore. */
+  private carichi = new Map<string, string>();
   private transizioni: Transizione[] = [];
   private nastri: Nastro[] = [];
   private fatti = new Set<string>();
@@ -206,6 +210,8 @@ export class Partita {
     const s = (this.scena = this.ruolo.scene[indice]);
     this.fatti.clear();
     this.vars = { dissolvi: this.vars['dissolvi'] ?? 0, ...(s.vars ?? {}) };
+    this.varianti.clear();
+    this.carichi.clear();
     this.transizioni = this.transizioni.filter((x) => x.nome === 'dissolvi');
     this.nastri = [];
     this.attese = [];
@@ -533,6 +539,15 @@ export class Partita {
       case 'attendi':
         this.attendi(fx.dur, avanti, true);
         break;
+      case 'oggetto':
+        this.varianti.set(fx.id, fx.variante);
+        avanti();
+        break;
+      case 'carico':
+        if (fx.cosa) this.carichi.set(fx.chi, fx.cosa);
+        else this.carichi.delete(fx.chi);
+        avanti();
+        break;
       case 'visibile': {
         if (fx.chi === 'giocatore') this.giocatore.visibile = fx.v;
         else {
@@ -708,13 +723,17 @@ export class Partita {
     for (const [id, a] of this.attori) {
       if (a.visibile && a.meta) sorgenti.push({ chiave: `${s.id}:a${id}`, tipo: 'passi', x: a.x, forza: 1 });
     }
+    // L’acqua che sale si sente intorno a chi ascolta.
+    const livello = this.vars['livello'] ?? 0;
+    if (livello > 0.02) sorgenti.push({ chiave: `${s.id}:livello`, tipo: 'acqua', x: this.camera.x, forza: Math.min(1, livello * 1.5) });
     const P = this.tavolozzaCorrente();
     return {
       base: s.suono ?? 'vento',
       luce: P.stelle >= 0.9 ? 'notte' : P.stelle >= 0.4 ? 'crepuscolo' : 'giorno',
       ascolto: this.camera.x,
       vista: this.vw,
-      pioggia: this.vars['pioggia'] ?? 0,
+      // `pioggiaFuori`: la pioggia che si sente da dentro (es. nell’arca), senza vederla.
+      pioggia: Math.max(this.vars['pioggia'] ?? 0, this.vars['pioggiaFuori'] ?? 0),
       agitazione: this.vars['agitazione'] ?? 0,
       sorgenti,
     };
@@ -908,18 +927,23 @@ export class Partita {
       ctx.fill();
     }
 
-    // Oggetti del piano principale.
+    // Oggetti del piano principale. Chi galleggia sale con l’acqua (variabile `livello`).
     const pm = pennello(tonoMedio);
+    const pelo = this.peloAcqua();
     for (const o of this.oggettiPerPiano.medio) {
       const sx = o.x - sinistra;
-      if (sx < -220 || sx > vw + 220) continue;
+      if (sx < -480 || sx > vw + 480) continue;
       pm.sx = sx;
       pm.sy = gy(o.x) + 2;
+      if (o.galleggia && pelo !== null) pm.sy = Math.min(pm.sy, pelo + 46 + Math.sin(this.t * 0.9 + o.x) * 3);
       pm.scala = o.scala ?? 1;
-      this.conAlfa(o, () => disegnaOggetto(pm, o));
+      const variante = o.id !== undefined ? this.varianti.get(o.id) : undefined;
+      const disegnato = variante === undefined ? o : { ...o, variante };
+      this.conAlfa(o, () => disegnaOggetto(pm, disegnato));
     }
 
-    this.segnali(gy, sinistra);
+    // Con l’acqua alta i segnali vanno sopra le onde, o non si vedrebbero.
+    if (pelo === null) this.segnali(gy, sinistra);
 
     // Persone, in ordine di profondità.
     const figure: { prof: number; disegna: () => void }[] = [];
@@ -943,7 +967,7 @@ export class Partita {
         },
       });
     }
-    for (const a of this.attori.values()) {
+    for (const [id, a] of this.attori) {
       if (!a.visibile) continue;
       const sx = a.x - sinistra;
       if (sx < -80 || sx > vw + 80) continue;
@@ -951,6 +975,7 @@ export class Partita {
         prof: 2,
         disegna: () => {
           disegnaFigura(ctx, a.stile, { x: sx, y: gy(a.x) + 3, verso: a.verso, posa: a.posa, fase: a.fase, t: this.t }, tonoMedio);
+          this.disegnaCarico(pm, id, sx, gy(a.x) + 3, a.verso);
         },
       });
     }
@@ -961,12 +986,15 @@ export class Partita {
         prof: 3,
         disegna: () => {
           disegnaFigura(ctx, stile, { x: g.x - sinistra, y: gy(g.x) + 3.5, verso: g.verso, posa: g.posa, fase: g.fase, t: this.t }, tonoMedio);
+          this.disegnaCarico(pm, 'giocatore', g.x - sinistra, gy(g.x) + 3.5, g.verso);
         },
       });
     }
     figure.sort((a, b) => a.prof - b.prof);
     for (const f of figure) f.disegna();
     this.indizi(gy, sinistra);
+    this.acqua(sinistra);
+    if (pelo !== null) this.segnali(gy, sinistra);
 
     // Primo piano, scuro e sfocato dalla vicinanza.
     const pp = pennello(tonoPrimo);
@@ -988,6 +1016,49 @@ export class Partita {
       ctx.fillStyle = `rgba(8,7,12,${buio})`;
       ctx.fillRect(0, 0, vw, ALTEZZA);
     }
+  }
+
+  /** Ciò che qualcuno ha in mano (effetto `carico`), disegnato all’altezza delle braccia. */
+  private disegnaCarico(pm: Pennello, chi: string, x: number, y: number, verso: number): void {
+    const cosa = this.carichi.get(chi);
+    if (!cosa) return;
+    pm.sx = x + verso * 14;
+    pm.sy = y - 30;
+    pm.scala = 0.42;
+    disegnaOggetto(pm, { tipo: cosa, x: 0 });
+  }
+
+  /** Il pelo dell’acqua a schermo quando la variabile `livello` (0..1) è salita; null se è asciutto. */
+  private peloAcqua(): number | null {
+    const livello = this.vars['livello'] ?? 0;
+    return livello < 0.002 ? null : ALTEZZA + 12 - livello * 270;
+  }
+
+  /** L’acqua che sale (variabile `livello`), con le onde in movimento, davanti a terreno e figure. */
+  private acqua(sinistra: number): void {
+    const pelo = this.peloAcqua();
+    if (pelo === null) return;
+    const { ctx, vw, t } = this;
+    const onda = (x: number): number => pelo + Math.sin((x + sinistra) / 70 + t * 1.4) * 3.5 + Math.sin((x + sinistra) / 23 - t * 2.1) * 1.4;
+    const colore = ctx.createLinearGradient(0, pelo, 0, ALTEZZA);
+    colore.addColorStop(0, 'rgba(74,98,112,0.93)');
+    colore.addColorStop(1, 'rgba(26,38,50,0.98)');
+    ctx.fillStyle = colore;
+    ctx.beginPath();
+    ctx.moveTo(0, ALTEZZA);
+    for (let x = 0; x <= vw + 10; x += 10) ctx.lineTo(x, onda(x));
+    ctx.lineTo(vw + 10, ALTEZZA);
+    ctx.closePath();
+    ctx.fill();
+    // La cresta delle onde, più chiara.
+    ctx.strokeStyle = 'rgba(205,222,232,0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let x = 0; x <= vw + 10; x += 10) {
+      if (x === 0) ctx.moveTo(x, onda(x));
+      else ctx.lineTo(x, onda(x));
+    }
+    ctx.stroke();
   }
 
   private conAlfa(o: Oggetto, disegna: () => void): void {

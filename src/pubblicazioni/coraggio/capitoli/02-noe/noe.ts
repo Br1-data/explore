@@ -1,6 +1,6 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { ararat, cantiere, mondo } from './scenari';
+import { ararat, arcaDentro, cantiere, mondo } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -87,6 +87,29 @@ export const noe: Ruolo = {
         },
       ],
       punti: [
+        {
+          id: 'misure',
+          x: 1150,
+          tipo: 'leggi',
+          etichetta: 'Le istruzioni di Dio',
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'associa',
+                id: 'misure',
+                consegna: 'Dio ti ha dato le misure in cubiti. Unisci ogni parte alla sua misura.',
+                coppie: [
+                  { a: 'Lunghezza', b: '«lunga 300 cubiti»', fonti: [b('Genesi', 6, '15')] },
+                  { a: 'Larghezza', b: '«larga 50 cubiti»', fonti: [b('Genesi', 6, '15')] },
+                  { a: 'Altezza', b: '«alta 30 cubiti»', fonti: [b('Genesi', 6, '15')] },
+                  { a: 'La finestra per la luce', b: '«A un cubito da dove comincia il tetto»', fonti: [b('Genesi', 6, '16')] },
+                ],
+                dettaglio: 'dimensioni',
+              },
+            },
+          ],
+        },
         { id: 'anni', x: 800, tipo: 'esamina', etichetta: 'Le impalcature', passi: [det('decenni')] },
         {
           id: 'avverti',
@@ -143,6 +166,63 @@ export const noe: Ruolo = {
       ],
     },
     {
+      id: 'noe-arca',
+      titolo: 'Più di un anno nell’arca',
+      luogo: 'Durante il diluvio',
+      ...arcaDentro(2000),
+      inizioX: 700,
+      vars: { pioggiaFuori: 1 },
+      attori: [
+        { id: 'moglie', x: 1150, stile: 'moglie-noe', verso: -1 },
+        { id: 'figlio', x: 1700, stile: 'figlio-noe', verso: -1 },
+      ],
+      ingresso: [
+        {
+          t: 'narra',
+          titolo: 'Ricostruzione',
+          testo:
+            'La Bibbia non descrive la vita nell’arca. Questa scena si basa su ciò che ne dicono le pubblicazioni, spesso come cosa probabile. Fuori piove a dirotto.',
+          ricostruzione: true,
+          fonti: [F.w13, F.w01, b('Genesi', 7, '12')],
+        },
+      ],
+      punti: [
+        { id: 'travi', x: 450, tipo: 'esamina', etichetta: 'Le travi', passi: [det('fiducia'), senti('n-arca')] },
+        {
+          id: 'conto',
+          x: 980,
+          tipo: 'leggi',
+          etichetta: 'Tieni il conto dei giorni',
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'associa',
+                id: 'giorni',
+                consegna: 'Genesi conserva i tempi del diluvio. Unisci ogni fatto al suo tempo.',
+                coppie: [
+                  { a: 'La pioggia', b: '«per 40 giorni e 40 notti»', fonti: [b('Genesi', 7, '12')] },
+                  { a: 'Le acque sopra i monti', b: '«si alzarono di 15 cubiti»', fonti: [b('Genesi', 7, '20')] },
+                  { a: 'Le acque che sommergono la terra', b: '«per 150 giorni»', fonti: [b('Genesi', 7, '24')] },
+                  { a: 'Prima di aprire la finestra', b: '«Dopo 40 giorni»', fonti: [b('Genesi', 8, '6')] },
+                  { a: 'Fra un volo della colomba e l’altro', b: '«altri sette giorni»', fonti: [b('Genesi', 8, '10')] },
+                ],
+                dettaglio: 'annotazioni',
+              },
+            },
+          ],
+        },
+        {
+          id: 'famiglia',
+          x: 1400,
+          tipo: 'agisci',
+          etichetta: 'Parla con la tua famiglia',
+          richiede: ['travi', 'conto'],
+          passi: [det('culto')],
+        },
+      ],
+    },
+    {
       id: 'noe-ararat',
       titolo: 'Una foglia d’olivo',
       luogo: 'I monti di Ararat',
@@ -178,7 +258,6 @@ export const noe: Ruolo = {
                 distrattori: ['tre', 'fico'],
               },
             },
-            det('annotazioni'),
           ],
         },
         {

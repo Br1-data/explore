@@ -1,6 +1,6 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
-import { b } from './base';
-import { arcaPronta, cantiere } from './scenari';
+import { F, b } from './base';
+import { arcaDentro, arcaPronta, cantiere } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -43,27 +43,6 @@ export const moglie: Ruolo = {
         { id: 'figli', x: 1400, tipo: 'esamina', etichetta: 'I tuoi figli al lavoro', passi: [det('educati')] },
         { id: 'nuore', x: 1520, tipo: 'esamina', etichetta: 'Le mogli dei tuoi figli', passi: [det('adulti')] },
         { id: 'vicini', x: 2100, tipo: 'esamina', etichetta: 'Chi vive intorno a voi', passi: [det('prepotenti')] },
-        {
-          id: 'cibo',
-          x: 1700,
-          tipo: 'agisci',
-          etichetta: 'Prepara le provviste',
-          richiede: ['figli', 'nuore'],
-          passi: [
-            {
-              t: 'attivita',
-              a: {
-                tipo: 'completa',
-                id: 'cibo',
-                consegna: 'Che cosa bisogna portare nell’arca? Completa le parole di Dio a Noè.',
-                verso: 'gen-6-21',
-                testo: 'E tu devi raccogliere e portare con te [[cibo]] di ogni tipo: servirà per nutrire te e gli [[animali]]”.',
-                distrattori: ['oro', 'vicini'],
-              },
-            },
-            det('provviste'),
-          ],
-        },
       ],
     },
     {
@@ -72,21 +51,77 @@ export const moglie: Ruolo = {
       luogo: 'Davanti all’arca',
       ...arcaPronta(2200),
       inizioX: 1900,
-      folle: [{ x0: 1700, x1: 2100, n: 8, seme: 223, comportamento: 'vaga' }],
+      vars: { cibo: 0, foraggio: 0 },
+      folle: [
+        // Le nuore e i figli caricano con te.
+        { x0: 1350, x1: 1550, n: 4, seme: 225, donne: 0.5, comportamento: 'vaga' },
+        { x0: 1900, x1: 2100, n: 7, seme: 223, comportamento: 'vaga' },
+      ],
       ingresso: [
         {
           t: 'narra',
-          testo: 'Mancano sette giorni al diluvio: è il momento di entrare nell’arca.',
-          certezza: 'scritto',
-          fonti: [b('Genesi', 7, '1-4')],
+          testo: 'L’arca è finita. Ora bisogna caricare le provviste per voi e per tutti gli animali.',
+          certezza: 'libro',
+          fonti: [F.libro, b('Genesi', 6, '21')],
         },
       ],
       punti: [
+        {
+          id: 'dispensa',
+          x: 1500,
+          tipo: 'agisci',
+          etichetta: 'Prendi le provviste',
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'giare' } }],
+        },
+        {
+          id: 'cibo',
+          x: 1080,
+          tipo: 'agisci',
+          etichetta: 'Portale nell’arca',
+          richiede: ['dispensa'],
+          passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            { t: 'fx', fx: { k: 'var', nome: 'cibo', a: 1, dur: 0.6 } },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'cibo',
+                consegna: 'Per chi è il cibo che portate? Completa le parole di Dio a Noè.',
+                verso: 'gen-6-21',
+                testo: 'E tu devi raccogliere e portare con te [[cibo]] di ogni tipo: servirà per nutrire te e gli [[animali]]”.',
+                distrattori: ['oro', 'vicini'],
+              },
+            },
+            det('provviste'),
+          ],
+        },
+        {
+          id: 'fieno',
+          x: 1620,
+          tipo: 'agisci',
+          etichetta: 'Prendi il foraggio',
+          richiede: ['cibo'],
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'fieno' } }],
+        },
+        {
+          id: 'foraggio',
+          x: 1140,
+          tipo: 'agisci',
+          etichetta: 'Portalo nell’arca',
+          richiede: ['fieno'],
+          passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            { t: 'fx', fx: { k: 'var', nome: 'foraggio', a: 1, dur: 0.6 } },
+            det('scorte'),
+          ],
+        },
         {
           id: 'animali',
           x: 1280,
           tipo: 'osserva',
           etichetta: 'Arrivano gli animali',
+          richiede: ['foraggio'],
           passi: [
             {
               t: 'attivita',
@@ -115,7 +150,53 @@ export const moglie: Ruolo = {
               certezza: 'scritto',
               fonti: [b('Genesi', 7, '13'), b('Genesi', 7, '16')],
             },
-            { t: 'fx', fx: { k: 'dissolvi', a: 1, dur: 1.6 } },
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 2 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 1 } },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'moglie-arca',
+      titolo: 'Una lampada nel buio',
+      luogo: 'Dentro l’arca',
+      ...arcaDentro(2000),
+      inizioX: 1300,
+      vars: { pioggiaFuori: 1 },
+      attori: [
+        { id: 'noe', x: 700, stile: 'noe', verso: 1 },
+        { id: 'figlio', x: 400, stile: 'figlio-noe', verso: 1 },
+      ],
+      ingresso: [
+        {
+          t: 'narra',
+          titolo: 'Ricostruzione',
+          testo:
+            'La Bibbia non descrive la vita nell’arca. Questa scena si basa su ciò che ne dicono le pubblicazioni, spesso come cosa probabile. Fuori piove a dirotto.',
+          ricostruzione: true,
+          fonti: [F.w13, F.w01, b('Genesi', 7, '12')],
+        },
+      ],
+      punti: [
+        {
+          id: 'lampada',
+          x: 980,
+          tipo: 'agisci',
+          etichetta: 'Accendi la lampada',
+          passi: [{ t: 'fx', fx: { k: 'oggetto', id: 'lampada', variante: 1 } }, det('lampada')],
+        },
+        { id: 'tetto', x: 1500, tipo: 'ascolta', etichetta: 'La pioggia sul tetto', richiede: ['lampada'], passi: [det('assordante')] },
+        {
+          id: 'insieme',
+          x: 800,
+          tipo: 'agisci',
+          etichetta: 'Riunisci la famiglia',
+          richiede: ['tetto'],
+          passi: [
+            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 640, vel: 90 } },
+            { t: 'fx', fx: { k: 'posa', chi: 'noe', posa: 'alza' } },
+            det('preghiera'),
+            senti('m-arca'),
           ],
         },
       ],

@@ -1,6 +1,6 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { ararat, cantiere } from './scenari';
+import { ararat, arcaDentro, cantiere } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -14,7 +14,7 @@ export const figlio: Ruolo = {
   id: 'figlio',
   nome: 'Uno dei figli di Noè',
   titolo: 'Sem, Cam o Iafet',
-  descrizione: 'Lavora con tuo padre all’arca, misurala con i cubiti, resta più di un anno nell’arca e scendi sulla terra di nuovo asciutta.',
+  descrizione: 'Costruisci l’arca con tuo padre — legno, tavole, catrame, la porta — e per più di un anno prenditi cura degli animali, prima di scendere sulla terra di nuovo asciutta.',
   fedelta:
     'La Bibbia riporta i nomi dei tre figli di Noè, Sem, Cam e Iafet, ma in questi capitoli non dice che cosa fece ciascuno: qui c’è solo ciò che dice della famiglia di Noè, spiegato dal libro e dalle pubblicazioni che cita.',
   modo: 'cammina',
@@ -38,31 +38,121 @@ export const figlio: Ruolo = {
           fonti: [b('Genesi', 6, '10'), F.libro],
         },
       ],
+      // Costruire l’arca un passo alla volta, come Dio l’aveva descritta (Genesi 6:14-16):
+      // il legno, le tavole, il catrame, la porta. L’arca cambia aspetto a ogni passo.
       punti: [
-        { id: 'legno', x: 1700, tipo: 'esamina', etichetta: 'Il legno e il catrame', passi: [det('resinoso')] },
-        { id: 'tetto', x: 1000, tipo: 'esamina', etichetta: 'Sotto il tetto', passi: [det('tsohar')] },
         {
-          id: 'misure',
-          x: 1400,
-          tipo: 'leggi',
-          etichetta: 'Le misure dell’arca',
-          richiede: ['legno', 'tetto'],
+          id: 'legno',
+          x: 470,
+          tipo: 'agisci',
+          etichetta: 'Prendi le tavole',
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'tavole' } }, det('resinoso')],
+        },
+        {
+          id: 'fasciame',
+          x: 900,
+          tipo: 'agisci',
+          etichetta: 'Fissa le tavole all’ossatura',
+          richiede: ['legno'],
           passi: [
-            {
-              t: 'attivita',
-              a: {
-                tipo: 'associa',
-                id: 'misure',
-                consegna: 'Dio ha dato le misure in cubiti. Unisci ogni parte alla sua misura.',
-                coppie: [
-                  { a: 'Lunghezza', b: '«lunga 300 cubiti»', fonti: [b('Genesi', 6, '15')] },
-                  { a: 'Larghezza', b: '«larga 50 cubiti»', fonti: [b('Genesi', 6, '15')] },
-                  { a: 'Altezza', b: '«alta 30 cubiti»', fonti: [b('Genesi', 6, '15')] },
-                  { a: 'La finestra per la luce', b: '«A un cubito da dove comincia il tetto»', fonti: [b('Genesi', 6, '16')] },
-                ],
-                dettaglio: 'dimensioni',
-              },
-            },
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 3 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            det('scompartimenti'),
+          ],
+        },
+        {
+          id: 'secchio',
+          x: 1700,
+          tipo: 'agisci',
+          etichetta: 'Prendi il catrame',
+          richiede: ['fasciame'],
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'secchio' } }],
+        },
+        {
+          id: 'catrame',
+          x: 1250,
+          tipo: 'agisci',
+          etichetta: 'Copri l’arca di catrame',
+          richiede: ['secchio'],
+          passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 4 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            det('catrame'),
+          ],
+        },
+        {
+          id: 'porta',
+          x: 1360,
+          tipo: 'agisci',
+          etichetta: 'Fai la porta di lato',
+          richiede: ['catrame'],
+          passi: [{ t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 1 } }, { t: 'fx', fx: { k: 'attendi', dur: 0.8 } }, det('tsohar')],
+        },
+      ],
+    },
+    {
+      id: 'figlio-arca',
+      titolo: 'Dentro l’arca',
+      luogo: 'Durante il diluvio',
+      ...arcaDentro(2000),
+      inizioX: 1000,
+      vars: { pioggiaFuori: 1 },
+      ingresso: [
+        {
+          t: 'narra',
+          titolo: 'Ricostruzione',
+          testo:
+            'La Bibbia non descrive la vita nell’arca. Questa scena si basa su ciò che ne dicono le pubblicazioni, spesso come cosa probabile. Fuori piove a dirotto.',
+          ricostruzione: true,
+          fonti: [F.w01, F.w13, b('Genesi', 7, '12')],
+        },
+      ],
+      punti: [
+        {
+          id: 'fieno',
+          x: 560,
+          tipo: 'agisci',
+          etichetta: 'Prendi il fieno',
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'fieno' } }],
+        },
+        {
+          id: 'nutri',
+          x: 330,
+          tipo: 'agisci',
+          etichetta: 'Nutri gli animali',
+          richiede: ['fieno'],
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } }, det('compiti')],
+        },
+        {
+          id: 'acqua',
+          x: 1150,
+          tipo: 'agisci',
+          etichetta: 'Prendi l’acqua',
+          richiede: ['nutri'],
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'secchio' } }],
+        },
+        {
+          id: 'abbevera',
+          x: 1450,
+          tipo: 'agisci',
+          etichetta: 'Abbevera gli animali',
+          richiede: ['acqua'],
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } }, det('tranquilli')],
+        },
+        {
+          id: 'rifiuti',
+          x: 1800,
+          tipo: 'agisci',
+          etichetta: 'Porta via i rifiuti',
+          richiede: ['abbevera'],
+          passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'secchio' } },
+            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            det('occupati'),
+            senti('f-lavoro'),
           ],
         },
       ],

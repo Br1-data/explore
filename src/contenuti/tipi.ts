@@ -174,7 +174,11 @@ export type Fx =
   | { k: 'dissolvi'; a: number; dur?: number }
   | { k: 'attendi'; dur: number }
   | { k: 'visibile'; chi: string; v: boolean }
-  | { k: 'camera'; x: number | null; dur?: number };
+  | { k: 'camera'; x: number | null; dur?: number }
+  /** Cambia l’aspetto di un oggetto di scena (per `id`): es. l’arca che si costruisce. */
+  | { k: 'oggetto'; id: string; variante: number }
+  /** Qualcuno prende in mano un oggetto (un `tipo` di oggetto di scena) o lo posa (`null`). */
+  | { k: 'carico'; chi: string; cosa: string | null };
 
 export type Passo =
   | {
@@ -222,6 +226,10 @@ export interface Oggetto {
   variante?: number;
   /** Visibile in proporzione a una variabile di scena (0..1). */
   seVar?: string;
+  /** Per cambiarne l’aspetto con l’effetto `oggetto`. */
+  id?: string;
+  /** Sale con l’acqua quando la variabile di scena `livello` cresce (es. l’arca). */
+  galleggia?: boolean;
 }
 
 export interface Folla {

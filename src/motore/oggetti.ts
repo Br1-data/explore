@@ -1043,8 +1043,8 @@ const sala: Pittore = (p, o) => {
 /**
  * L’arca (Genesi 6:14-16; lett. «cassa»): una grande cassa di legno coperta di catrame,
  * con la porta di lato e un’apertura per la luce sotto il tetto.
- * Varianti: 0 in costruzione (ossatura e impalcature), 1 finita con la porta aperta e
- * la rampa, 2 chiusa.
+ * Varianti: 0 in costruzione (ossatura e impalcature), 3 fasciata di tavole, 4 coperta di
+ * catrame, 1 finita con la porta aperta e la rampa, 2 chiusa.
  */
 const arca: Pittore = (p, o) => {
   const { ctx, P, tono } = p;
@@ -1053,6 +1053,21 @@ const arca: Pittore = (p, o) => {
   const H = 150;
   const legno = tono('#7a5634');
   const scuro = tono('#3e2a1a');
+  if (v === 3 || v === 4) {
+    // 3: lo scafo fasciato di tavole; 4: coperto di catrame dentro e fuori. Ancora senza porta.
+    ctx.fillStyle = v === 3 ? legno : tono('#2c221b');
+    ctx.fillRect(-L / 2, -H, L, H);
+    ctx.fillStyle = v === 3 ? scuro : tono('#463526');
+    for (let y = -H + 12; y < 0; y += 14) ctx.fillRect(-L / 2, y, L, 2);
+    ctx.fillStyle = scuro;
+    ctx.beginPath();
+    ctx.moveTo(-L / 2 - 10, -H);
+    ctx.lineTo(0, -H - 24);
+    ctx.lineTo(L / 2 + 10, -H);
+    ctx.closePath();
+    ctx.fill();
+    return;
+  }
   if (v === 0) {
     // Chiglia, costole e le prime file di tavole.
     ctx.fillStyle = scuro;
@@ -1139,7 +1154,91 @@ const arcobaleno: Pittore = (p) => {
   ctx.restore();
 };
 
+/** Una catasta di tavole di legno (anche portata in braccio). */
+const tavole: Pittore = (p) => {
+  const { ctx, tono } = p;
+  for (let i = 0; i < 4; i++) {
+    ctx.fillStyle = tono(i % 2 ? '#8a6238' : '#7a5634');
+    ctx.fillRect(-40 + i * 3, -10 - i * 9, 80, 8);
+  }
+};
+
+/** Un secchio (di catrame, d’acqua, per i rifiuti: lo dice la scena). */
+const secchio: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#5a4632');
+  ctx.beginPath();
+  ctx.moveTo(-16, -30);
+  ctx.lineTo(16, -30);
+  ctx.lineTo(12, 0);
+  ctx.lineTo(-12, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = tono('#1e1814');
+  ctx.fillRect(-15, -30, 30, 5);
+  ctx.strokeStyle = tono('#3a2c20');
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, -30, 14, Math.PI, Math.PI * 2);
+  ctx.stroke();
+};
+
+/** Un fascio di fieno per gli animali. */
+const fieno: Pittore = (p, o) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#c8a85a');
+  ctx.beginPath();
+  ctx.ellipse(0, -16, 30, 16, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = tono('#9a7c3a');
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  for (let i = 0; i < 9; i++) {
+    const x = -24 + i * 6;
+    ctx.moveTo(x, -4);
+    ctx.lineTo(x + Math.sin(i + o.x) * 4, -28);
+  }
+  ctx.stroke();
+};
+
+/** Una lampada a olio su una mensola: variante 1 accesa. */
+const lampada: Pittore = (p, o) => {
+  const { ctx, tono, t } = p;
+  ctx.fillStyle = tono('#4a3424');
+  ctx.fillRect(-26, -96, 52, 6);
+  ctx.fillStyle = tono('#9a6a3a');
+  ctx.beginPath();
+  ctx.ellipse(0, -102, 13, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if ((o.variante ?? 0) === 1) {
+    fiamma(ctx, 9, -108, 0.55, t + o.x);
+    luce(p, 9, -112, 230);
+  }
+};
+
+/**
+ * L’interno dell’arca: una parete di tavole con travi e, in alto, la fessura della
+ * «finestra per la luce» (Genesi 6:16). Ogni oggetto copre 900 unità di scena.
+ */
+const stiva: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#3a2a1c');
+  ctx.fillRect(-460, -430, 920, 432);
+  ctx.fillStyle = tono('#2c1f15');
+  for (let y = -420; y < 0; y += 22) ctx.fillRect(-460, y, 920, 2);
+  ctx.fillStyle = tono('#4a3622');
+  for (let x = -450; x < 460; x += 150) ctx.fillRect(x, -430, 14, 432);
+  ctx.fillRect(-460, -300, 920, 12);
+  ctx.fillStyle = tono(mescola('#3a2a1c', '#e8d8a8', 0.35));
+  ctx.fillRect(-460, -418, 920, 6);
+};
+
 const PITTORI: Record<string, Pittore> = {
+  tavole,
+  secchio,
+  fieno,
+  lampada,
+  stiva,
   arca,
   altare,
   arcobaleno,

@@ -105,6 +105,20 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
     Quando due capitoli raccontano la stessa vicenda (16 e 17: Giudici 4-5) un test
     verifica che ogni versetto citato stia nei passi del suo capitolo. Gli stessi
     personaggi possono comparire in entrambi, ciascuno con la parte di quel capitolo.
+13. **Giochini nella scena legati a fatti reali** («aggiungi più giochini interattivi, ma
+    sempre collegati a fatti reali… Fai uscire in questi giochini i particolari sui
+    dettagli»; «approfondisci il periodo in cui stanno nell’arca, con scene interne»).
+    Quindi:
+    - il personaggio fa con le mani ciò che il racconto o le fonti dicono che si faceva
+      (raccogliere il legname, chiudere il fasciame, stendere il catrame, portare le
+      provviste): prende un oggetto (`fx carico`), lo porta dove serve, la scenografia
+      cambia (`fx oggetto`, variabili con `seVar`) e il dettaglio esce da quel gesto;
+    - i periodi che il testo non descrive (es. l’anno nell’arca) si possono vivere in
+      scene interne, dichiarate come ricostruzione (`narra` con `ricostruzione: true`)
+      e costruite solo su ciò che dicono le pubblicazioni (jw.org, wol), con la loro
+      cautela (`sembra`);
+    - anche la scenografia rispetta l’ordine degli eventi: per esempio l’acqua compare
+      solo dopo che Geova chiude la porta (Genesi 7:16, 17).
 
 Scelte di progetto conseguenti (applicate dal capitolo 17 in poi):
 
@@ -191,7 +205,8 @@ src/
         01-enoc/             base.ts (versetti, VITE, DETTAGLI, SENSAZIONI, STUDIO), scenari.ts,
                              un file per punto di vista (enoc, geova, matusalemme, empio), index.ts
         02-noe/              Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5 (noe, geova, moglie, figlio,
-                             contemporaneo); scenari.ts: cantiere, arcaPronta, diluvio, ararat (e mondo dall’1)
+                             contemporaneo); scenari.ts: cantiere, arcaPronta, diluvio, arcaDentro (la
+                             stiva, per le scene ricostruite nell’arca), ararat (e mondo dall’1)
         16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
                              scenari.ts: palma, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
         17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)
@@ -258,7 +273,13 @@ Strumenti di scena già pronti nel motore:
 - variabili (`vars` della scena, cambiate con `fx var`): `agitazione` (la folla
   reagisce a chi parla), `visione` (sfuma verso `ambiente2`), `incalzo` (una folla
   insegue un attore), `pioggia` (nubi, scrosci; con `seVar: 'pioggia'` compaiono fango
-  e acqua);
+  e acqua), `pioggiaFuori` (la pioggia si sente ma non si vede: un interno), `livello`
+  (0-1: l’acqua sale con le onde; gli oggetti `galleggia: true` salgono con lei);
+- `fx oggetto` cambia l’aspetto (`variante`) di un oggetto con `id` (l’arca che prende
+  forma, la porta che si chiude, la lampada accesa); `fx carico` mette un oggetto in
+  mano a chi gioca o a un attore (`cosa: null` lo posa). Un test verifica che l’`id`
+  esista nella scena e che il carico sia un oggetto vero;
+- ambiente `stiva` per gli interni di legno (con l’oggetto `stiva` come pareti);
 - pose: `fermo`, `cammina`, `parla`, `pugno`, `indica`, `alza`, `proclama`,
   `sdraiato`, `coperto` (sdraiato sotto una coperta);
 - folle: `comportamento` `vaga`/`cerca`/`insegue`, `gruppo` `rissa`/`invoca`/`danza`;
@@ -280,7 +301,8 @@ suoni dalla scena: ogni decimo di secondo la partita gli passa un `Paesaggio`.
   canto di donne, `insegue` gente che corre; le folle `fondo` sono un brusio lontano;
   le `torce` crepitano.
 - **Attori** che si spostano (`fx vai`): passi. Chi gioca: passi, bagnati sotto la pioggia.
-- **Variabili**: `pioggia` (scrosci, gocce, tuoni oltre 0.6), `agitazione`.
+- **Variabili**: `pioggia` e `pioggiaFuori` (scrosci, gocce, tuoni oltre 0.6),
+  `agitazione`, `livello` (l’acqua che sale si sente come `acqua`).
 
 Per un capitolo nuovo basta mettere in scena le cose giuste. Se serve un suono che non
 c’è (es. il mare, un asino, un corno), si aggiunge una ricetta in `EVENTI`, il suo

@@ -224,6 +224,11 @@ describe.each(capitoli)('capitolo $numero · $nome', (cap) => {
             if (ruolo.modo === 'osserva') expect(p.fx.chi, `${scena.id}: chi osserva non ha un corpo`).not.toBe('giocatore');
           }
           if (p.fx.k === 'var' && p.fx.nome !== 'dissolvi') expect(scena.vars, `${scena.id}: ${p.fx.nome}`).toHaveProperty(p.fx.nome);
+          if (p.fx.k === 'oggetto') {
+            const id = p.fx.id;
+            expect(scena.oggetti.some((o) => o.id === id), `${scena.id}: oggetto ${id}`).toBe(true);
+          }
+          if (p.fx.k === 'carico' && p.fx.cosa) expect(TIPI_OGGETTO, `${scena.id}: carico ${p.fx.cosa}`).toContain(p.fx.cosa);
         }
         for (const f of scena.folle ?? []) {
           if (f.bersaglio) expect(presenti.has(f.bersaglio), `${scena.id}: bersaglio ${f.bersaglio}`).toBe(true);

@@ -88,7 +88,8 @@ export const geova: Ruolo = {
       luogo: 'Il diluvio',
       ...diluvio(2000),
       inizioX: 1000,
-      vars: { pioggia: 0.3 },
+      // Prima la porta, poi la pioggia: la terra è ancora asciutta (Genesi 7:10, 16, 17).
+      vars: { pioggia: 0, livello: 0 },
       ingresso: [
         {
           t: 'narra',
@@ -103,7 +104,11 @@ export const geova: Ruolo = {
           x: 1180,
           tipo: 'agisci',
           etichetta: 'Chiudi la porta',
-          passi: [{ t: 'verso', id: 'gen-7-16', evidenzia: ['Poi Geova chiuse la porta dietro di lui'] }, det('porta')],
+          passi: [
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 2 } },
+            { t: 'verso', id: 'gen-7-16', evidenzia: ['Poi Geova chiuse la porta dietro di lui'] },
+            det('porta'),
+          ],
         },
         {
           id: 'pioggia',
@@ -112,10 +117,13 @@ export const geova: Ruolo = {
           etichetta: 'Fa’ piovere',
           richiede: ['porta'],
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 3 } },
+            { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 2 } },
+            // L’acqua sale e solleva l’arca.
+            { t: 'fx', fx: { k: 'var', nome: 'livello', a: 1, dur: 9 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 6 } },
             {
               t: 'narra',
-              testo: 'Piove a dirotto per 40 giorni e 40 notti. L’arca galleggia, e le acque coprono i monti più alti.',
+              testo: 'Piove a dirotto per 40 giorni e 40 notti. Le acque sollevano l’arca, che galleggia, e coprono i monti più alti.',
               certezza: 'scritto',
               fonti: [b('Genesi', 7, '12'), b('Genesi', 7, '17-19')],
             },
@@ -130,6 +138,7 @@ export const geova: Ruolo = {
           richiede: ['pioggia'],
           passi: [
             { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 0, dur: 4 } },
+            { t: 'fx', fx: { k: 'var', nome: 'livello', a: 0.75, dur: 6 } },
             {
               t: 'narra',
               testo: 'Dio non si è dimenticato di Noè né degli animali con lui. Fa soffiare un vento, e le acque cominciano ad abbassarsi.',

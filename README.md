@@ -23,9 +23,12 @@ collegato all'originale su jw.org.
   - **Uno degli empi**: il loro mondo e il messaggio, dalla parte di chi lo ascoltò.
 - **Capitolo 2, Noè** (Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5), da cinque punti di vista:
   Noè (integro in un mondo violento, costruttore e predicatore), Geova (il giudizio, il tempo
-  stabilito, il patto dell’arcobaleno), la moglie di Noè (la famiglia, le provviste, gli
-  scherni), uno dei figli (il cantiere, le date del diluvio) e uno dei contemporanei (il mondo
-  che non si accorse di nulla).
+  stabilito, la porta chiusa prima della pioggia, l’acqua che sale e solleva l’arca, il patto
+  dell’arcobaleno), la moglie di Noè (porta nell’arca le provviste e il foraggio, gli
+  scherni), uno dei figli (raccoglie il legname, chiude il fasciame, stende il catrame; le
+  date del diluvio) e uno dei contemporanei (il mondo che non si accorse di nulla). Noè, la
+  moglie e il figlio vivono anche l’anno nell’arca, in scene interne dichiarate come
+  ricostruzioni (La Torre di Guardia 15/11/2001 e 1/8/2013, Perspicacia «Arca»).
 - **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista:
   - **Debora**: profetessa e giudice sotto la palma, il comando di Geova trasmesso a
     Barac, «Verrò senz’altro», il segnale sul Tabor, il canto e le tribù;
@@ -48,7 +51,7 @@ collegato all'originale su jw.org.
   (il grano nel torchio, l’altare di Baal di notte, il rifiuto di regnare), Geova (il profeta,
   i segni, i 300, il sogno), Ioas (il padre che lo difese), uno dei 300 (Harod, corni giare e
   torce, l’inseguimento) e un soldato madianita (il sogno del pane d’orzo).
-- **218 dettagli** (84 + 29 + 46 + 34 + 25), ognuno con la sua fonte e un contrassegno che dice quanto
+- **229 dettagli** (84 + 40 + 46 + 34 + 25), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;
