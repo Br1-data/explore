@@ -36,7 +36,7 @@ const SUONI_ATTESI = {
   '2/noe-mondo': { sorgenti: ['rissa'] },
   '2/geova-diluvio': { luce: 'crepuscolo' },
   '2/figlio-arca': { sorgenti: ['pecora'], pioggia: true },
-  '2/noe-ararat': { sorgenti: ['fuoco'], luce: 'giorno' },
+  '2/geova-patto': { sorgenti: ['fuoco'], luce: 'giorno' },
   '16/debora-palma': { sorgenti: ['pecora', 'folla'], luce: 'giorno' },
   '16/debora-canto': { sorgenti: ['danza', 'folla'] },
   '16/geova-oppressione': { sorgenti: ['invoca'] },

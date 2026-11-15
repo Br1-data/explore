@@ -1,6 +1,6 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { ararat, arcaDentro, cantiere, mondo } from './scenari';
+import { ararat, arcaDentro, cantiere, diluvio, mondo } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -15,12 +15,12 @@ export const noe: Ruolo = {
   nome: 'Noè',
   titolo: 'L’uomo giusto che condannò il mondo',
   descrizione:
-    'Resta integro in un mondo pieno di violenza, costruisci l’arca e avverti le persone, e dopo più di un anno nell’arca offri un sacrificio a Geova.',
+    'Resta integro in un mondo pieno di violenza, costruisci l’arca e avverti le persone, entra con la tua famiglia prima che Geova chiuda la porta e, dopo più di un anno, esci a offrire un sacrificio e ricevi il patto dell’arcobaleno.',
   fedelta:
-    'Genesi 6:1–8:22, Ebrei 11:7 e 2 Pietro 2:5, come li spiega il capitolo 2 del libro con le pubblicazioni che cita. La situazione in cui scegli è una ricostruzione dichiarata; a Noè non vengono attribuite parole.',
+    'Genesi 6:1–8:22; 9:8-19, Ebrei 11:7 e 2 Pietro 2:5, come li spiega il capitolo 2 del libro con le pubblicazioni che cita (e Perspicacia alle voci «Arca», «Corvo» e «Patto»). La scelta nel cantiere e la vita nell’arca sono ricostruzioni dichiarate; a Noè non vengono attribuite parole.',
   modo: 'cammina',
   stile: 'noe',
-  durata: '12-15 minuti',
+  durata: '18-22 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Noè',
   scene: [
     {
@@ -110,7 +110,29 @@ export const noe: Ruolo = {
             },
           ],
         },
-        { id: 'anni', x: 800, tipo: 'esamina', etichetta: 'Le impalcature', passi: [det('decenni')] },
+        // Costruire con le proprie mani: il legname, poi lo scafo (Genesi 6:14). L’arca cambia aspetto.
+        {
+          id: 'legname',
+          x: 470,
+          tipo: 'agisci',
+          etichetta: 'Prendi il legname',
+          richiede: ['misure'],
+          passi: [{ t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'tavole' } }, det('cipresso')],
+        },
+        {
+          id: 'scafo',
+          x: 980,
+          tipo: 'agisci',
+          etichetta: 'Costruisci lo scafo',
+          richiede: ['legname'],
+          passi: [
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 3 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            det('impresa'),
+          ],
+        },
+        { id: 'anni', x: 760, tipo: 'esamina', etichetta: 'I segni di anni di lavoro', passi: [det('decenni')] },
         {
           id: 'avverti',
           x: 1950,
@@ -161,6 +183,83 @@ export const noe: Ruolo = {
               },
             },
             det('condanno'),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'noe-ingresso',
+      titolo: 'La porta si chiude',
+      luogo: 'Il giorno del diluvio',
+      ...diluvio(2000),
+      inizioX: 1600,
+      // Prima si entra, poi Geova chiude la porta, poi la pioggia (Genesi 7:13-17).
+      vars: { pioggia: 0, livello: 0 },
+      attori: [
+        { id: 'moglie', x: 1330, stile: 'moglie-noe', verso: -1 },
+        { id: 'figlio', x: 1420, stile: 'figlio-noe', verso: -1 },
+      ],
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Dio ti ha detto di entrare nell’arca con tutta la tua famiglia: fra sette giorni farà piovere sulla terra.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 7, '1, 4')],
+        },
+      ],
+      punti: [
+        {
+          id: 'comando',
+          x: 1500,
+          tipo: 'leggi',
+          etichetta: 'Quali animali prendere',
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'animali-puri',
+                consegna: 'Quanti esemplari di ogni animale? Completa le istruzioni di Dio.',
+                verso: 'gen-7-2',
+                testo:
+                  'Di ogni animale puro devi prendere [[sette]] esemplari, il maschio e la sua compagna, mentre di ogni animale che non è puro solo [[due]], il maschio e la sua compagna. Anche di ogni creatura alata dei cieli devi prendere sette esemplari, maschio e femmina, perché la loro [[progenie]] sia conservata in vita su tutta la terra.',
+                distrattori: ['dodici', 'cinque', 'ricchezza'],
+              },
+            },
+            det('specie'),
+          ],
+        },
+        {
+          id: 'entra',
+          x: 1180,
+          tipo: 'agisci',
+          etichetta: 'Entra con la tua famiglia',
+          richiede: ['comando'],
+          passi: [
+            det('otto'),
+            { t: 'fx', fx: { k: 'vai', chi: 'moglie', x: 1120, vel: 90 } },
+            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 1120, vel: 90, attendi: true } },
+            { t: 'fx', fx: { k: 'visibile', chi: 'moglie', v: false } },
+            { t: 'fx', fx: { k: 'visibile', chi: 'figlio', v: false } },
+            {
+              t: 'narra',
+              testo: 'Entri nell’arca con tua moglie, i tuoi figli Sem, Cam e Iafet e le loro mogli.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 7, '13')],
+            },
+            { t: 'fx', fx: { k: 'visibile', chi: 'giocatore', v: false } },
+            { t: 'fx', fx: { k: 'camera', x: 1000 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            // Non sei tu a chiudere la porta.
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 2 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 1 } },
+            { t: 'narra', testo: 'Poi Geova chiude la porta dietro di te.', certezza: 'scritto', fonti: [b('Genesi', 7, '16')] },
+            senti('n-porta'),
+            // La pioggia, poi l’acqua che sale e solleva l’arca.
+            { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 2 } },
+            { t: 'fx', fx: { k: 'var', nome: 'livello', a: 1, dur: 9 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 7 } },
+            det('cassa'),
           ],
         },
       ],
@@ -226,11 +325,12 @@ export const noe: Ruolo = {
       id: 'noe-ararat',
       titolo: 'Una foglia d’olivo',
       luogo: 'I monti di Ararat',
-      ...ararat(false, 2000),
+      ...ararat(false, 2000, false),
       inizioX: 820,
+      // La famiglia è ancora nell’arca: esce quando Dio lo dice.
       attori: [
-        { id: 'moglie', x: 700, stile: 'moglie-noe', verso: 1 },
-        { id: 'figlio', x: 760, stile: 'figlio-noe', verso: 1 },
+        { id: 'moglie', x: 640, stile: 'moglie-noe', verso: 1, visibile: false },
+        { id: 'figlio', x: 640, stile: 'figlio-noe', verso: 1, visibile: false },
       ],
       ingresso: [
         {
@@ -242,10 +342,26 @@ export const noe: Ruolo = {
       ],
       punti: [
         {
+          id: 'corvo',
+          x: 700,
+          tipo: 'agisci',
+          etichetta: 'Fa’ volare il corvo',
+          passi: [
+            {
+              t: 'narra',
+              testo: 'Apri la finestra dell’arca e fai volare fuori un corvo. Il corvo va e torna, finché le acque sulla terra non si asciugano.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '6, 7')],
+            },
+            det('corvo'),
+          ],
+        },
+        {
           id: 'colomba',
-          x: 980,
+          x: 1150,
           tipo: 'agisci',
           etichetta: 'Fa’ volare la colomba',
+          richiede: ['corvo'],
           passi: [
             {
               t: 'attivita',
@@ -261,23 +377,109 @@ export const noe: Ruolo = {
           ],
         },
         {
+          id: 'tetto',
+          x: 420,
+          tipo: 'agisci',
+          etichetta: 'Togli una parte del tetto',
+          richiede: ['colomba'],
+          passi: [
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 5 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            {
+              t: 'narra',
+              testo: 'Nel 601º anno, il primo giorno del primo mese, togli una parte del tetto dell’arca: la superficie del suolo si sta asciugando.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '13')],
+            },
+            det('ararat'),
+          ],
+        },
+        {
+          id: 'esci',
+          x: 880,
+          tipo: 'ascolta',
+          etichetta: 'Dio ti dice di uscire',
+          richiede: ['tetto'],
+          passi: [
+            {
+              t: 'narra',
+              testo: 'Quando la terra si è asciugata, Dio ti dice di uscire dall’arca con la tua famiglia e di far uscire tutti gli animali.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '14-17')],
+            },
+            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 6 } },
+            { t: 'fx', fx: { k: 'visibile', chi: 'moglie', v: true } },
+            { t: 'fx', fx: { k: 'visibile', chi: 'figlio', v: true } },
+            { t: 'fx', fx: { k: 'vai', chi: 'moglie', x: 1000, vel: 80 } },
+            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 1080, vel: 80, attendi: true } },
+            det('adempiuto'),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'noe-patto',
+      titolo: 'Un patto per sempre',
+      luogo: 'I monti di Ararat',
+      ...ararat('poi', 2000, 'poi'),
+      inizioX: 900,
+      vars: { altare: 0, arcobaleno: 0 },
+      attori: [
+        { id: 'moglie', x: 1150, stile: 'moglie-noe', verso: 1 },
+        { id: 'figlio', x: 1210, stile: 'figlio-noe', verso: 1 },
+      ],
+      ingresso: [
+        // L’arca resta come l’avete lasciata: tetto aperto, porta aperta.
+        { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 6 } },
+        {
+          t: 'narra',
+          testo: 'Sei uscito dall’arca con tua moglie, i tuoi figli e le loro mogli. Anche gli animali sono usciti, famiglia per famiglia.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 8, '18, 19')],
+        },
+      ],
+      punti: [
+        {
           id: 'altare',
           x: 1300,
           tipo: 'agisci',
           etichetta: 'Erigi un altare',
-          richiede: ['colomba'],
           passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'altare', a: 1, dur: 1.5 } },
             {
               t: 'narra',
-              testo: 'Uscito dall’arca, Noè erige un altare a Geova e offre olocausti di animali puri.',
+              testo: 'Erigi un altare a Geova e offri olocausti di animali puri e di creature alate pure.',
               certezza: 'scritto',
-              fonti: [b('Genesi', 8, '18-20')],
+              fonti: [b('Genesi', 8, '20')],
             },
             det('gratitudine'),
             senti('n-grato'),
           ],
         },
-        { id: 'babele', x: 1700, tipo: 'medita', etichetta: 'Gli anni che verranno', richiede: ['altare'], passi: [det('babele')] },
+        {
+          id: 'patto',
+          x: 1050,
+          tipo: 'ascolta',
+          etichetta: 'Dio parla a te e ai tuoi figli',
+          richiede: ['altare'],
+          passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'arcobaleno', a: 1, dur: 3 } },
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'trova',
+                id: 'patto-noe',
+                consegna: 'Dio stringe un patto con te e con i tuoi figli. Tocca le due cose che promette.',
+                rif: 'Genesi 9:11',
+                testo:
+                  'Stringo con voi questo patto: [[nessun essere vivente sarà più distrutto]] dalle acque di un diluvio, e la terra [[non sarà mai più ridotta in rovina]] da un diluvio',
+                spiegazione: 'Il patto non riguarda solo la tua famiglia: vale per ogni creatura vivente e per la terra (Genesi 9:10, 11).',
+                dettaglio: 'per-sempre',
+              },
+            },
+          ],
+        },
+        { id: 'babele', x: 1700, tipo: 'medita', etichetta: 'Gli anni che verranno', richiede: ['patto'], passi: [det('babele')] },
       ],
     },
   ],

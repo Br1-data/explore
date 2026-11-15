@@ -22,13 +22,16 @@ collegato all'originale su jw.org.
   - **Matusalemme**: che cosa rivelano i numeri di Genesi 5, sulla linea del tempo;
   - **Uno degli empi**: il loro mondo e il messaggio, dalla parte di chi lo ascoltò.
 - **Capitolo 2, Noè** (Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5), da cinque punti di vista:
-  Noè (integro in un mondo violento, costruttore e predicatore), Geova (il giudizio, il tempo
+  Noè (integro in un mondo violento; costruisce l’arca con le sue mani e avverte le persone;
+  entra con la famiglia e Geova chiude la porta; il corvo, la copertura tolta, l’uscita,
+  l’altare e il patto dell’arcobaleno), Geova (il giudizio, il tempo
   stabilito, la porta chiusa prima della pioggia, l’acqua che sale e solleva l’arca, il patto
   dell’arcobaleno), la moglie di Noè (porta nell’arca le provviste e il foraggio, gli
   scherni), uno dei figli (raccoglie il legname, chiude il fasciame, stende il catrame; le
   date del diluvio) e uno dei contemporanei (il mondo che non si accorse di nulla). Noè, la
   moglie e il figlio vivono anche l’anno nell’arca, in scene interne dichiarate come
-  ricostruzioni (La Torre di Guardia 15/11/2001 e 1/8/2013, Perspicacia «Arca»).
+  ricostruzioni (La Torre di Guardia 15/11/2001 e 1/8/2013, Perspicacia «Arca»; per il
+  corvo e il patto, Perspicacia «Corvo» e «Patto»).
 - **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista:
   - **Debora**: profetessa e giudice sotto la palma, il comando di Geova trasmesso a
     Barac, «Verrò senz’altro», il segnale sul Tabor, il canto e le tribù;
@@ -51,7 +54,7 @@ collegato all'originale su jw.org.
   (il grano nel torchio, l’altare di Baal di notte, il rifiuto di regnare), Geova (il profeta,
   i segni, i 300, il sogno), Ioas (il padre che lo difese), uno dei 300 (Harod, corni giare e
   torce, l’inseguimento) e un soldato madianita (il sogno del pane d’orzo).
-- **229 dettagli** (84 + 40 + 46 + 34 + 25), ognuno con la sua fonte e un contrassegno che dice quanto
+- **238 dettagli** (84 + 49 + 46 + 34 + 25), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

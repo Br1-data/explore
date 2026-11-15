@@ -11,7 +11,8 @@ export { mondo } from '../01-enoc/scenari';
  * provviste. L’interno dell’arca è una ricostruzione (vedi i ruoli che lo usano).
  *
  * L’arca ha `id: 'arca'`: l’effetto `oggetto` ne cambia l’aspetto mentre la si costruisce
- * (0 ossatura, 3 tavole, 4 catrame, 1 finita con la porta aperta, 2 chiusa).
+ * (0 ossatura, 3 tavole, 4 catrame, 1 finita con la porta aperta, 2 chiusa, 5 con una parte
+ * del tetto tolta, 6 la stessa con la porta di nuovo aperta).
  */
 
 /** Il cantiere dell’arca: gli alberi, le tavole pronte, il catrame. */
@@ -117,8 +118,12 @@ export function arcaDentro(larghezza = 2000): Base {
   );
 }
 
-/** I monti di Ararat: l’arca ferma, l’altare, e (se c’è) l’arcobaleno nelle nuvole. */
-export function ararat(conArcobaleno: boolean, larghezza = 2000): Base {
+/**
+ * I monti di Ararat: l’arca ferma (`id: 'arca'`), l’altare e l’arcobaleno nelle nuvole.
+ * Con 'poi' l’arcobaleno o l’altare compaiono con la variabile omonima (va dichiarata in
+ * `vars`); con false non ci sono.
+ */
+export function ararat(arcobaleno: boolean | 'poi', larghezza = 2000, altare: boolean | 'poi' = true): Base {
   return taglia(
     {
       larghezza: 2000,
@@ -126,11 +131,13 @@ export function ararat(conArcobaleno: boolean, larghezza = 2000): Base {
       seme: 47,
       suono: 'vento',
       oggetti: [
-        ...(conArcobaleno ? [o('arcobaleno', 1150, { piano: 'fondo', scala: 0.8 })] : []),
+        ...(arcobaleno
+          ? [o('arcobaleno', 1150, { piano: 'fondo', scala: 0.8, ...(arcobaleno === 'poi' ? { seVar: 'arcobaleno' } : {}) })]
+          : []),
         ...serie('roccia', [300, 1500, 1850], { piano: 'fondo', scala: 0.8 }),
-        o('arca', 520, { variante: 2 }),
+        o('arca', 520, { variante: 2, id: 'arca' }),
         o('roccia', 1000, { scala: 1.4 }),
-        o('altare', 1300),
+        ...(altare ? [o('altare', 1300, altare === 'poi' ? { seVar: 'altare' } : {})] : []),
         o('uccelli', 1500),
         o('cespuglio', 1700),
         o('roccia', 1900),

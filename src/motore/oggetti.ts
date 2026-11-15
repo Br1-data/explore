@@ -1044,7 +1044,8 @@ const sala: Pittore = (p, o) => {
  * L’arca (Genesi 6:14-16; lett. «cassa»): una grande cassa di legno coperta di catrame,
  * con la porta di lato e un’apertura per la luce sotto il tetto.
  * Varianti: 0 in costruzione (ossatura e impalcature), 3 fasciata di tavole, 4 coperta di
- * catrame, 1 finita con la porta aperta e la rampa, 2 chiusa.
+ * catrame, 1 finita con la porta aperta e la rampa, 2 chiusa; dopo il diluvio (Genesi 8:13,
+ * 18) 5 chiusa con una parte del tetto tolta, 6 la stessa con la porta di nuovo aperta.
  */
 const arca: Pittore = (p, o) => {
   const { ctx, P, tono } = p;
@@ -1107,9 +1108,24 @@ const arca: Pittore = (p, o) => {
   ctx.fill();
   ctx.fillStyle = tono(mescola('#2c221b', '#f2e2b0', 0.45));
   ctx.fillRect(-L / 2 + 12, -H + 3, L - 24, 7);
+  if (v === 5 || v === 6) {
+    // Una parte del tetto tolta: si vedono le travi e il buio dell’interno.
+    const [x0, x1] = [L * 0.25, L * 0.44];
+    const falda = (x: number): number => -H - 24 * (1 - Math.abs(x) / (L / 2 + 10));
+    ctx.fillStyle = tono('#140e0a');
+    ctx.beginPath();
+    ctx.moveTo(x0, -H + 10);
+    ctx.lineTo(x0, falda(x0) - 1);
+    ctx.lineTo(x1, falda(x1) - 1);
+    ctx.lineTo(x1, -H + 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = scuro;
+    for (let x = x0 + 18; x < x1; x += 34) ctx.fillRect(x - 3, falda(x) - 1, 6, 12);
+  }
   // La porta, da un lato.
   const px = L * 0.18;
-  if (v === 1) {
+  if (v === 1 || v === 6) {
     ctx.fillStyle = tono('#140e0a');
     ctx.fillRect(px - 24, -92, 48, 92);
     // La rampa.

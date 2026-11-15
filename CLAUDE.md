@@ -206,7 +206,8 @@ src/
                              un file per punto di vista (enoc, geova, matusalemme, empio), index.ts
         02-noe/              Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5 (noe, geova, moglie, figlio,
                              contemporaneo); scenari.ts: cantiere, arcaPronta, diluvio, arcaDentro (la
-                             stiva, per le scene ricostruite nell’arca), ararat (e mondo dall’1)
+                             stiva, per le scene ricostruite nell’arca), ararat (altare e arcobaleno
+                             possono comparire dopo, con una variabile) (e mondo dall’1)
         16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
                              scenari.ts: palma, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
         17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)
