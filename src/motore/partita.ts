@@ -205,6 +205,11 @@ export class Partita {
     this.vw = w / this.scalaVista;
   }
 
+  /** Come si muove chi gioca: quello della scena, se lo dice, altrimenti quello del ruolo. */
+  private get modo(): 'cammina' | 'osserva' {
+    return this.scena?.modo ?? this.ruolo.modo;
+  }
+
   private caricaScena(indice: number): void {
     this.indiceScena = indice;
     const s = (this.scena = this.ruolo.scene[indice]);
@@ -224,7 +229,7 @@ export class Partita {
     g.x = s.inizioX ?? 120;
     g.verso = 1;
     g.posa = 'fermo';
-    g.visibile = this.ruolo.modo === 'cammina';
+    g.visibile = this.modo === 'cammina';
     g.bersaglio = null;
     this.camera.x = g.x;
 
@@ -408,7 +413,7 @@ export class Partita {
     this.giocatore.bersaglio = null;
     this.inArrivo = null;
     this.direzione = 0;
-    if (this.ruolo.modo === 'cammina' && Math.abs(p.x - this.giocatore.x) > 4) {
+    if (this.modo === 'cammina' && Math.abs(p.x - this.giocatore.x) > 4) {
       this.giocatore.verso = p.x > this.giocatore.x ? 1 : -1;
     }
     this.ui.invito(null);
@@ -448,7 +453,7 @@ export class Partita {
       facoltativiRimasti: this.scena.punti.filter((p) => p.facoltativo && !this.fatti.has(p.id)).length,
       completa: this.completa() && this.modoGioco === 'esplora',
       ultima: this.indiceScena === this.ruolo.scene.length - 1,
-      modo: this.ruolo.modo,
+      modo: this.modo,
       indizi: [indizi.filter((p) => this.fatti.has(p.id)).length, indizi.length],
       suolo: this.coloreSuolo(),
     });
@@ -598,7 +603,7 @@ export class Partita {
 
     // Chi gioca.
     const g = this.giocatore;
-    const osserva = this.ruolo.modo === 'osserva';
+    const osserva = this.modo === 'osserva';
     let dir = 0;
     if (this.modoGioco === 'esplora') {
       dir = this.direzione;
@@ -735,6 +740,7 @@ export class Partita {
       // `pioggiaFuori`: la pioggia che si sente da dentro (es. nell’arca), senza vederla.
       pioggia: Math.max(this.vars['pioggia'] ?? 0, this.vars['pioggiaFuori'] ?? 0),
       agitazione: this.vars['agitazione'] ?? 0,
+      animali: this.vars['animali'] ?? 1,
       sorgenti,
     };
   }
@@ -1008,7 +1014,7 @@ export class Partita {
     }
 
     this.atmosfera(P);
-    if (this.ruolo.modo === 'osserva' && this.modoGioco === 'esplora') this.mirino(g.x - sinistra, gy(g.x));
+    if (this.modo === 'osserva' && this.modoGioco === 'esplora') this.mirino(g.x - sinistra, gy(g.x));
     this.disegnaNastri(gy, sinistra);
 
     const buio = this.vars['dissolvi'] ?? 0;
@@ -1383,7 +1389,7 @@ export class Partita {
     }
     // Vignettatura, più stretta dove la folla preme.
     let pressione = 0;
-    if (this.ruolo.modo === 'cammina') {
+    if (this.modo === 'cammina') {
       for (const z of this.scena.zone ?? []) {
         if (this.giocatore.x >= z.x0 && this.giocatore.x <= z.x1) pressione = Math.max(pressione, z.forza);
       }

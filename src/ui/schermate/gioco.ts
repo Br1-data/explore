@@ -20,7 +20,6 @@ export function avviaGioco(cx: Contesto, cap: Capitolo, ruolo: Ruolo): SessioneG
   document.title = `${ruolo.nome} · ${cap.nome} · ${NOME_GIOCO}`;
   cx.schermo.hidden = true;
   cx.gioco.hidden = false;
-  cx.gioco.dataset['modo'] = ruolo.modo;
   const k = chiave(cap);
 
   const tela = h('canvas', { class: 'gioco__tela', 'aria-label': 'La scena del racconto' });
@@ -35,11 +34,13 @@ export function avviaGioco(cx: Contesto, cap: Capitolo, ruolo: Ruolo): SessioneG
   const zonaScheda = h('div', { class: 'scheda-zona', hidden: true });
   const sinistra = h('button', { class: 'tondo tondo--grande', type: 'button', 'aria-label': 'Vai a sinistra' }, '‹');
   const destra = h('button', { class: 'tondo tondo--grande', type: 'button', 'aria-label': 'Vai a destra' }, '›');
-  const aiuto = h(
-    'p',
-    { class: 'hud__aiuto' },
-    ruolo.modo === 'osserva' ? '← → sposta lo sguardo · tocca o E per interagire · Q quaderno' : '← → cammina · tocca o E per interagire · Q quaderno',
-  );
+  const aiuto = h('p', { class: 'hud__aiuto' });
+  // Il modo può cambiare da una scena all’altra (es. Noè ancora dentro l’arca).
+  const mostraModo = (modo: 'cammina' | 'osserva'): void => {
+    cx.gioco.dataset['modo'] = modo;
+    aiuto.textContent = `← → ${modo === 'osserva' ? 'sposta lo sguardo' : 'cammina'} · tocca o E per interagire · Q quaderno`;
+  };
+  mostraModo(ruolo.modo);
 
   const aggiornaAudio = (): void => {
     svuota(audio);
@@ -119,6 +120,7 @@ export function avviaGioco(cx: Contesto, cap: Capitolo, ruolo: Ruolo): SessioneG
         prosegui.title = `Qui c’è ancora ${s.facoltativiRimasti === 1 ? 'un dettaglio facoltativo' : `${s.facoltativiRimasti} dettagli facoltativi`}`;
       } else prosegui.removeAttribute('title');
       cx.gioco.dataset['scena'] = String(s.indice);
+      mostraModo(s.modo);
       cx.gioco.style.setProperty('--suolo', s.suolo);
     },
     scenaCompletata: (indice) => cx.salvataggio.segnaScena(k, ruolo.id, indice + 1),

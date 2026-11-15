@@ -673,6 +673,42 @@ const uccelli: Pittore = (p, o) => {
   ctx.stroke();
 };
 
+/**
+ * Un uccello che esce dalla finestra dell’arca, va lontano e torna a posarsi sul tetto
+ * (Genesi 8:7-11). L’origine è il punto in cui si posa. Varianti: 0 corvo, 1 colomba,
+ * 2 colomba con la foglia d’olivo nel becco.
+ */
+const uccello: Pittore = (p, o) => {
+  const { ctx, t } = p;
+  const v = o.variante ?? 0;
+  const fase = (t * 0.12 + v * 0.37) % 1;
+  const lontano = Math.sin(fase * Math.PI);
+  const verso = fase < 0.5 ? 1 : -1;
+  const x = lontano * 380;
+  const y = -150 - lontano * 110 + Math.sin(t * 1.7 + v) * 6 * lontano;
+  const ala = Math.sin(t * 9) * 5 * Math.min(1, lontano * 6);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(verso, 1);
+  ctx.fillStyle = v === 0 ? '#1b1b22' : '#f2f0ea';
+  ctx.strokeStyle = v === 0 ? '#1b1b22' : 'rgba(90,90,100,0.8)';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ovale(ctx, 0, 0, 8, 4);
+  cerchio(ctx, 7, -2, 3);
+  ctx.beginPath();
+  ctx.moveTo(-3, -1);
+  ctx.quadraticCurveTo(-8, -9 - ala, -15, -5 - ala * 1.6);
+  ctx.moveTo(1, -1);
+  ctx.quadraticCurveTo(-2, -9 + ala, -7, -6 + ala * 1.4);
+  ctx.stroke();
+  if (v === 2) {
+    ctx.fillStyle = '#6f9a3e';
+    ovale(ctx, 12, -1, 4, 1.8, 0.3);
+  }
+  ctx.restore();
+};
+
 const ovale = (ctx: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, rot = 0): void => {
   ctx.beginPath();
   ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2);
@@ -1287,6 +1323,7 @@ const PITTORI: Record<string, Pittore> = {
   acqua,
   fiori,
   uccelli,
+  uccello,
 };
 
 export const TIPI_OGGETTO = Object.keys(PITTORI);

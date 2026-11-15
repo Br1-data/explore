@@ -325,17 +325,28 @@ export const noe: Ruolo = {
       id: 'noe-ararat',
       titolo: 'Una foglia d’olivo',
       luogo: 'I monti di Ararat',
-      ...ararat(false, 2000, false),
-      inizioX: 820,
-      // La famiglia è ancora nell’arca: esce quando Dio lo dice.
+      ...ararat({ altare: false, uccelli: false }),
+      oggetti: [
+        ...ararat({ altare: false, uccelli: false }).oggetti,
+        // Il corvo e la colomba escono dalla finestra e tornano a posarsi sull’arca.
+        { tipo: 'uccello', x: 700, variante: 0, seVar: 'corvo' },
+        { tipo: 'uccello', x: 740, variante: 1, seVar: 'colomba', id: 'colomba' },
+      ],
+      // Noè e la sua famiglia sono ancora dentro l’arca: da qui fa volare gli uccelli e
+      // toglie una parte del tetto. Si esce solo quando Dio lo dice (Genesi 8:6-18).
+      modo: 'osserva',
+      inizioX: 700,
+      // Fuori non c’è ancora nessun essere vivente: niente uccelli né grilli.
+      vars: { animali: 0, corvo: 0, colomba: 0 },
       attori: [
+        { id: 'noe', x: 640, stile: 'noe', verso: 1, visibile: false },
         { id: 'moglie', x: 640, stile: 'moglie-noe', verso: 1, visibile: false },
         { id: 'figlio', x: 640, stile: 'figlio-noe', verso: 1, visibile: false },
       ],
       ingresso: [
         {
           t: 'narra',
-          testo: 'L’arca si è fermata sopra i monti di Ararat, e le acque continuano a calare.',
+          testo: 'L’arca si è fermata sopra i monti di Ararat, e le acque continuano a calare. Tu e la tua famiglia siete ancora dentro l’arca.',
           certezza: 'scritto',
           fonti: [b('Genesi', 8, '4, 5')],
         },
@@ -343,10 +354,12 @@ export const noe: Ruolo = {
       punti: [
         {
           id: 'corvo',
-          x: 700,
+          x: 760,
           tipo: 'agisci',
-          etichetta: 'Fa’ volare il corvo',
+          etichetta: 'Apri la finestra: fa’ volare il corvo',
           passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'corvo', a: 1, dur: 0.5 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 2.5 } },
             {
               t: 'narra',
               testo: 'Apri la finestra dell’arca e fai volare fuori un corvo. Il corvo va e torna, finché le acque sulla terra non si asciugano.',
@@ -358,11 +371,13 @@ export const noe: Ruolo = {
         },
         {
           id: 'colomba',
-          x: 1150,
+          x: 940,
           tipo: 'agisci',
           etichetta: 'Fa’ volare la colomba',
           richiede: ['corvo'],
           passi: [
+            { t: 'fx', fx: { k: 'var', nome: 'colomba', a: 1, dur: 0.5 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 2.5 } },
             {
               t: 'attivita',
               a: {
@@ -374,6 +389,9 @@ export const noe: Ruolo = {
                 distrattori: ['tre', 'fico'],
               },
             },
+            // Torna con la foglia d’olivo nel becco.
+            { t: 'fx', fx: { k: 'oggetto', id: 'colomba', variante: 2 } },
+            { t: 'fx', fx: { k: 'attendi', dur: 2 } },
           ],
         },
         {
@@ -396,7 +414,7 @@ export const noe: Ruolo = {
         },
         {
           id: 'esci',
-          x: 880,
+          x: 620,
           tipo: 'ascolta',
           etichetta: 'Dio ti dice di uscire',
           richiede: ['tetto'],
@@ -407,11 +425,15 @@ export const noe: Ruolo = {
               certezza: 'scritto',
               fonti: [b('Genesi', 8, '14-17')],
             },
+            // Solo ora la porta si riapre ed escono tutti, con gli animali.
             { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 6 } },
+            { t: 'fx', fx: { k: 'visibile', chi: 'noe', v: true } },
             { t: 'fx', fx: { k: 'visibile', chi: 'moglie', v: true } },
             { t: 'fx', fx: { k: 'visibile', chi: 'figlio', v: true } },
-            { t: 'fx', fx: { k: 'vai', chi: 'moglie', x: 1000, vel: 80 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 1080, vel: 80, attendi: true } },
+            { t: 'fx', fx: { k: 'var', nome: 'animali', a: 1, dur: 3 } },
+            { t: 'fx', fx: { k: 'vai', chi: 'noe', x: 860, vel: 80 } },
+            { t: 'fx', fx: { k: 'vai', chi: 'moglie', x: 940, vel: 80 } },
+            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 1020, vel: 80, attendi: true } },
             det('adempiuto'),
           ],
         },
@@ -421,7 +443,7 @@ export const noe: Ruolo = {
       id: 'noe-patto',
       titolo: 'Un patto per sempre',
       luogo: 'I monti di Ararat',
-      ...ararat('poi', 2000, 'poi'),
+      ...ararat({ arcobaleno: 'poi', altare: 'poi' }),
       inizioX: 900,
       vars: { altare: 0, arcobaleno: 0 },
       attori: [

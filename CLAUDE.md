@@ -281,6 +281,14 @@ Strumenti di scena già pronti nel motore:
   mano a chi gioca o a un attore (`cosa: null` lo posa). Un test verifica che l’`id`
   esista nella scena e che il carico sia un oggetto vero;
 - ambiente `stiva` per gli interni di legno (con l’oggetto `stiva` come pareti);
+- `modo` della scena: una scena può avere un modo diverso dal ruolo. Con `osserva` il
+  personaggio non si vede e si sposta lo sguardo, per esempio quando il testo dice che
+  sta dentro un luogo chiuso (Noè nell’arca fa volare corvo e colomba dalla finestra).
+  Se il racconto mette il personaggio dentro, non lo si fa camminare fuori;
+- variabile `animali` (0-1, di norma 1): uccelli, grilli e gufi del luogo. A 0 dove non
+  c’è vita (dopo il diluvio, prima che gli animali escano dall’arca);
+- oggetto `uccello` (corvo, colomba, colomba con la foglia) che va e torna dal punto in
+  cui si posa;
 - pose: `fermo`, `cammina`, `parla`, `pugno`, `indica`, `alza`, `proclama`,
   `sdraiato`, `coperto` (sdraiato sotto una coperta);
 - folle: `comportamento` `vaga`/`cerca`/`insegue`, `gruppo` `rissa`/`invoca`/`danza`;
@@ -303,7 +311,8 @@ suoni dalla scena: ogni decimo di secondo la partita gli passa un `Paesaggio`.
   le `torce` crepitano.
 - **Attori** che si spostano (`fx vai`): passi. Chi gioca: passi, bagnati sotto la pioggia.
 - **Variabili**: `pioggia` e `pioggiaFuori` (scrosci, gocce, tuoni oltre 0.6),
-  `agitazione`, `livello` (l’acqua che sale si sente come `acqua`).
+  `agitazione`, `livello` (l’acqua che sale si sente come `acqua`), `animali` (a 0
+  tacciono uccelli, grilli e gufi).
 
 Per un capitolo nuovo basta mettere in scena le cose giuste. Se serve un suono che non
 c’è (es. il mare, un asino, un corno), si aggiunge una ricetta in `EVENTI`, il suo

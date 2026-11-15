@@ -289,6 +289,11 @@ export interface Scena {
   zone?: Zona[];
   ingresso?: Passo[];
   uscita?: Passo[];
+  /**
+   * Come si muove chi gioca in questa scena, se diverso dal ruolo: con «osserva» il
+   * personaggio non si vede e si sposta lo sguardo (es. Noè ancora dentro l’arca).
+   */
+  modo?: 'cammina' | 'osserva';
   /** Variabili di scena (0..1). Il motore conosce «agitazione», «visione», «incalzo», «pioggia». */
   vars?: Record<string, number>;
   /**

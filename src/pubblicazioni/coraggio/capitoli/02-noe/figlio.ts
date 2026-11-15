@@ -161,7 +161,7 @@ export const figlio: Ruolo = {
       id: 'figlio-uscita',
       titolo: 'Di nuovo sulla terra',
       luogo: 'I monti di Ararat',
-      ...ararat(true, 2000),
+      ...ararat({ arcobaleno: true }),
       inizioX: 700,
       attori: [{ id: 'noe', x: 1240, stile: 'noe', verso: -1 }],
       ingresso: [

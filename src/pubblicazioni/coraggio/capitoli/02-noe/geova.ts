@@ -89,7 +89,7 @@ export const geova: Ruolo = {
       ...diluvio(2000),
       inizioX: 1000,
       // Prima la porta, poi la pioggia: la terra è ancora asciutta (Genesi 7:10, 16, 17).
-      vars: { pioggia: 0, livello: 0 },
+      vars: { pioggia: 0, livello: 0, animali: 1 },
       ingresso: [
         {
           t: 'narra',
@@ -118,6 +118,8 @@ export const geova: Ruolo = {
           richiede: ['porta'],
           passi: [
             { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 2 } },
+            // Fuori dall’arca non resta nessun essere vivente (Genesi 7:23): tacciono anche uccelli e grilli.
+            { t: 'fx', fx: { k: 'var', nome: 'animali', a: 0 } },
             // L’acqua sale e solleva l’arca.
             { t: 'fx', fx: { k: 'var', nome: 'livello', a: 1, dur: 9 } },
             { t: 'fx', fx: { k: 'attendi', dur: 6 } },
@@ -153,7 +155,7 @@ export const geova: Ruolo = {
       id: 'geova-patto',
       titolo: 'Un segno nelle nuvole',
       luogo: 'I monti di Ararat',
-      ...ararat(true, 2000),
+      ...ararat({ arcobaleno: true }),
       inizioX: 1100,
       attori: [{ id: 'noe', x: 1240, stile: 'noe', verso: 1, posa: 'alza' }],
       ingresso: [

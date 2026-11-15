@@ -55,6 +55,8 @@ export interface Paesaggio {
   vista: number;
   pioggia: number;
   agitazione: number;
+  /** Uccelli, grilli e gufi del luogo (0..1): 0 dove non c’è più vita, es. dopo il diluvio. */
+  animali: number;
   sorgenti: SorgenteSonora[];
 }
 
@@ -524,19 +526,19 @@ export class Suono {
     const b = this.banco!;
     const sparso = (): AudioNode => scegli(this.punti);
     if (this.dovuto('uccelli', ora)) {
-      const quanti = p.luce === 'giorno' ? 1 : p.luce === 'crepuscolo' ? 0.45 : 0;
+      const quanti = (p.luce === 'giorno' ? 1 : p.luce === 'crepuscolo' ? 0.45 : 0) * p.animali;
       const tempo = pioggia > 0.25 || quanti === 0 ? 0 : EVENTI.uccello(b, sparso(), ora + 0.05, 0.03 * quanti);
       this.prossimi['uccelli'] = ora + tempo + caso(2.5, 8) / Math.max(0.3, quanti);
     }
     if (this.dovuto('grilli', ora)) {
-      const quanti = p.luce === 'notte' ? 1 : p.luce === 'crepuscolo' ? 0.35 : 0;
+      const quanti = (p.luce === 'notte' ? 1 : p.luce === 'crepuscolo' ? 0.35 : 0) * p.animali;
       if (quanti > 0 && pioggia < 0.3) {
         for (let i = 0; i < 3; i++) if (Math.random() < quanti) EVENTI.grillo(b, sparso(), ora + caso(0.05, 0.5), 0.016);
       }
       this.prossimi['grilli'] = ora + caso(0.55, 1.1);
     }
     if (this.dovuto('gufo', ora)) {
-      if (p.luce === 'notte' && pioggia < 0.3 && this.prossimi['gufo'] !== undefined) EVENTI.gufo(b, sparso(), ora + 0.1, 0.035);
+      if (p.luce === 'notte' && p.animali > 0.5 && pioggia < 0.3 && this.prossimi['gufo'] !== undefined) EVENTI.gufo(b, sparso(), ora + 0.1, 0.035);
       this.prossimi['gufo'] = ora + caso(25, 55);
     }
     if (pioggia > 0.02) {

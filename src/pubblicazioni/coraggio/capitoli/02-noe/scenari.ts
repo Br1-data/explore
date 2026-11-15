@@ -121,9 +121,13 @@ export function arcaDentro(larghezza = 2000): Base {
 /**
  * I monti di Ararat: l’arca ferma (`id: 'arca'`), l’altare e l’arcobaleno nelle nuvole.
  * Con 'poi' l’arcobaleno o l’altare compaiono con la variabile omonima (va dichiarata in
- * `vars`); con false non ci sono.
+ * `vars`). Senza `uccelli` non c’è lo stormo: finché gli animali non escono dall’arca,
+ * fuori non c’è nessun essere vivente (Genesi 7:23; 8:17).
  */
-export function ararat(arcobaleno: boolean | 'poi', larghezza = 2000, altare: boolean | 'poi' = true): Base {
+export function ararat(
+  { arcobaleno = false, altare = true, uccelli = true }: { arcobaleno?: boolean | 'poi'; altare?: boolean | 'poi'; uccelli?: boolean },
+  larghezza = 2000,
+): Base {
   return taglia(
     {
       larghezza: 2000,
@@ -138,7 +142,7 @@ export function ararat(arcobaleno: boolean | 'poi', larghezza = 2000, altare: bo
         o('arca', 520, { variante: 2, id: 'arca' }),
         o('roccia', 1000, { scala: 1.4 }),
         ...(altare ? [o('altare', 1300, altare === 'poi' ? { seVar: 'altare' } : {})] : []),
-        o('uccelli', 1500),
+        ...(uccelli ? [o('uccelli', 1500)] : []),
         o('cespuglio', 1700),
         o('roccia', 1900),
         ...serie('roccia', [880, 1600], { piano: 'primo', scala: 1.6 }),
