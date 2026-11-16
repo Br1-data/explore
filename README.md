@@ -25,11 +25,13 @@ collegato all'originale su jw.org.
   Noè (integro in un mondo violento; costruisce l’arca con le sue mani e avverte le persone;
   entra con la famiglia e Geova chiude la porta; il corvo, la copertura tolta, l’uscita,
   l’altare e il patto dell’arcobaleno), Geova (il giudizio, il tempo
-  stabilito, la porta chiusa prima della pioggia, l’acqua che sale e solleva l’arca, il patto
-  dell’arcobaleno), la moglie di Noè (porta nell’arca le provviste e il foraggio, gli
-  scherni), uno dei figli (raccoglie il legname, chiude il fasciame, stende il catrame; le
-  date del diluvio) e uno dei contemporanei (il mondo che non si accorse di nulla). Noè, la
-  moglie e il figlio vivono anche l’anno nell’arca, in scene interne dichiarate come
+  stabilito, le istruzioni per l’arca, la porta chiusa prima della pioggia, l’acqua che sale
+  e solleva l’arca, l’ordine di uscire, il patto dell’arcobaleno), la moglie di Noè (porta
+  nell’arca le provviste e il foraggio, gli scherni), uno dei figli (raccoglie il legname,
+  chiude il fasciame, stende il catrame; le date del diluvio) e uno dei contemporanei (il
+  mondo che non si accorse di nulla, il cantiere, la porta che si chiude). La famiglia vive
+  con Noè le stesse scene: la porta, il diluvio, il corvo e la colomba, l’uscita, l’altare e
+  l’arcobaleno. Noè, la moglie e il figlio vivono anche l’anno nell’arca, in scene interne dichiarate come
   ricostruzioni (La Torre di Guardia 15/11/2001 e 1/8/2013, Perspicacia «Arca»; per il
   corvo e il patto, Perspicacia «Corvo» e «Patto»).
 - **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista

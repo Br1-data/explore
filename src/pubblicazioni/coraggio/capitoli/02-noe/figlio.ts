@@ -1,9 +1,11 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { ararat, arcaDentro, cantiere } from './scenari';
+import { INGRESSO, PATTO, USCITA, palcoIngresso, palcoPatto, palcoUscita } from './racconto';
+import { arcaDentro, cantiere } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'figlio';
 
 /**
  * Il punto di vista di uno dei figli di Noè: Sem, Cam o Iafet. In questi capitoli la
@@ -19,7 +21,7 @@ export const figlio: Ruolo = {
     'La Bibbia riporta i nomi dei tre figli di Noè, Sem, Cam e Iafet, ma in questi capitoli non dice che cosa fece ciascuno: qui c’è solo ciò che dice della famiglia di Noè, spiegato dal libro e dalle pubblicazioni che cita.',
   modo: 'cammina',
   stile: 'figlio-noe',
-  durata: '8-10 minuti',
+  durata: '14-17 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di uno dei figli di Noè',
   scene: [
     {
@@ -93,6 +95,42 @@ export const figlio: Ruolo = {
       ],
     },
     {
+      id: 'figlio-porta',
+      titolo: 'La porta si chiude',
+      luogo: 'Il giorno del diluvio',
+      ...palcoIngresso(io),
+      inizioX: 1500,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Dio ha detto a tuo padre di entrare nell’arca con tutta la famiglia: fra sette giorni farà piovere.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 7, '1, 4')],
+        },
+      ],
+      punti: [
+        {
+          id: 'entra',
+          x: 1180,
+          tipo: 'agisci',
+          etichetta: 'Entra nell’arca',
+          passi: [
+            ...INGRESSO.entrano(io),
+            {
+              t: 'narra',
+              testo: 'Entri nell’arca con tuo padre, tua madre, i tuoi fratelli e le vostre mogli.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 7, '13')],
+            },
+            ...INGRESSO.porta(),
+            { t: 'narra', testo: 'Poi Geova chiude la porta.', certezza: 'scritto', fonti: [b('Genesi', 7, '16')] },
+            ...INGRESSO.pioggia(),
+            ...INGRESSO.acqua(),
+          ],
+        },
+      ],
+    },
+    {
       id: 'figlio-arca',
       titolo: 'Dentro l’arca',
       luogo: 'Durante il diluvio',
@@ -158,26 +196,86 @@ export const figlio: Ruolo = {
       ],
     },
     {
-      id: 'figlio-uscita',
-      titolo: 'Di nuovo sulla terra',
-      luogo: 'I monti di Ararat',
-      ...ararat({ arcobaleno: true }),
+      id: 'figlio-ararat',
+      titolo: 'Una foglia d’olivo',
+      luogo: 'I monti di Ararat, dentro l’arca',
+      ...palcoUscita(),
       inizioX: 700,
-      attori: [{ id: 'noe', x: 1240, stile: 'noe', verso: -1 }],
       ingresso: [
         {
           t: 'narra',
-          testo: 'Dio ha detto a tuo padre di uscire dall’arca con tutta la famiglia e con gli animali.',
+          testo: 'L’arca si è fermata sopra i monti di Ararat. Siete ancora tutti dentro.',
           certezza: 'scritto',
-          fonti: [b('Genesi', 8, '15-17')],
+          fonti: [b('Genesi', 8, '4')],
         },
       ],
       punti: [
+        {
+          id: 'finestra',
+          x: 760,
+          tipo: 'osserva',
+          etichetta: 'Tuo padre apre la finestra',
+          passi: [
+            ...USCITA.corvo(),
+            ...USCITA.colomba(),
+            ...USCITA.foglia(),
+            {
+              t: 'narra',
+              testo: 'Tuo padre fa volare fuori un corvo, poi una colomba: la seconda volta la colomba torna con una foglia d’olivo.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '6-11')],
+            },
+          ],
+        },
+        {
+          id: 'esci',
+          x: 620,
+          tipo: 'osserva',
+          etichetta: 'Si esce dall’arca',
+          richiede: ['finestra'],
+          passi: [
+            ...USCITA.tetto(),
+            {
+              t: 'narra',
+              testo: 'Dio dice a tuo padre di uscire dall’arca con tutta la famiglia e con gli animali.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '15-17')],
+            },
+            ...USCITA.esci(),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'figlio-uscita',
+      titolo: 'Di nuovo sulla terra',
+      luogo: 'I monti di Ararat',
+      ...palcoPatto(io),
+      inizioX: 900,
+      ingresso: [...PATTO.arca()],
+      punti: [
+        {
+          id: 'altare',
+          x: 1240,
+          tipo: 'osserva',
+          etichetta: 'L’altare e l’arcobaleno',
+          passi: [
+            ...PATTO.altare(),
+            {
+              t: 'narra',
+              testo: 'Tuo padre erige un altare a Geova e offre olocausti. Poi Dio parla a lui e a voi figli, e mette l’arcobaleno nelle nuvole come segno del suo patto.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '20'), b('Genesi', 9, '8'), b('Genesi', 9, '13')],
+            },
+            ...PATTO.arcobaleno(),
+          ],
+        },
         {
           id: 'calendario',
           x: 900,
           tipo: 'leggi',
           etichetta: 'Quanto siete rimasti nell’arca',
+          richiede: ['altare'],
           passi: [
             {
               t: 'attivita',

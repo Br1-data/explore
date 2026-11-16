@@ -1,9 +1,11 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { b } from './base';
-import { ararat, diluvio, mondo } from './scenari';
+import { CANTIERE, INGRESSO, PATTO, USCITA, palcoCantiere, palcoIngresso, palcoPatto, palcoUscita } from './racconto';
+import { mondo } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'geova';
 
 /**
  * Il punto di vista di Geova. Non viene raffigurato e non gli vengono attribuite parole
@@ -15,12 +17,12 @@ export const geova: Ruolo = {
   id: 'geova',
   nome: 'Geova',
   titolo: 'Ciò che Geova vede e fa',
-  descrizione: 'Guarda una terra piena di violenza, approva l’unico uomo giusto, chiudi la porta dell’arca e metti l’arcobaleno nelle nuvole.',
+  descrizione: 'Guarda una terra piena di violenza, approva l’unico uomo giusto, dagli le istruzioni per l’arca, chiudi la porta, fallo uscire sulla terra asciutta e metti l’arcobaleno nelle nuvole.',
   fedelta:
     'Geova non viene raffigurato. Compie solo gli atti che Genesi 6:1–8:22 e 9:8-19 gli attribuiscono, spiegati dal libro e dalle pubblicazioni che cita: nessuna parola e nessun pensiero gli vengono attribuiti oltre a ciò che è scritto.',
   modo: 'osserva',
   stile: 'nessuno',
-  durata: '10-12 minuti',
+  durata: '14-18 minuti',
   conclusione: 'Hai ripercorso ciò che fece Geova',
   scene: [
     {
@@ -83,20 +85,62 @@ export const geova: Ruolo = {
       ],
     },
     {
-      id: 'geova-diluvio',
-      titolo: 'Le cateratte dei cieli',
-      luogo: 'Il diluvio',
-      ...diluvio(2000),
-      inizioX: 1000,
-      // Prima la porta, poi la pioggia: la terra è ancora asciutta (Genesi 7:10, 16, 17).
-      vars: { pioggia: 0, livello: 0, animali: 1 },
+      id: 'geova-cantiere',
+      titolo: 'Un’arca di legno resinoso',
+      luogo: 'Il cantiere',
+      ...palcoCantiere(io),
+      inizioX: 1150,
       ingresso: [
         {
           t: 'narra',
-          testo: 'Noè e la sua famiglia sono entrati nell’arca, e con loro gli animali, a due a due.',
+          testo: 'Dio dice a Noè che porterà un diluvio, e che deve costruire un’arca per salvare sé, la sua famiglia e gli animali.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 6, '13-21')],
+        },
+      ],
+      punti: [
+        {
+          id: 'istruzioni',
+          x: 1150,
+          tipo: 'agisci',
+          etichetta: 'Da’ a Noè le istruzioni per l’arca',
+          passi: [
+            {
+              t: 'narra',
+              testo: 'Un’arca di legno resinoso, con scompartimenti, coperta di catrame dentro e fuori, con una finestra sotto il tetto e la porta di lato, a tre piani.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 6, '14-16')],
+            },
+            ...CANTIERE.anni(),
+            senti('g-istruzioni'),
+          ],
+        },
+        {
+          id: 'avverte',
+          x: 1800,
+          tipo: 'osserva',
+          etichetta: 'Noè avverte chi lo guarda',
+          richiede: ['istruzioni'],
+          passi: CANTIERE.avverte(),
+        },
+      ],
+    },
+    {
+      id: 'geova-diluvio',
+      titolo: 'Le cateratte dei cieli',
+      luogo: 'Il diluvio',
+      ...palcoIngresso(io),
+      inizioX: 1000,
+      // Prima la porta, poi la pioggia: la terra è ancora asciutta (Genesi 7:10, 16, 17).
+      vars: { ...palcoIngresso(io).vars, animali: 1 },
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Noè e la sua famiglia entrano nell’arca, e con loro gli animali, a due a due.',
           certezza: 'scritto',
           fonti: [b('Genesi', 7, '13-16')],
         },
+        ...INGRESSO.entrano(io),
       ],
       punti: [
         {
@@ -105,7 +149,7 @@ export const geova: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Chiudi la porta',
           passi: [
-            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 2 } },
+            ...INGRESSO.porta(),
             { t: 'verso', id: 'gen-7-16', evidenzia: ['Poi Geova chiuse la porta dietro di lui'] },
             det('porta'),
           ],
@@ -152,22 +196,73 @@ export const geova: Ruolo = {
       ],
     },
     {
-      id: 'geova-patto',
-      titolo: 'Un segno nelle nuvole',
+      id: 'geova-ararat',
+      titolo: '«Esci dall’arca»',
       luogo: 'I monti di Ararat',
-      ...ararat({ arcobaleno: true }),
-      inizioX: 1100,
-      attori: [{ id: 'noe', x: 1240, stile: 'noe', verso: 1, posa: 'alza' }],
+      ...palcoUscita(),
+      inizioX: 700,
       ingresso: [
         {
           t: 'narra',
-          testo: 'Noè è uscito dall’arca con la sua famiglia e ha offerto olocausti sull’altare.',
+          testo: 'L’arca si è fermata sui monti di Ararat. Noè e la sua famiglia sono ancora dentro.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 8, '4')],
+        },
+      ],
+      punti: [
+        {
+          id: 'uccelli',
+          x: 760,
+          tipo: 'osserva',
+          etichetta: 'Il corvo e la colomba',
+          passi: [
+            ...USCITA.corvo(),
+            ...USCITA.colomba(),
+            ...USCITA.foglia(),
+            {
+              t: 'narra',
+              testo: 'Noè fa volare fuori un corvo, poi una colomba. La seconda volta la colomba torna con una foglia fresca d’olivo nel becco.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '6-11')],
+            },
+            ...USCITA.tetto(),
+          ],
+        },
+        {
+          id: 'esci',
+          x: 620,
+          tipo: 'agisci',
+          etichetta: 'Di’ a Noè di uscire',
+          richiede: ['uccelli'],
+          passi: [
+            {
+              t: 'narra',
+              testo: 'Dio dice a Noè di uscire dall’arca con la moglie, i figli e le mogli dei figli, e di far uscire ogni creatura vivente.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '15-17')],
+            },
+            ...USCITA.esci(),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'geova-patto',
+      titolo: 'Un segno nelle nuvole',
+      luogo: 'I monti di Ararat',
+      ...palcoPatto(io),
+      inizioX: 1150,
+      ingresso: [
+        ...PATTO.arca(),
+        {
+          t: 'narra',
+          testo: 'Noè è uscito dall’arca con la sua famiglia. Erige un altare e offre olocausti.',
           certezza: 'scritto',
           fonti: [b('Genesi', 8, '18-20')],
         },
       ],
       punti: [
-        { id: 'odore', x: 1300, tipo: 'osserva', etichetta: 'Un odore gradevole', passi: [det('promessa')] },
+        { id: 'odore', x: 1300, tipo: 'osserva', etichetta: 'Un odore gradevole', passi: [...PATTO.altare(), det('promessa')] },
         {
           id: 'arcobaleno',
           x: 1100,
@@ -175,6 +270,7 @@ export const geova: Ruolo = {
           etichetta: 'Metti l’arcobaleno nelle nuvole',
           richiede: ['odore'],
           passi: [
+            ...PATTO.arcobaleno(),
             {
               t: 'attivita',
               a: {

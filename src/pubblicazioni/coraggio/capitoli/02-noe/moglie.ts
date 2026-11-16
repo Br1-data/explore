@@ -1,9 +1,11 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
+import { INGRESSO, PATTO, USCITA, palcoIngresso, palcoPatto, palcoUscita } from './racconto';
 import { arcaDentro, arcaPronta, cantiere } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'moglie';
 
 /**
  * Il punto di vista della moglie di Noè. La Bibbia non ne riporta il nome né le
@@ -14,12 +16,12 @@ export const moglie: Ruolo = {
   id: 'moglie',
   nome: 'La moglie di Noè',
   titolo: 'Una famiglia diversa da tutte le altre',
-  descrizione: 'Cresci i tuoi figli in un mondo violento, prepara le provviste per la famiglia e gli animali, entra nell’arca mentre la gente vi deride.',
+  descrizione: 'Cresci i tuoi figli in un mondo violento, prepara le provviste per la famiglia e gli animali, entra nell’arca mentre la gente vi deride, vivi l’anno nell’arca e l’uscita sulla terra asciutta.',
   fedelta:
     'La Bibbia non ne riporta il nome né le parole: dice che entrò nell’arca con Noè. Ciò che fa qui è quanto il capitolo 2 del libro dice della famiglia di Noè, con le pubblicazioni che cita.',
   modo: 'cammina',
   stile: 'moglie-noe',
-  durata: '8-10 minuti',
+  durata: '14-17 minuti',
   conclusione: 'Hai vissuto il racconto nei panni della moglie di Noè',
   scene: [
     {
@@ -137,21 +139,41 @@ export const moglie: Ruolo = {
           ],
         },
         { id: 'gente', x: 1850, tipo: 'ascolta', etichetta: 'La gente vi guarda', richiede: ['animali'], passi: [det('derisi'), senti('m-derisa')] },
+      ],
+    },
+    {
+      id: 'moglie-porta',
+      titolo: 'La porta si chiude',
+      luogo: 'Il giorno del diluvio',
+      ...palcoIngresso(io),
+      inizioX: 1500,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'È il giorno stabilito: si entra nell’arca.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 7, '13')],
+        },
+      ],
+      punti: [
         {
           id: 'entra',
-          x: 1100,
+          x: 1180,
           tipo: 'agisci',
           etichetta: 'Entra nell’arca',
-          richiede: ['gente'],
           passi: [
+            ...INGRESSO.entrano(io),
             {
               t: 'narra',
-              testo: 'Entri nell’arca con Noè, i vostri figli e le loro mogli. Poi Geova chiude la porta.',
+              testo: 'Entri nell’arca con Noè, i vostri figli e le loro mogli.',
               certezza: 'scritto',
-              fonti: [b('Genesi', 7, '13'), b('Genesi', 7, '16')],
+              fonti: [b('Genesi', 7, '13')],
             },
-            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 2 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1 } },
+            ...INGRESSO.porta(),
+            { t: 'narra', testo: 'Poi Geova chiude la porta.', certezza: 'scritto', fonti: [b('Genesi', 7, '16')] },
+            senti('m-porta'),
+            ...INGRESSO.pioggia(),
+            ...INGRESSO.acqua(),
           ],
         },
       ],
@@ -201,13 +223,84 @@ export const moglie: Ruolo = {
         },
       ],
     },
-  ],
-  epilogo: [
     {
-      t: 'narra',
-      testo: 'Più di un anno dopo, Dio disse a Noè di uscire dall’arca con la moglie, i figli e le mogli dei figli. E uscirono.',
-      certezza: 'scritto',
-      fonti: [b('Genesi', 8, '15-18')],
+      id: 'moglie-uscita',
+      titolo: 'Una foglia d’olivo',
+      luogo: 'I monti di Ararat, dentro l’arca',
+      ...palcoUscita(),
+      inizioX: 700,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'L’arca si è fermata sopra i monti di Ararat. Siete ancora tutti dentro.',
+          certezza: 'scritto',
+          fonti: [b('Genesi', 8, '4')],
+        },
+      ],
+      punti: [
+        {
+          id: 'finestra',
+          x: 760,
+          tipo: 'osserva',
+          etichetta: 'Noè apre la finestra',
+          passi: [
+            ...USCITA.corvo(),
+            ...USCITA.colomba(),
+            ...USCITA.foglia(),
+            {
+              t: 'narra',
+              testo: 'Noè fa volare fuori un corvo, poi una colomba: la seconda volta la colomba torna con una foglia d’olivo.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '6-11')],
+            },
+          ],
+        },
+        {
+          id: 'esci',
+          x: 620,
+          tipo: 'osserva',
+          etichetta: 'Si esce dall’arca',
+          richiede: ['finestra'],
+          passi: [
+            ...USCITA.tetto(),
+            {
+              t: 'narra',
+              testo: 'Più di un anno dopo l’inizio del diluvio, Dio dice a Noè di uscire dall’arca con la moglie, i figli e le mogli dei figli.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '13-18')],
+            },
+            ...USCITA.esci(),
+            senti('m-uscita'),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'moglie-patto',
+      titolo: 'L’altare e l’arcobaleno',
+      luogo: 'I monti di Ararat',
+      ...palcoPatto(io),
+      inizioX: 1000,
+      ingresso: [...PATTO.arca()],
+      punti: [
+        {
+          id: 'altare',
+          x: 1250,
+          tipo: 'osserva',
+          etichetta: 'Noè erige un altare',
+          passi: [
+            ...PATTO.altare(),
+            {
+              t: 'narra',
+              testo: 'Noè erige un altare a Geova e offre olocausti. Poi Dio parla a Noè e ai suoi figli, e mette l’arcobaleno nelle nuvole come segno del suo patto.',
+              certezza: 'scritto',
+              fonti: [b('Genesi', 8, '20'), b('Genesi', 9, '8'), b('Genesi', 9, '13')],
+            },
+            ...PATTO.arcobaleno(),
+          ],
+        },
+      ],
     },
   ],
+  epilogo: [],
 };

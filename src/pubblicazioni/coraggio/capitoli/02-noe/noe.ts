@@ -1,9 +1,11 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { ararat, arcaDentro, cantiere, diluvio, mondo } from './scenari';
+import { INGRESSO, PATTO, USCITA, palcoIngresso, palcoPatto, palcoUscita } from './racconto';
+import { arcaDentro, cantiere, mondo } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'noe';
 
 /**
  * Il punto di vista di Noè: giusto in un mondo violento, costruttore dell’arca e
@@ -191,14 +193,8 @@ export const noe: Ruolo = {
       id: 'noe-ingresso',
       titolo: 'La porta si chiude',
       luogo: 'Il giorno del diluvio',
-      ...diluvio(2000),
+      ...palcoIngresso(io),
       inizioX: 1600,
-      // Prima si entra, poi Geova chiude la porta, poi la pioggia (Genesi 7:13-17).
-      vars: { pioggia: 0, livello: 0 },
-      attori: [
-        { id: 'moglie', x: 1330, stile: 'moglie-noe', verso: -1 },
-        { id: 'figlio', x: 1420, stile: 'figlio-noe', verso: -1 },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -237,28 +233,20 @@ export const noe: Ruolo = {
           richiede: ['comando'],
           passi: [
             det('otto'),
-            { t: 'fx', fx: { k: 'vai', chi: 'moglie', x: 1120, vel: 90 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 1120, vel: 90, attendi: true } },
-            { t: 'fx', fx: { k: 'visibile', chi: 'moglie', v: false } },
-            { t: 'fx', fx: { k: 'visibile', chi: 'figlio', v: false } },
+            ...INGRESSO.entrano(io),
             {
               t: 'narra',
               testo: 'Entri nell’arca con tua moglie, i tuoi figli Sem, Cam e Iafet e le loro mogli.',
               certezza: 'scritto',
               fonti: [b('Genesi', 7, '13')],
             },
-            { t: 'fx', fx: { k: 'visibile', chi: 'giocatore', v: false } },
-            { t: 'fx', fx: { k: 'camera', x: 1000 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
             // Non sei tu a chiudere la porta.
-            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 2 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1 } },
+            ...INGRESSO.porta(),
             { t: 'narra', testo: 'Poi Geova chiude la porta dietro di te.', certezza: 'scritto', fonti: [b('Genesi', 7, '16')] },
             senti('n-porta'),
             // La pioggia, poi l’acqua che sale e solleva l’arca.
-            { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 2 } },
-            { t: 'fx', fx: { k: 'var', nome: 'livello', a: 1, dur: 9 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 7 } },
+            ...INGRESSO.pioggia(),
+            ...INGRESSO.acqua(),
             det('cassa'),
           ],
         },
@@ -325,24 +313,10 @@ export const noe: Ruolo = {
       id: 'noe-ararat',
       titolo: 'Una foglia d’olivo',
       luogo: 'I monti di Ararat',
-      ...ararat({ altare: false, uccelli: false }),
-      oggetti: [
-        ...ararat({ altare: false, uccelli: false }).oggetti,
-        // Il corvo e la colomba escono dalla finestra e tornano a posarsi sull’arca.
-        { tipo: 'uccello', x: 700, variante: 0, seVar: 'corvo' },
-        { tipo: 'uccello', x: 740, variante: 1, seVar: 'colomba', id: 'colomba' },
-      ],
       // Noè e la sua famiglia sono ancora dentro l’arca: da qui fa volare gli uccelli e
       // toglie una parte del tetto. Si esce solo quando Dio lo dice (Genesi 8:6-18).
-      modo: 'osserva',
+      ...palcoUscita(),
       inizioX: 700,
-      // Fuori non c’è ancora nessun essere vivente: niente uccelli né grilli.
-      vars: { animali: 0, corvo: 0, colomba: 0 },
-      attori: [
-        { id: 'noe', x: 640, stile: 'noe', verso: 1, visibile: false },
-        { id: 'moglie', x: 640, stile: 'moglie-noe', verso: 1, visibile: false },
-        { id: 'figlio', x: 640, stile: 'figlio-noe', verso: 1, visibile: false },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -358,8 +332,7 @@ export const noe: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Apri la finestra: fa’ volare il corvo',
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'corvo', a: 1, dur: 0.5 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2.5 } },
+            ...USCITA.corvo(),
             {
               t: 'narra',
               testo: 'Apri la finestra dell’arca e fai volare fuori un corvo. Il corvo va e torna, finché le acque sulla terra non si asciugano.',
@@ -376,8 +349,7 @@ export const noe: Ruolo = {
           etichetta: 'Fa’ volare la colomba',
           richiede: ['corvo'],
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'colomba', a: 1, dur: 0.5 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2.5 } },
+            ...USCITA.colomba(),
             {
               t: 'attivita',
               a: {
@@ -389,9 +361,7 @@ export const noe: Ruolo = {
                 distrattori: ['tre', 'fico'],
               },
             },
-            // Torna con la foglia d’olivo nel becco.
-            { t: 'fx', fx: { k: 'oggetto', id: 'colomba', variante: 2 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2 } },
+            ...USCITA.foglia(),
           ],
         },
         {
@@ -401,8 +371,7 @@ export const noe: Ruolo = {
           etichetta: 'Togli una parte del tetto',
           richiede: ['colomba'],
           passi: [
-            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 5 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 0.8 } },
+            ...USCITA.tetto(),
             {
               t: 'narra',
               testo: 'Nel 601º anno, il primo giorno del primo mese, togli una parte del tetto dell’arca: la superficie del suolo si sta asciugando.',
@@ -425,15 +394,7 @@ export const noe: Ruolo = {
               certezza: 'scritto',
               fonti: [b('Genesi', 8, '14-17')],
             },
-            // Solo ora la porta si riapre ed escono tutti, con gli animali.
-            { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 6 } },
-            { t: 'fx', fx: { k: 'visibile', chi: 'noe', v: true } },
-            { t: 'fx', fx: { k: 'visibile', chi: 'moglie', v: true } },
-            { t: 'fx', fx: { k: 'visibile', chi: 'figlio', v: true } },
-            { t: 'fx', fx: { k: 'var', nome: 'animali', a: 1, dur: 3 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'noe', x: 860, vel: 80 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'moglie', x: 940, vel: 80 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'figlio', x: 1020, vel: 80, attendi: true } },
+            ...USCITA.esci(),
             det('adempiuto'),
           ],
         },
@@ -443,16 +404,10 @@ export const noe: Ruolo = {
       id: 'noe-patto',
       titolo: 'Un patto per sempre',
       luogo: 'I monti di Ararat',
-      ...ararat({ arcobaleno: 'poi', altare: 'poi' }),
+      ...palcoPatto(io),
       inizioX: 900,
-      vars: { altare: 0, arcobaleno: 0 },
-      attori: [
-        { id: 'moglie', x: 1150, stile: 'moglie-noe', verso: 1 },
-        { id: 'figlio', x: 1210, stile: 'figlio-noe', verso: 1 },
-      ],
       ingresso: [
-        // L’arca resta come l’avete lasciata: tetto aperto, porta aperta.
-        { t: 'fx', fx: { k: 'oggetto', id: 'arca', variante: 6 } },
+        ...PATTO.arca(),
         {
           t: 'narra',
           testo: 'Sei uscito dall’arca con tua moglie, i tuoi figli e le loro mogli. Anche gli animali sono usciti, famiglia per famiglia.',
@@ -467,7 +422,7 @@ export const noe: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Erigi un altare',
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'altare', a: 1, dur: 1.5 } },
+            ...PATTO.altare(),
             {
               t: 'narra',
               testo: 'Erigi un altare a Geova e offri olocausti di animali puri e di creature alate pure.',
@@ -485,7 +440,7 @@ export const noe: Ruolo = {
           etichetta: 'Dio parla a te e ai tuoi figli',
           richiede: ['altare'],
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'arcobaleno', a: 1, dur: 3 } },
+            ...PATTO.arcobaleno(),
             {
               t: 'attivita',
               a: {

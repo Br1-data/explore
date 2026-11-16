@@ -221,7 +221,8 @@ src/
         02-noe/              Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5 (noe, geova, moglie, figlio,
                              contemporaneo); scenari.ts: cantiere, arcaPronta, diluvio, arcaDentro (la
                              stiva, per le scene ricostruite nell’arca), ararat (altare e arcobaleno
-                             possono comparire dopo, con una variabile) (e mondo dall’1)
+                             possono comparire dopo, con una variabile) (e mondo dall’1);
+                             racconto.ts: il cantiere, la porta e il diluvio, l’uscita, il patto
         16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
                              scenari.ts: palma, chedes, cimaTabor, pianura, villaggio, festa (usata anche dal 17);
                              racconto.ts: la palma, Chedes, il Tabor, la pianura, il canto
