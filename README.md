@@ -42,12 +42,15 @@ collegato all'originale su jw.org.
   - **Uno dei 10.000**: il paese oppresso, la chiamata a offrirsi, la battaglia sotto
     la pioggia;
   - **Sisera**: il nemico che contava sui suoi carri, fino alla disfatta.
-- **Capitolo 17, Iael** (Giudici 4:17-22; 5:24-31), da sei punti di vista:
+- **Capitolo 17, Iael** (Giudici 4:17-22; 5:24-31), da sei punti di vista che vivono le
+  stesse scene (l’arrivo di Sisera, la coperta, il latte, Barac alla tenda, il canto, la
+  finestra di Aroset), ognuno con i suoi appunti:
   - **Iael**: da che parte sta ciascuno, che cosa fare quando Sisera arriva alla sua
     tenda, il coraggio di agire da sola, il canto che la chiama benedetta;
-  - **Geova**: non raffigurato; consegna Sisera nelle mani di una donna e ispira il canto;
+  - **Geova**: non raffigurato; vede tutte le scene, consegna Sisera nelle mani di una
+    donna e ispira il canto;
   - **Sisera**: la fuga e il rifugio in cui credeva di essere al sicuro;
-  - **Barac**: arriva alla tenda e vede adempiersi la profezia di Debora;
+  - **Barac**: arriva alla tenda, vede adempiersi la profezia di Debora e loda Iael nel canto;
   - **Debora**: la lode a Iael, senza invidia;
   - **La madre di Sisera**: l’attesa vana alla finestra, come la descrive il canto.
 - **Capitolo 18, Gedeone** (Giudici 6:1–7:22; 8:4-23, 28), da cinque punti di vista che
@@ -58,7 +61,7 @@ collegato all'originale su jw.org.
   Geova (le stesse scene, compiendo solo i suoi atti), Ioas (il mattino in cui difese il
   figlio), uno dei 300 (dal corno di Ofra all’inseguimento) e un soldato madianita (il sogno
   del pane d’orzo e la notte della fuga).
-- **260 dettagli** (84 + 49 + 48 + 34 + 45), ognuno con la sua fonte e un contrassegno che dice quanto
+- **261 dettagli** (84 + 49 + 48 + 35 + 45), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

@@ -1,36 +1,36 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
-import { PAROLE, b } from './base';
-import { tendaIael } from './scenari';
+import { F, b } from './base';
+import { BARAC, CANTO, palcoBarac, palcoCanto } from './racconto';
 
+const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'barac';
 
 /**
  * Il punto di vista di Barac, in questo capitolo: arriva alla tenda di Iael
- * inseguendo Sisera e vede adempiersi la profezia di Debora (Giudici 4:9, 22).
- * La chiamata, il Tabor, la battaglia e l’inseguimento sono il capitolo 16.
+ * inseguendo Sisera e vede adempiersi la profezia di Debora (Giudici 4:9, 22); poi, nel
+ * canto di vittoria, loda Iael con Debora (5:24; libro). Sono le stesse scene che vivono
+ * Iael, Debora e Geova (racconto.ts). La chiamata, il Tabor, la battaglia e
+ * l’inseguimento sono il capitolo 16.
  */
 export const barac: Ruolo = {
   id: 'barac',
   nome: 'Barac',
   titolo: 'Il comandante che vide adempiersi la profezia',
-  descrizione: 'Arrivi alla tenda di Iael inseguendo Sisera, ricordi le parole di Debora e scopri a chi va la gloria.',
+  descrizione: 'Arrivi alla tenda di Iael inseguendo Sisera, ricordi le parole di Debora, scopri a chi va la gloria e la lodi nel canto di vittoria.',
   fedelta:
-    'Giudici 4:9, 22 e il capitolo 17 del libro. Le parole di Iael sono quelle del testo; ciò che Barac vede nella tenda non viene mostrato.',
+    'Giudici 4:9, 22; 5:24 e il capitolo 17 del libro. Le parole di Iael e del canto sono quelle del testo; ciò che Barac vede nella tenda non viene mostrato.',
   modo: 'cammina',
   stile: 'barac',
-  durata: '4-5 minuti',
+  durata: '7-9 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Barac',
   scene: [
     {
       id: 'barac-tenda',
       titolo: 'L’uomo che cerchi',
       luogo: 'Le tende di Heber il chenita',
-      ...tendaIael(1500),
+      ...palcoBarac(io),
       inizioX: 1380,
-      attori: [
-        { id: 'sisera', x: 770, stile: 'sisera', verso: 1, posa: 'coperto' },
-        { id: 'iael', x: 900, stile: 'iael', verso: 1 },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -59,7 +59,6 @@ export const barac: Ruolo = {
                 distrattori: ['vittoria', 'profetessa'],
               },
             },
-            { t: 'fx', fx: { k: 'vai', chi: 'iael', x: 1150, vel: 120, attendi: true } },
           ],
         },
         {
@@ -68,10 +67,7 @@ export const barac: Ruolo = {
           x: 1230,
           tipo: 'ascolta',
           etichetta: 'Una donna ti viene incontro',
-          passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'iael', testo: PAROLE.mostra, dur: 4.5 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'iael', x: 930, vel: 90 } },
-          ],
+          passi: BARAC.incontro(io),
         },
         {
           id: 'entra',
@@ -80,6 +76,7 @@ export const barac: Ruolo = {
           etichetta: 'Entra nella tenda',
           richiede: ['iael'],
           passi: [
+            ...BARAC.entra(io),
             {
               t: 'attivita',
               a: {
@@ -95,6 +92,22 @@ export const barac: Ruolo = {
           ],
         },
       ],
+    },
+    {
+      id: 'barac-canto',
+      titolo: 'Benedetta fra le donne',
+      luogo: 'Il canto di vittoria',
+      ...palcoCanto(io),
+      inizioX: 560,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Dopo la vittoria, nel canto che intoni con Debora, lodate Iael.',
+          certezza: 'libro',
+          fonti: [F.libro, b('Giudici', 5, '24')],
+        },
+      ],
+      punti: [{ id: 'canto', x: 560, tipo: 'agisci', etichetta: 'Canta con Debora', passi: [...CANTO.lode(io), det('esaltata')] }],
     },
   ],
   epilogo: [],

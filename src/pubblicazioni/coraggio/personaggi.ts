@@ -184,6 +184,16 @@ export const PERSONAGGI: Record<string, Stile> = {
     velo: '#9fb59a',
     scala: 0.97,
   },
+  // Una delle dame della madre di Sisera (Giudici 5:29).
+  dama: {
+    tipo: 'donna',
+    veste: '#6a3a5a',
+    fascia: '#c8a060',
+    pelle: '#c79a72',
+    capelli: '#2a1f1a',
+    velo: '#a0708a',
+    scala: 0.95,
+  },
   madre: {
     tipo: 'donna',
     veste: '#5a2f4a',

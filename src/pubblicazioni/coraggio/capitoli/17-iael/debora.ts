@@ -1,9 +1,10 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { b } from './base';
-import { festa } from './scenari';
+import { CANTO, palcoCanto } from './racconto';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'debora';
 
 /**
  * Il punto di vista di Debora, in questo capitolo: la parte del canto che loda Iael
@@ -27,14 +28,8 @@ export const debora: Ruolo = {
       id: 'debora-lode',
       titolo: 'Benedetta fra le donne',
       luogo: 'Il canto di vittoria',
-      ...festa(2000),
+      ...palcoCanto(io),
       inizioX: 170,
-      attori: [{ id: 'barac', x: 470, stile: 'barac', verso: -1 }],
-      folle: [
-        { x0: 760, x1: 1000, n: 7, seme: 91, donne: 0.7, gruppo: 'danza' },
-        { x0: 1100, x1: 1650, n: 9, seme: 93, donne: 0.4, bimbi: 0.2, comportamento: 'vaga' },
-        { x0: 300, x1: 1900, n: 12, seme: 95, piano: 'fondo', comportamento: 'vaga' },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -45,6 +40,7 @@ export const debora: Ruolo = {
         },
       ],
       punti: [
+        { id: 'canta', x: 420, tipo: 'agisci', etichetta: 'Canta con Barac', passi: CANTO.lode(io) },
         {
           id: 'danze',
           x: 880,
@@ -87,7 +83,7 @@ export const debora: Ruolo = {
           x: 1760,
           tipo: 'agisci',
           etichetta: 'Loda Iael',
-          richiede: ['danze', 'racconti'],
+          richiede: ['canta', 'danze', 'racconti'],
           passi: [
             {
               t: 'attivita',

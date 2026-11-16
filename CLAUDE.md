@@ -224,7 +224,8 @@ src/
                              possono comparire dopo, con una variabile) (e mondo dall’1)
         16-barac-debora/     Giudici 4:1-16, 23, 24; 5:1-23 (debora, barac, geova, volontario, sisera);
                              scenari.ts: palma, chedes, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
-        17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)
+        17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre);
+                             racconto.ts: l’arrivo, la tenda, Barac, il canto, la finestra
         18-gedeone/          Giudici 6:1–7:22; 8:4-23, 28 (gedeone, geova, ioas, trecento, madianita);
                              scenari.ts: ofra (giorno o notte), harod, campoMadian (e villaggio dal 16);
                              racconto.ts: le scene comuni a tutti i ruoli (decisione 8)

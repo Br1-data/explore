@@ -1,9 +1,11 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
-import { F, PAROLE, b } from './base';
-import { accampamento, tendaIael } from './scenari';
+import { F, b } from './base';
+import { ARRIVO, BARAC, TENDA, palcoArrivo, palcoBarac, palcoTenda } from './racconto';
+import { accampamento } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'iael';
 
 /**
  * Il punto di vista di Iael.
@@ -112,9 +114,8 @@ export const iael: Ruolo = {
       id: 'iael-arrivo',
       titolo: 'Un uomo in fuga',
       luogo: 'Davanti alla tua tenda',
-      ...accampamento(2400),
+      ...palcoArrivo(io),
       inizioX: 1640,
-      attori: [{ id: 'sisera', x: 2330, stile: 'sisera', verso: -1 }],
       ingresso: [
         {
           t: 'narra',
@@ -122,7 +123,7 @@ export const iael: Ruolo = {
           certezza: 'scritto',
           fonti: [b('Giudici', 4, '17')],
         },
-        { t: 'fx', fx: { k: 'vai', chi: 'sisera', x: 2040, vel: 130, attendi: true } },
+        ...ARRIVO.arriva(io),
       ],
       punti: [
         {
@@ -179,12 +180,7 @@ export const iael: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Invitalo a entrare',
           richiede: ['decidi'],
-          passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.invito, dur: 4.5 } },
-            { t: 'verso', id: 'gdc-4-18', evidenzia: ['Non aver paura'] },
-            { t: 'fx', fx: { k: 'vai', chi: 'sisera', x: 1830, vel: 90 } },
-            senti('i-decisione'),
-          ],
+          passi: [...ARRIVO.incontro(io), { t: 'verso', id: 'gdc-4-18', evidenzia: ['Non aver paura'] }, ...ARRIVO.entra(io), senti('i-decisione')],
         },
       ],
     },
@@ -192,12 +188,8 @@ export const iael: Ruolo = {
       id: 'iael-tenda',
       titolo: 'Nella tua tenda',
       luogo: 'Un guerriero stanco',
-      ...tendaIael(1500),
-      // La coperta con cui Iael copre Sisera (Giudici 4:18): sparisce quando la prende.
-      oggetti: [...tendaIael(1500).oggetti, { tipo: 'coperta', x: 960, seVar: 'coperta' }],
+      ...palcoTenda(io),
       inizioX: 900,
-      vars: { coperta: 1 },
-      attori: [{ id: 'sisera', x: 770, stile: 'sisera', verso: 1 }],
       ingresso: [
         {
           t: 'narra',
@@ -212,10 +204,7 @@ export const iael: Ruolo = {
           x: 960,
           tipo: 'agisci',
           etichetta: 'Prendi una coperta',
-          passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'coperta', a: 0, dur: 0.3 } },
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'coperta' } },
-          ],
+          passi: TENDA.prendiCoperta(io),
         },
         {
           id: 'coperta',
@@ -223,11 +212,7 @@ export const iael: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Coprilo con la coperta',
           richiede: ['prendi-coperta'],
-          passi: [
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
-            { t: 'fx', fx: { k: 'posa', chi: 'sisera', posa: 'coperto' } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1.2 } },
-          ],
+          passi: TENDA.copri(io),
         },
         {
           id: 'acqua',
@@ -235,7 +220,7 @@ export const iael: Ruolo = {
           tipo: 'ascolta',
           etichetta: 'Ti chiede qualcosa',
           richiede: ['coperta'],
-          passi: [{ t: 'fx', fx: { k: 'nastro', chi: 'sisera', testo: PAROLE.acqua, dur: 4 } }],
+          passi: TENDA.acqua(io),
         },
         {
           id: 'otre',
@@ -244,7 +229,7 @@ export const iael: Ruolo = {
           etichetta: 'Apri l’otre',
           richiede: ['acqua'],
           passi: [
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'coppa' } },
+            ...TENDA.otre(io),
             {
               t: 'attivita',
               a: {
@@ -266,10 +251,8 @@ export const iael: Ruolo = {
           etichetta: 'Ti dà un ordine',
           richiede: ['otre'],
           passi: [
-            // Gli ha dato da bere: la coppa resta a lui.
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'sisera', testo: PAROLE.entrata, dur: 3 } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'sisera', testo: PAROLE.rispondi, dur: 5 } },
+            ...TENDA.beve(io),
+            ...TENDA.ordine(io),
             {
               t: 'narra',
               testo: 'Poi Sisera si addormenta.',
@@ -313,12 +296,8 @@ export const iael: Ruolo = {
       id: 'iael-barac',
       titolo: 'L’uomo che stai cercando',
       luogo: 'Arriva Barac',
-      ...tendaIael(1500),
+      ...palcoBarac(io),
       inizioX: 940,
-      attori: [
-        { id: 'sisera', x: 770, stile: 'sisera', verso: 1, posa: 'coperto' },
-        { id: 'barac', x: 1460, stile: 'barac', verso: -1 },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -326,7 +305,7 @@ export const iael: Ruolo = {
           certezza: 'scritto',
           fonti: [b('Giudici', 4, '22')],
         },
-        { t: 'fx', fx: { k: 'vai', chi: 'barac', x: 1180, vel: 150, attendi: true } },
+        ...BARAC.arriva(io),
       ],
       punti: [
         {
@@ -359,8 +338,8 @@ export const iael: Ruolo = {
                 ],
               },
             },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.mostra, dur: 4 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'barac', x: 860, vel: 100, attendi: true } },
+            ...BARAC.incontro(io),
+            ...BARAC.entra(io),
           ],
         },
         {

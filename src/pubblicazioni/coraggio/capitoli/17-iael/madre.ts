@@ -1,9 +1,10 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { b } from './base';
-import { casaSisera } from './scenari';
+import { FINESTRA, palcoFinestra } from './racconto';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'madre';
 
 /**
  * Il punto di vista della madre di Sisera.
@@ -28,9 +29,8 @@ export const madre: Ruolo = {
       id: 'madre-finestra',
       titolo: 'Alla finestra',
       luogo: 'Nella casa di Sisera',
-      ...casaSisera(1700),
+      ...palcoFinestra(io),
       inizioX: 780,
-      folle: [{ x0: 1040, x1: 1110, n: 3, seme: 97, donne: 1 }],
       ingresso: [
         {
           t: 'narra',
@@ -48,6 +48,7 @@ export const madre: Ruolo = {
           tipo: 'osserva',
           etichetta: 'Dalla grata',
           passi: [
+            ...FINESTRA.attesa(io),
             {
               t: 'attivita',
               a: {
@@ -68,7 +69,7 @@ export const madre: Ruolo = {
           x: 1060,
           tipo: 'ascolta',
           etichetta: 'Le tue dame',
-          passi: [{ t: 'verso', id: 'gdc-5-29', evidenzia: ['Si staranno dividendo le spoglie'] }, det('grembo')],
+          passi: [...FINESTRA.dame(io), { t: 'verso', id: 'gdc-5-29', evidenzia: ['Si staranno dividendo le spoglie'] }, det('grembo')],
         },
         {
           id: 'mondo',

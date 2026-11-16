@@ -326,6 +326,13 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'libro',
     [F.libro, F.wp15],
   ),
+  d(
+    'esaltata',
+    'Il coraggio di Iael, cantato',
+    'Nel canto di vittoria che Barac intonò con Debora, l’azione coraggiosa di Iael contro il nemico di Geova viene esaltata: la chiama «benedetta fra le donne».',
+    'libro',
+    [F.it('Iael'), F.libro, b('Giudici', 5, '24')],
+  ),
 
   // ——— Debora: la lode a Iael ———
   d(

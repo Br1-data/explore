@@ -1,14 +1,27 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { b } from './base';
-import { festa, tendaIael } from './scenari';
+import {
+  ARRIVO,
+  BARAC,
+  CANTO,
+  FINESTRA,
+  TENDA,
+  palcoArrivo,
+  palcoBarac,
+  palcoCanto,
+  palcoFinestra,
+  palcoTenda,
+} from './racconto';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'geova';
 
 /**
- * Il punto di vista di Geova, in questo capitolo: consegna Sisera nelle mani di una
- * donna, come aveva annunciato (Giudici 4:9, 21), e ispira il canto che loda Iael
- * (5:24-31). L’oppressione e la battaglia sono il capitolo 16.
+ * Il punto di vista di Geova, in questo capitolo: vede tutte le scene del racconto
+ * (racconto.ts), consegna Sisera nelle mani di una donna, come aveva annunciato
+ * (Giudici 4:9, 21), e ispira il canto che loda Iael (5:24-31). L’oppressione e la
+ * battaglia sono il capitolo 16.
  *
  * Geova non viene raffigurato e non gli vengono attribuite parole o pensieri oltre
  * al testo: chi gioca sposta lo sguardo e compie soltanto gli atti del racconto.
@@ -18,24 +31,20 @@ export const geova: Ruolo = {
   nome: 'Geova',
   titolo: 'Ciò che Geova vede e fa',
   descrizione:
-    'Consegna il nemico nelle mani di una donna, come avevi annunciato, e ispira il canto che la chiama benedetta.',
+    'Guarda il nemico arrivare alla tenda di Iael, consegnalo nelle mani di una donna come avevi annunciato, e ispira il canto che la chiama benedetta.',
   fedelta:
     'Geova non viene raffigurato. Compie solo gli atti che Giudici 4 e 5 gli attribuiscono, spiegati dal libro e dalle pubblicazioni che cita: nessuna parola e nessun pensiero gli vengono attribuiti oltre a ciò che è scritto.',
   modo: 'osserva',
   stile: 'nessuno',
-  durata: '8-10 minuti',
+  durata: '14-18 minuti',
   conclusione: 'Hai ripercorso ciò che fece Geova',
   scene: [
     {
-      id: 'geova-tenda',
-      titolo: 'Nelle mani di una donna',
-      luogo: 'La tenda di Iael',
-      ...tendaIael(1500),
-      inizioX: 900,
-      attori: [
-        { id: 'sisera', x: 770, stile: 'sisera', verso: 1, posa: 'coperto' },
-        { id: 'iael', x: 880, stile: 'iael', verso: -1 },
-      ],
+      id: 'geova-arrivo',
+      titolo: 'Verso la tenda di Iael',
+      luogo: 'Le tende di Heber il chenita',
+      ...palcoArrivo(io),
+      inizioX: 2100,
       ingresso: [
         {
           t: 'narra',
@@ -45,18 +54,56 @@ export const geova: Ruolo = {
         },
         {
           t: 'narra',
-          testo: 'Sisera è fuggito fino alla tenda di Iael, la moglie di Heber il chenita. Ora dorme.',
+          testo: 'Sisera fugge fino alla tenda di Iael, moglie di Heber il chenita: fra Iabin e la casa di Heber c’è pace.',
           certezza: 'scritto',
-          fonti: [b('Giudici', 4, '17-21')],
+          fonti: [b('Giudici', 4, '17')],
+        },
+      ],
+      punti: [
+        {
+          id: 'arriva',
+          x: 2040,
+          tipo: 'osserva',
+          etichetta: 'Un uomo in fuga',
+          passi: [...ARRIVO.arriva(io), ...ARRIVO.incontro(io), ...ARRIVO.entra(io), det('guida')],
+        },
+      ],
+    },
+    {
+      id: 'geova-tenda',
+      titolo: 'Nelle mani di una donna',
+      luogo: 'La tenda di Iael',
+      ...palcoTenda(io),
+      inizioX: 820,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Sisera è entrato nella tenda di Iael.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '18')],
         },
       ],
       punti: [
         {
           id: 'tenda',
-          x: 760,
+          x: 820,
           tipo: 'osserva',
           etichetta: 'La tenda di Iael',
-          passi: [det('si-servi')],
+          passi: [
+            ...TENDA.prendiCoperta(io),
+            ...TENDA.copri(io),
+            ...TENDA.acqua(io),
+            ...TENDA.otre(io),
+            ...TENDA.beve(io),
+            ...TENDA.ordine(io),
+            {
+              t: 'narra',
+              testo: 'Sisera si addormenta profondamente.',
+              certezza: 'scritto',
+              fonti: [b('Giudici', 4, '21')],
+            },
+            det('si-servi'),
+          ],
         },
         {
           id: 'consegna',
@@ -73,10 +120,32 @@ export const geova: Ruolo = {
               fonti: [b('Giudici', 4, '21')],
             },
             { t: 'fx', fx: { k: 'dissolvi', a: 0, dur: 1.6 } },
-            det('uguali'),
-            det('guida'),
             senti('g-donna'),
           ],
+        },
+      ],
+    },
+    {
+      id: 'geova-barac',
+      titolo: 'L’uomo che stai cercando',
+      luogo: 'Arriva Barac',
+      ...palcoBarac(io),
+      inizioX: 1100,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Barac arriva alla tenda di Iael, all’inseguimento di Sisera.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '22')],
+        },
+      ],
+      punti: [
+        {
+          id: 'barac',
+          x: 1100,
+          tipo: 'osserva',
+          etichetta: 'Barac e Iael',
+          passi: [...BARAC.arriva(io), ...BARAC.incontro(io), ...BARAC.entra(io), det('uguali')],
         },
       ],
     },
@@ -84,12 +153,8 @@ export const geova: Ruolo = {
       id: 'geova-canto',
       titolo: 'Un canto ispirato',
       luogo: 'Quel giorno',
-      ...festa(2000),
-      inizioX: 400,
-      folle: [
-        { x0: 760, x1: 1000, n: 7, seme: 131, donne: 0.7, gruppo: 'danza' },
-        { x0: 1100, x1: 1650, n: 9, seme: 133, donne: 0.4, bimbi: 0.2, comportamento: 'vaga' },
-      ],
+      ...palcoCanto(io),
+      inizioX: 600,
       ingresso: [
         {
           t: 'narra',
@@ -99,28 +164,7 @@ export const geova: Ruolo = {
         },
       ],
       punti: [
-        {
-          id: 'canto',
-          x: 600,
-          tipo: 'agisci',
-          etichetta: 'Ispira il canto',
-          passi: [
-            det('ispirato'),
-            {
-              t: 'attivita',
-              a: {
-                tipo: 'completa',
-                id: 'sole',
-                consegna: 'Il canto si chiude con una preghiera. Completa il versetto.',
-                verso: 'gdc-5-31',
-                testo:
-                  'Così, o Geova, muoiano tutti i tuoi [[nemici]], ma quelli che ti [[amano]] siano come il [[sole]] che sorge nella sua gloria”. E il paese fu in pace per 40 anni.',
-                distrattori: ['popoli', 'temono', 'fuoco'],
-              },
-            },
-            senti('g-nemici'),
-          ],
-        },
+        { id: 'canto', x: 600, tipo: 'agisci', etichetta: 'Ispira il canto', passi: [...CANTO.lode(io), det('ispirato')] },
         {
           id: 'meghiddo',
           x: 1250,
@@ -153,6 +197,46 @@ export const geova: Ruolo = {
           etichetta: 'Secoli dopo',
           richiede: ['meghiddo'],
           passi: [{ t: 'verso', id: 'sal-83-9', evidenzia: ['come facesti a Sìsera e a Iàbin'] }, det('fede-rafforzata')],
+        },
+      ],
+    },
+    {
+      id: 'geova-finestra',
+      titolo: 'Un’attesa vana',
+      luogo: 'Ad Aroset, come la descrive il canto',
+      ...palcoFinestra(io),
+      inizioX: 850,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Il canto si sposta nella casa di Sisera: sua madre aspetta il suo ritorno.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 5, '28')],
+        },
+      ],
+      punti: [
+        {
+          id: 'attesa',
+          x: 850,
+          tipo: 'osserva',
+          etichetta: 'Alla finestra',
+          passi: [
+            ...FINESTRA.attesa(io),
+            ...FINESTRA.dame(io),
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'sole',
+                consegna: 'Il canto si chiude con una preghiera. Completa il versetto.',
+                verso: 'gdc-5-31',
+                testo:
+                  'Così, o Geova, muoiano tutti i tuoi [[nemici]], ma quelli che ti [[amano]] siano come il [[sole]] che sorge nella sua gloria”. E il paese fu in pace per 40 anni.',
+                distrattori: ['popoli', 'temono', 'fuoco'],
+              },
+            },
+            senti('g-nemici'),
+          ],
         },
       ],
     },
