@@ -548,7 +548,10 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
 - Per sapere com’è andata senza `gh`: `curl -s
   "https://api.github.com/repos/Br1-data/explore/actions/runs?head_sha=<sha>"` (campi
   `status` e `conclusion`); i passi falliti in `…/actions/runs/<id>/jobs`. I log
-  completi richiedono l’accesso a GitHub. Si pubblica solo un commit con le verifiche
+  completi richiedono l’accesso a GitHub, ma ogni errore della prova dal vero diventa
+  anche un’annotazione, leggibile senza accesso in `…/check-runs/<id del job>/annotations`.
+  Ogni percorso ha 10 minuti di tempo; la riga «racconto concluso» dice quanti secondi
+  ha richiesto, e un percorso che si blocca non ferma gli altri. Si pubblica solo un commit con le verifiche
   verdi: se un commit fallisce e il successivo (che lo contiene) passa, si pubblica il
   successivo. Dopo la pubblicazione, il workflow «Pubblica su GitHub Pages» aggiorna il
   sito: si controlla che lo script indicato da `index.html` contenga un testo nuovo.

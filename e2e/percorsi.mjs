@@ -94,11 +94,17 @@ const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: p
 const errori = [];
 let fallito = false;
 
+/** Su GitHub un errore diventa un’annotazione: si legge dall’API anche senza accesso ai log. */
+const annota = (messaggio) => {
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=Prova dal vero::${String(messaggio).replace(/\r?\n/g, ' ').slice(0, 900)}`);
+};
+
 function verifica(condizione, messaggio) {
   if (condizione) {
     console.log(`  ✓ ${messaggio}`);
   } else {
     console.error(`  ✗ ${messaggio}`);
+    annota(messaggio);
     fallito = true;
   }
 }
@@ -242,7 +248,9 @@ async function gioca(cap, id) {
   const visti = new Set();
   let scena = -1;
   let passi = 0;
-  const limite = Date.now() + 240_000;
+  // I racconti con le scene comuni sono lunghi, e la macchina delle verifiche è più lenta.
+  const inizio = Date.now();
+  const limite = inizio + 600_000;
   while (!pagina.url().endsWith('/fine')) {
     if (Date.now() > limite) throw new Error(`${ruolo}: tempo scaduto (scena ${scena})`);
     if (await pagina.locator('.scheda').count()) {
@@ -295,7 +303,7 @@ async function gioca(cap, id) {
 
   await pagina.locator('.esito').waitFor({ timeout: 10_000 });
   const [fatti, totali] = (await pagina.locator('.esito b').first().innerText()).split('/').map((x) => Number(x.trim()));
-  verifica(totali > 0 && fatti === totali, `racconto concluso con ${fatti} dettagli su ${totali} (${passi} schede)`);
+  verifica(totali > 0 && fatti === totali, `racconto concluso con ${fatti} dettagli su ${totali} (${passi} schede, ${Math.round((Date.now() - inizio) / 1000)} s)`);
   await scatta(pagina, `${ruolo}-fine`);
 
   // Il quaderno conserva ciò che si è scoperto.
@@ -435,12 +443,21 @@ try {
   const capitoli = process.env.CAPITOLI?.split(',') ?? Object.keys(PERCORSI);
   const soloRuoli = process.env.RUOLI?.split(',');
   for (const cap of capitoli) {
-    for (const id of PERCORSI[cap] ?? []) if (!soloRuoli || soloRuoli.includes(id)) await gioca(cap, id);
+    for (const id of PERCORSI[cap] ?? []) {
+      if (soloRuoli && !soloRuoli.includes(id)) continue;
+      // Un percorso che si blocca non ferma gli altri: l’errore resta, e si va avanti.
+      try {
+        await gioca(cap, id);
+      } catch (e) {
+        verifica(false, `${cap}-${id}: ${e instanceof Error ? e.message.split('\n')[0] : e}`);
+      }
+    }
   }
   provaSuoni();
   verifica(errori.length === 0, `nessun errore in console${errori.length ? `: ${errori.join(' | ')}` : ''}`);
 } catch (e) {
   console.error(e);
+  annota(e instanceof Error ? e.message : e);
   fallito = true;
 } finally {
   await browser.close();
