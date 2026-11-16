@@ -5,6 +5,10 @@ Avventura 2D di studio sui racconti del libro
 Si sceglie un capitolo e il personaggio nei cui panni viverlo, Geova compreso: si
 indagano le scene, si sceglie come comportarsi, si lavora sul testo biblico.
 
+Ogni punto di vista vive **le stesse scene** del racconto in cui il suo personaggio era
+presente, con le stesse voci, gli stessi gesti e gli stessi suoni; cambiano gli appunti,
+cioè ciò che quel personaggio nota, si chiede e scopre. Geova le vive tutte.
+
 **Gioca:** https://br1-data.github.io/explore/ (browser, anche da telefono).
 
 Progetto di studio personale, non ufficiale. Le citazioni bibliche vengono dalla
@@ -68,13 +72,19 @@ collegato all'originale su jw.org.
   del pane d’orzo e la notte della fuga).
 - **263 dettagli** (84 + 49 + 50 + 35 + 45), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
-- **Tre modi di giocare**:
+- **Quattro modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;
+  - *gesti nella scena*, solo quelli che il racconto o le fonti attribuiscono al
+    personaggio: costruire l’arca, portare le provviste, coprire Sisera, armare i
+    volontari, stendere e strizzare il vello, fracassare la giara;
   - *situazioni di condotta*: momenti del racconto, o scene tipiche del tempo segnate
     «Ricostruzione», in cui scegli che cosa fare e scopri che cosa fece il personaggio
     secondo le fonti;
   - *attività sul testo*: ricomporre il messaggio di Enoc, completare i versetti,
     ricostruire le genealogie, classificare, usare la linea del tempo.
+- **Voci e suoni fedeli**: le parole nelle nuvolette sono citazioni alla lettera; si
+  sente solo ciò che si poteva sentire davvero (vento, pioggia, folle, animali, fuoco,
+  corni di montone, giare in pezzi), dov’è la sua sorgente. Niente musica.
 - **Quaderno di studio**: dettagli scoperti, riflessioni personali, passi biblici
   e domande del capitolo; si può scaricare o stampare. Si salva nell’account.
 - **Account obbligatorio** (nome utente e password): progressi e quaderno stanno
@@ -102,7 +112,12 @@ npm run dev        # http://localhost:5173
 npm run check      # controllo dei tipi e test dei contenuti
 npm run build      # sito statico in dist/
 npm run e2e        # gioca tutti i percorsi in Chromium (dopo la build)
+CAPITOLI=18 RUOLI=gedeone SCHERMATE=e2e/schermate npm run e2e   # un solo percorso, con le schermate
 ```
+
+Ogni push fa girare le «Verifiche» (tipi, test, build, prova dal vero). Il sito si
+pubblica portando il ramo `claude/funny-allen-d6a9za` a un commit con le verifiche
+verdi: il workflow «Pubblica su GitHub Pages» lo mette online.
 
 ## Salvataggi
 

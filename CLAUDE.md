@@ -16,7 +16,10 @@ cinque: Noè, Geova, la moglie di Noè, uno dei figli, uno dei contemporanei), i
 il capitolo 17 (Iael, sei punti di vista: Iael, Geova, Sisera, Barac, Debora, la madre di
 Sisera) e il capitolo 18 (Gedeone, cinque: Gedeone, Geova, Ioas, uno dei 300, un soldato
 madianita). Gli altri 49 capitoli compaiono nell’indice come «in preparazione».
-**Prossimo passo:** il capitolo che indicherà il committente, con la stessa struttura.
+Tutti e cinque hanno le scene comuni in `racconto.ts` (decisione 8): ogni punto di vista
+vive le stesse scene in cui il suo personaggio era presente, con appunti propri.
+**Prossimo passo:** il capitolo che indicherà il committente, con la stessa struttura
+(modello: `18-gedeone/`).
 
 Lingua del progetto: italiano (codice, commenti, testi, commit).
 
@@ -142,7 +145,24 @@ Scelte di progetto conseguenti (applicate dal capitolo 17 in poi):
 - **Le morti violente non si mostrano**: la scena si oscura (`dissolvi`) prima della
   scheda che le racconta, con le parole sobrie del testo. Un test lo verifica.
 - **Le parole pronunciate** nelle nuvolette (`nastro`) sono solo citazioni alla
-  lettera di un versetto riportato in `VERSI` (test).
+  lettera di un versetto riportato in `VERSI` (test). In più (dal riordino delle scene
+  comuni, 16/11/2026):
+  - chi parla è l’attore che le pronuncia nel testo; se il personaggio è impersonato, le
+    dice il giocatore (`chi: 'giocatore'`), con le stesse parole che sentono gli altri ruoli;
+  - le parole di Geova senza un portavoce visibile restano nel `narra`; quelle dette
+    tramite un angelo o un profeta presente in scena sono nuvolette di chi le pronuncia
+    (l’angelo di Ofra, Debora sotto la palma). Chi gioca Geova non dice mai nulla;
+  - le parole di un gruppo senza nome (gli uomini di Ofra, i principi di Succot, gli
+    uomini d’Israele) le dice un attore con lo stile `abitante`, sempre alla lettera;
+  - se il testo dice che qualcuno parla ma non riporta le parole (le dame della madre di
+    Sisera che le rispondono), si mostra solo il gesto (posa `parla`), senza nuvoletta;
+  - un canto cantato insieme (Debora e Barac) si divide fra chi lo canta, frase per frase.
+- **L’angelo** ha l’aspetto di un uomo con un bastone (stile `angelo`): la Bibbia non lo
+  descrive oltre, e Gedeone capisce chi è solo quando scompare (Giudici 6:21, 22). Non è
+  una raffigurazione di Geova (decisione 3).
+- **Chi sta dentro** (in casa, nell’arca) vive la scena con `modo: 'osserva'`: non si fa
+  camminare fuori chi il testo mette dentro (Gedeone in casa il mattino dopo, la famiglia
+  di Noè sull’Ararat finché Dio non dice di uscire).
 
 ## Livelli di certezza
 
@@ -159,7 +179,8 @@ A parte c'è il contrassegno **Ricostruzione** (decisione 6), che non è un live
 certezza: dice che la scena non è narrata e su quali fonti è costruita.
 
 I test verificano fonti, collegamenti a jw.org, citazioni alla lettera, calcoli, che
-ogni dettaglio `sembra` contenga una parola di cautela e le decisioni 7 e 8.
+ogni dettaglio `sembra` contenga una parola di cautela e le decisioni 7 e 8 (l’elenco
+completo è in «Che cosa controllano i test»).
 
 ## Fonti
 
@@ -192,7 +213,41 @@ Chromium manca: `npx playwright install chromium`.
 
 **Prima di ogni commit:** `npm run check`, `npm run build`, `npm run e2e`, e guarda
 alcune schermate (desktop e telefono) per verificare la grafica. Le schermate
-«…-prima» sono prese mentre la scheda compare: la trasparenza è normale.
+«…-prima» sono prese mentre la scheda compare: la trasparenza è normale; quelle
+«…-racconto» durante una pausa della sequenza (nuvolette, gesti). Per vedere un momento
+preciso di una scena (l’acqua alta, le torce accese) conviene uno script Playwright che
+carica la scena con `window.__partita.caricaScena(i)` e imposta `vars`, `varianti`,
+`carichi` e `attori` della partita prima dello scatto.
+
+## Che cosa controllano i test
+
+`test/contenuti.test.ts` gira su ogni capitolo registrato. Controlla:
+
+- **fonti e certezze**: ogni dettaglio e ogni `narra` con un’affermazione ha fonti; i
+  dettagli `sembra` contengono una parola di cautela (sembra, forse, probabil-, è
+  possibile, potrebbe, a quanto pare, evidentemente, deve aver, supporre);
+- **testo biblico**: i versetti di `VERSI` sono usati tutti e citati alla lettera; il
+  testo di `completa` senza `[[ ]]` è un versetto; `trova` è un passo alla lettera; le
+  citazioni «» di `associa` sono alla lettera; ogni `nastro` è una citazione di `VERSI`;
+- **decisione 8**: dettagli, sensazioni e id delle attività non si ripetono fra i punti
+  di vista dello stesso capitolo, e nessuno resta irraggiungibile;
+- **decisione 7**: niente «cammino», «a piedi», «strada degli anni» nei testi dei ruoli;
+- **decisione 12**: ogni versetto citato sta nei passi del suo capitolo (16/17, 1/2);
+- **coerenza delle scene**: i punti rimandano a contenuti che esistono; le scene si
+  possono completare; le sequenze (`fx`) usano solo attori presenti in scena; le
+  variabili di `fx var` sono dichiarate in `vars`; gli `id` di `fx oggetto` esistono fra
+  gli oggetti; i `carico` sono oggetti veri del motore;
+- **morti**: un `narra` che racconta una morte ha prima una `dissolvi`;
+- **suoni**: suonano solo oggetti che esistono; `suono: 'notte'` se e solo se l’ambiente
+  è `notte`;
+- **controlli propri dei capitoli**: il messaggio di Enoc, i numeri di Genesi 5 e la
+  linea del tempo, i resoconti di Giudici 4 e 5, le tribù del canto, le parole di Sisera
+  e Iael, nessuna parola in bocca a Geova (capitolo 1).
+
+`e2e/percorsi.mjs` gioca ogni punto di vista fino alla fine in Chromium (accesso
+compreso, con l’archivio finto): tutti i dettagli trovati, il quaderno, il salvataggio
+nell’account, i suoni attesi (`SUONI_ATTESI`, all’inizio e con `poi` alla fine della
+scena), nessun errore in console.
 
 ## Struttura
 
@@ -262,7 +317,10 @@ Dove si mette una cosa nuova:
 
 - un **capitolo**: una cartella in `pubblicazioni/<id>/capitoli/` e una riga in
   `pubblicazioni/<id>/index.ts` (vedi «Come aggiungere un capitolo»);
-- un **personaggio**: il suo aspetto in `pubblicazioni/<id>/personaggi.ts`;
+- un **personaggio**: il suo aspetto in `pubblicazioni/<id>/personaggi.ts` (ci sono già
+  stili generici: `abitante` per chi parla a nome di un gruppo senza nome, `dama`,
+  `angelo`, `pura` per un servitore). Un personaggio non tiene in mano per sempre ciò che
+  usa solo in un momento (il corno, la torcia): lo prende con `fx carico`;
 - una **pubblicazione**: vedi «Come aggiungere una pubblicazione»;
 - un **oggetto di scena, un ambiente, un suono**: nel motore (`oggetti.ts`,
   `tavolozze.ts`, `suono.ts`), perché valgono per tutti;
@@ -286,7 +344,35 @@ tira le somme con un'attività.
 Tipi di passo: `narra` (anche `ricostruzione: true`), `verso` (con `evidenzia`),
 `dettaglio` (finisce nel quaderno), `senti` (domanda al giocatore, con appunto),
 `schema`, `attivita`, `fx` (effetti di scena: pose, spostamenti degli attori,
-nuvolette di parole, variabili, dissolvenze).
+nuvolette di parole, variabili, dissolvenze, oggetti in mano, suoni).
+
+### Le scene comuni: `racconto.ts` (decisione 8)
+
+Le scene che più personaggi vivono insieme si scrivono **una volta sola**, in
+`racconto.ts` del capitolo, e ogni ruolo le compone. Il file ha due parti per ogni scena:
+
+- un **palco**, `palcoX(io): Palco` (`Palco` = una `Scena` senza `id`, `titolo`, `luogo`,
+  `punti`, `ingresso`): scenografia, `vars`, `folle` e `attori`. `io` è l’id del
+  personaggio impersonato (`'gedeone'`, `'geova'`…): il suo attore si toglie
+  (`presenti(io, […])`), perché lo muove chi gioca. Per Geova non si toglie nessuno. Se
+  la scena si guarda da dentro (`modo: 'osserva'` per tutti), gli attori restano tutti,
+  nascosti, e compaiono quando escono (`palcoUscita()` del capitolo 2);
+- i **momenti**, un oggetto `X` con funzioni che restituiscono `Passo[]`: le voci
+  (`nastro`), i gesti (`carico`, `oggetto`, `posa`), gli spostamenti (`vai`), le
+  variabili, i suoni (`fx suono`). Le funzioni prendono `io`: `chi(io, id)` dà
+  `'giocatore'` se l’attore è impersonato, `va(io, id, x)` non sposta chi gioca.
+
+Il ruolo spande il palco nella scena (`...palcoCampo(io)`), aggiunge `id`, `titolo`,
+`luogo`, `inizioX`, `ingresso` e `punti`, e mette i momenti nei passi dei punti insieme ai
+**propri** dettagli, sensazioni e attività. Le parti che cambiano da un ruolo all’altro
+restano nel ruolo: la narrazione (in seconda persona per chi vive la scena, in terza per
+gli altri), le attività, gli appunti. Per cambiare un valore iniziale del palco:
+`vars: { ...palcoCampo(io).vars, giare: 1 }` dopo lo spread.
+
+Per decidere quali scene ha un ruolo: si elencano le scene del racconto e, per ognuna,
+chi c’era secondo il testo. Ogni ruolo ha tutte le scene in cui c’era il suo personaggio
+(Geova tutte); un ruolo può avere una sola scena (Ioas), se il testo lo mette solo lì.
+Modello completo: `18-gedeone/racconto.ts`.
 
 Strumenti di scena già pronti nel motore:
 
@@ -329,21 +415,29 @@ suoni dalla scena: ogni decimo di secondo la partita gli passa un `Paesaggio`.
   `quiete`, `notte`, `pioggia`. Deve essere `notte` se e solo se l’ambiente è `notte` (test).
 - **Luce** dalla tavolozza: di giorno uccelli, al crepuscolo pochi uccelli e grilli,
   di notte grilli e qualche gufo. Con la pioggia tacciono.
-- **Oggetti che suonano** (`SUONI_OGGETTI`): `fuoco` e `torcia` crepitano, `pecora`
-  bela, `acqua` scorre (anche con `seVar`, es. il torrente in piena), `incudine` batte.
+- **Oggetti che suonano** (`SUONI_OGGETTI`): `fuoco` e `torcia` crepitano (anche
+  `altare`, tranne la variante 1 senza fuoco), `pecora` bela, `acqua` scorre (anche con
+  `seVar`, es. il torrente in piena), `incudine` batte.
 - **Folle**: `folla` parla a bassa voce (più forte se `reagisce` e c’è `agitazione`),
   `rissa` grida e colpi, `invoca` un’invocazione ripetuta, `danza` tamburelli, mani e
-  canto di donne, `insegue` gente che corre; le folle `fondo` sono un brusio lontano;
-  le `torce` crepitano.
+  canto di donne, `insegue` gente che corre, `assalto` corni di montone che si
+  sovrappongono e grida di guerra, `fuga` passi fitti e urla; le folle `fondo` sono un
+  brusio lontano; le `torce` crepitano.
+- **Suoni singoli** (`fx suono`, `cosa`: `corno` o `giare`): avvengono una volta nel punto
+  `x` (di norma dove sta chi li produce), più forti e centrati se sono vicini. Servono per
+  ciò che accade in un istante: il corno di Gedeone che chiama a raccolta, le 300 giare
+  che vanno in pezzi. `__suono.istantanea().eventi` li elenca in ordine (prova dal vero).
 - **Attori** che si spostano (`fx vai`): passi. Chi gioca: passi, bagnati sotto la pioggia.
 - **Variabili**: `pioggia` e `pioggiaFuori` (scrosci, gocce, tuoni oltre 0.6),
   `agitazione`, `livello` (l’acqua che sale si sente come `acqua`), `animali` (a 0
   tacciono uccelli, grilli e gufi).
 
 Per un capitolo nuovo basta mettere in scena le cose giuste. Se serve un suono che non
-c’è (es. il mare, un asino, un corno), si aggiunge una ricetta in `EVENTI`, il suo
-ritmo in `RITMI` e, se viene da un oggetto, la voce in `SUONI_OGGETTI`; poi si misura
-il volume rispetto agli altri. In `e2e/percorsi.mjs` si aggiungono a `SUONI_ATTESI`
+c’è (es. il mare, un asino, una cetra suonata in scena), si aggiunge una ricetta in
+`EVENTI`; se è continuo, il suo ritmo in `RITMI` e il tipo in `TipoSorgente` e `VOLUMI`
+(e, se viene da un oggetto, la voce in `SUONI_OGGETTI`; se viene da una folla, un
+`gruppo`); se avviene una volta, un nuovo valore di `fx suono` (tipo in `contenuti/tipi.ts`,
+ricetta in `Suono.evento`). Poi si misura il volume rispetto agli altri. In `e2e/percorsi.mjs` si aggiungono a `SUONI_ATTESI`
 le scene con sorgenti caratteristiche: la prova controlla che si sentano davvero
 all’inizio della scena e, con `poi`, alla fine (sorgenti comparse e `fx suono` sentiti).
 
@@ -369,22 +463,30 @@ Punti `facoltativo` (bordo tratteggiato) non bloccano la scena; `richiede` ordin
 punti. La scena è completa quando tutti i punti obbligatori sono fatti; si prosegue
 con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo`.
 
-## Come aggiungere un capitolo (modello: `pubblicazioni/coraggio/capitoli/16-barac-debora/`)
+## Come aggiungere un capitolo (modello: `pubblicazioni/coraggio/capitoli/18-gedeone/`)
 
-1. Scarica e leggi il capitolo, i passi biblici indicati, le pubblicazioni citate e
-   la descrizione delle immagini. I «passi da leggere» segnano i confini del capitolo
-   (decisione 12): se il capitolo vicino racconta la stessa vicenda, leggi anche quello
-   e lascia a lui ciò che gli appartiene.
-2. Elenca i personaggi impersonabili (incluso Geova) e per ciascuno decidi la **lente**:
-   che cosa vede e fa solo lui. Distribuisci i dettagli fra i ruoli senza ripetizioni.
-3. Crea `src/pubblicazioni/<id>/capitoli/<NN>-<nome>/` sul modello di `16-barac-debora/`: `base.ts` con versetti
-   alla lettera, dettagli con fonti e certezza, sensazioni come domande, sezioni di
-   studio; un file per ogni personaggio (Geova in `modo: 'osserva'`, solo con gli atti
-   che il racconto gli attribuisce) e `index.ts` che esporta `capitolo({ … })` da `../../comune`.
+1. Scarica e leggi il capitolo, i passi biblici indicati (con le note in calce
+   dell’edizione per lo studio), le pubblicazioni citate, le voci di Perspicacia dei
+   personaggi e dei luoghi, e la descrizione delle immagini. I «passi da leggere» segnano
+   i confini del capitolo (decisione 12): se il capitolo vicino racconta la stessa
+   vicenda, leggi anche quello e lascia a lui ciò che gli appartiene.
+2. Elenca le **scene del racconto** e, per ognuna, chi c’era secondo il testo; poi i
+   personaggi impersonabili (incluso Geova) con la loro **lente**. Ogni ruolo avrà tutte
+   le scene in cui c’era (Geova tutte), con gli stessi gesti, voci e suoni; i dettagli si
+   distribuiscono fra i ruoli senza ripetizioni, ognuno con ciò che vede dalla sua lente
+   (decisione 8). Cerca nelle fonti un dettaglio vero per ogni ruolo e scena; dove non
+   c’è, va bene una sensazione o niente.
+3. Crea `src/pubblicazioni/<id>/capitoli/<NN>-<nome>/` sul modello di `18-gedeone/`:
+   `base.ts` con versetti alla lettera, le parole pronunciate (`PAROLE`, alla lettera),
+   dettagli con fonti e certezza, sensazioni come domande, sezioni di studio;
+   `scenari.ts` con le scenografie; `racconto.ts` con i palchi e i momenti comuni; un
+   file per ogni personaggio (Geova in `modo: 'osserva'`, solo con gli atti che il
+   racconto gli attribuisce) e `index.ts` che esporta `capitolo({ … })` da `../../comune`.
 4. In ogni scena usa le tre forme di interattività (decisione 5): indizi da esaminare,
-   attività da manipolare, situazioni di condotta dichiarate come ricostruzioni.
-   Attenzione ai modi di dire biblici (camminare, correre la corsa, ecc.): sono
-   simbolici, non vanno resi come movimento (decisione 7).
+   attività da manipolare, situazioni di condotta dichiarate come ricostruzioni; e i
+   gesti in scena legati ai fatti (decisione 13). Attenzione ai modi di dire biblici
+   (camminare, correre la corsa, ecc.): sono simbolici, non vanno resi come movimento
+   (decisione 7).
 5. Riusa o aggiungi scenografie (`scenari.ts`), oggetti (`motore/oggetti.ts`),
    ambienti (`motore/tavolozze.ts`), illustrazioni (`motore/arte.ts`); l’aspetto dei
    personaggi nuovi va in `personaggi.ts` della pubblicazione; gli schemi di studio sono
@@ -418,8 +520,13 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
 - Coordinate di scena in unità logiche: altezza vista 540, terreno intorno a y=420.
   `x` dei punti fra 60 e `larghezza - 60`.
 - `window.__partita` espone la partita in corso per la prova dal vero
-  (`istantanea()`, `teletrasporta(x)`); `window.__suono.istantanea()` dice che cosa
-  sta suonando.
+  (`istantanea()`, `teletrasporta(x)`, `caricaScena(i)`); `window.__suono.istantanea()`
+  dice che cosa sta suonando (`sorgenti`) e quali suoni singoli si sono sentiti (`eventi`).
+- La partita parla all’interfaccia con `Ascoltatori` (`partita.ts`): schede, inviti,
+  stato, passi, `paesaggio` (ciò che si sente) ed `evento` (un `fx suono`); `gioco.ts`
+  li collega a schede e `Suono`.
+- Una folla nascosta (`seVar` a 0) non si muove: due folle con lo stesso seme restano
+  allineate solo se sono `fermo` o `assalto`.
 - Toccare la scena vicino a un punto visibile ci porta e lo apre (`vaiVerso`).
 - Il sito è statico (`base: './'`): funziona anche sotto un sottopercorso.
 - Aggiornamenti: chi l’ha installato sulla schermata Home riapre il gioco senza
@@ -438,3 +545,12 @@ con il pulsante o camminando fino in fondo. Dopo l'ultima scena parte l'`epilogo
   `git push origin claude/funny-faraday-n6r8r2:claude/funny-allen-d6a9za`.
 - `ci.yml` («Verifiche») gira su ogni push: controllo dei tipi, test, build e prova
   dal vero in Chromium.
+- Per sapere com’è andata senza `gh`: `curl -s
+  "https://api.github.com/repos/Br1-data/explore/actions/runs?head_sha=<sha>"` (campi
+  `status` e `conclusion`); i passi falliti in `…/actions/runs/<id>/jobs`. I log
+  completi richiedono l’accesso a GitHub. Si pubblica solo un commit con le verifiche
+  verdi: se un commit fallisce e il successivo (che lo contiene) passa, si pubblica il
+  successivo. Dopo la pubblicazione, il workflow «Pubblica su GitHub Pages» aggiorna il
+  sito: si controlla che lo script indicato da `index.html` contenga un testo nuovo.
+- Su Windows, i messaggi di commit su più righe si scrivono in un file e si passano con
+  `git commit -F <file>`.
