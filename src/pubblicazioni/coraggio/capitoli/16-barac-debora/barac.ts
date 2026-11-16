@@ -1,9 +1,10 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
-import { F, PAROLE, b } from './base';
-import { chedes, cimaTabor, palma, pianura } from './scenari';
+import { F, b } from './base';
+import { CANTO, CHEDES, PALMA, PIANURA, TABOR, palcoCanto, palcoChedes, palcoPalma, palcoPianura, palcoTabor } from './racconto';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'barac';
 
 /**
  * Il punto di vista di Barac: la chiamata, la condizione posta a Debora, il Tabor,
@@ -15,21 +16,20 @@ export const barac: Ruolo = {
   nome: 'Barac',
   titolo: 'L’uomo di fede che accettò l’aiuto di una donna',
   descrizione:
-    'Ricevi da Debora il comando di Geova, decidi come rispondere, convoca e arma i tuoi uomini a Chedes, sali sul Tabor e scegli se scendere nella pianura contro 900 carri.',
+    'Ricevi da Debora il comando di Geova, decidi come rispondere, convoca e arma i tuoi uomini a Chedes, sali sul Tabor, scegli se scendere nella pianura contro 900 carri e canta con Debora la vittoria.',
   fedelta:
     'Giudici 4:6-16, 24 ed Ebrei 11:32-34, come li spiega il capitolo 16 del libro con le pubblicazioni che cita. Le parole di Barac e di Debora sono quelle del testo; le scelte riguardano momenti che il racconto descrive.',
   modo: 'cammina',
   stile: 'barac',
-  durata: '14-17 minuti',
+  durata: '16-20 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Barac',
   scene: [
     {
       id: 'barac-chiamata',
       titolo: 'La chiamata',
       luogo: 'Dalla profetessa Debora',
-      ...palma(2000),
+      ...palcoPalma(io),
       inizioX: 1700,
-      attori: [{ id: 'debora', x: 900, stile: 'debora', verso: 1 }],
       ingresso: [
         {
           t: 'narra',
@@ -45,11 +45,7 @@ export const barac: Ruolo = {
           x: 1020,
           tipo: 'ascolta',
           etichetta: 'Debora ti parla',
-          passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'debora', testo: PAROLE.comando, dur: 5.5 } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'debora', testo: PAROLE.promessa, dur: 5.5 } },
-            det('stupore'),
-          ],
+          passi: [...PALMA.comando(io), det('stupore')],
         },
         {
           id: 'condizione',
@@ -87,8 +83,8 @@ export const barac: Ruolo = {
                 ],
               },
             },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.condizione, dur: 4.5 } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'debora', testo: PAROLE.verro, dur: 3 } },
+            ...PALMA.condizione(io),
+            ...PALMA.verro(io),
             det('altri-uomini'),
             senti('b-aiuto'),
           ],
@@ -107,15 +103,8 @@ export const barac: Ruolo = {
       id: 'barac-chedes',
       titolo: 'A Chedes',
       luogo: 'Nella regione montuosa di Neftali',
-      ...chedes(2000),
+      ...palcoChedes(io),
       inizioX: 300,
-      // Gli stessi uomini, prima disarmati e poi con le armi che Barac riesce a dar loro.
-      vars: { radunati: 0, armati: 0 },
-      attori: [{ id: 'debora', x: 600, stile: 'debora', verso: 1 }],
-      folle: [
-        { x0: 1080, x1: 1700, n: 16, seme: 131, comportamento: 'fermo', seVar: 'radunati' },
-        { x0: 1080, x1: 1700, n: 16, seme: 131, armati: 0.6, comportamento: 'fermo', seVar: 'armati' },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -133,8 +122,7 @@ export const barac: Ruolo = {
           etichetta: 'Convoca Zabulon e Neftali',
           richiede: ['citta'],
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'radunati', a: 1, dur: 4 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2 } },
+            ...CHEDES.convoca(),
             {
               t: 'attivita',
               a: {
@@ -154,11 +142,7 @@ export const barac: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Arma i tuoi uomini',
           richiede: ['convoca'],
-          passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'armati', a: 1, dur: 2 } },
-            { t: 'fx', fx: { k: 'var', nome: 'radunati', a: 0, dur: 0 } },
-            det('armi'),
-          ],
+          passi: [...CHEDES.arma(io), det('armi')],
         },
       ],
     },
@@ -166,13 +150,8 @@ export const barac: Ruolo = {
       id: 'barac-tabor',
       titolo: 'Sul monte Tabor',
       luogo: 'Con 10.000 uomini',
-      ...cimaTabor(2200),
+      ...palcoTabor(io),
       inizioX: 300,
-      attori: [{ id: 'debora', x: 700, stile: 'debora', verso: 1 }],
-      folle: [
-        { x0: 820, x1: 1260, n: 14, seme: 111, armati: 0.3, comportamento: 'vaga' },
-        { x0: 1250, x1: 1900, n: 16, seme: 113, armati: 0.9, piano: 'fondo', comportamento: 'vaga' },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -210,7 +189,7 @@ export const barac: Ruolo = {
           etichetta: 'L’esercito di Sisera si avvicina',
           richiede: ['incarico', 'monte', 'uomini'],
           passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'debora', testo: PAROLE.va, dur: 4.5 } },
+            ...TABOR.segnale(io),
             {
               t: 'attivita',
               a: {
@@ -240,24 +219,39 @@ export const barac: Ruolo = {
       id: 'barac-inseguimento',
       titolo: 'All’inseguimento',
       luogo: 'Dal monte Tabor verso Aroset-Goim',
-      ...pianura(2800),
+      ...palcoPianura(),
       inizioX: 320,
-      vars: { pioggia: 0.35 },
       folle: [{ x0: 120, x1: 300, n: 9, seme: 81, armati: 0.6, comportamento: 'insegue', distanza: [210, 150] }],
       ingresso: [
         {
           t: 'narra',
-          testo: 'Geova ha gettato nello scompiglio l’esercito di Sisera e lo ha consegnato alla tua spada: ora insegui il nemico.',
+          testo: 'Sei sceso dal monte Tabor alla testa dei 10.000 uomini, verso la pianura dove aspettano i carri di Sisera.',
           certezza: 'scritto',
-          fonti: [b('Giudici', 4, '15'), b('Giudici', 4, '16')],
+          fonti: [b('Giudici', 4, '14')],
         },
       ],
       punti: [
+        {
+          id: 'cielo',
+          x: 700,
+          tipo: 'agisci',
+          etichetta: 'Avanti, contro i carri',
+          passi: [
+            ...PIANURA.scompiglio(),
+            {
+              t: 'narra',
+              testo: 'Geova getta nello scompiglio Sisera, tutti i suoi carri e tutto l’esercito, e li consegna alla tua spada: ora insegui il nemico.',
+              certezza: 'scritto',
+              fonti: [b('Giudici', 4, '15'), b('Giudici', 4, '16')],
+            },
+          ],
+        },
         {
           id: 'carri',
           x: 1480,
           tipo: 'esamina',
           etichetta: 'Carri abbandonati',
+          richiede: ['cielo'],
           passi: [det('inseguimento')],
         },
         {
@@ -265,6 +259,7 @@ export const barac: Ruolo = {
           x: 1900,
           tipo: 'esamina',
           etichetta: 'Il campo di battaglia',
+          richiede: ['cielo'],
           passi: [det('nessuno')],
         },
         {
@@ -314,6 +309,44 @@ export const barac: Ruolo = {
                 testo:
                   'E cos’altro posso dire? Non mi basterebbe il tempo se volessi raccontare di Gedeone, di [[Bàrac]], di Sansone, di Iefte, di Davide, di Samuele e degli altri profeti. Grazie alla [[fede]] sconfissero regni, stabilirono la giustizia, ottennero promesse, chiusero la bocca dei leoni, spensero la violenza del fuoco, sfuggirono al taglio della spada, da deboli furono resi forti, diventarono valorosi in guerra, misero in fuga eserciti [[invasori]].',
                 distrattori: ['Debora', 'forza', 'nemici'],
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'barac-canto',
+      titolo: 'Il canto di vittoria',
+      luogo: 'Quel giorno',
+      ...palcoCanto(io),
+      inizioX: 560,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Quel giorno, dopo la vittoria, Debora intona un canto insieme a te.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 5, '1')],
+        },
+      ],
+      punti: [
+        { id: 'intona', x: 520, tipo: 'agisci', etichetta: 'Canta con Debora', passi: CANTO.intona(io) },
+        {
+          id: 'avanti',
+          x: 760,
+          tipo: 'leggi',
+          etichetta: 'Il canto parla di te',
+          richiede: ['intona'],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'completa',
+                id: 'avanti-barac',
+                consegna: 'In un passo il canto si rivolge proprio a te. Completa il versetto.',
+                verso: 'gdc-5-12',
+                testo: 'Déstati, déstati, Debora! Déstati, déstati, intona un [[canto]]! Avanti, Bàrac! Conduci via i tuoi [[prigionieri]], figlio di Abinòam!',
+                distrattori: ['salmo', 'soldati'],
               },
             },
           ],

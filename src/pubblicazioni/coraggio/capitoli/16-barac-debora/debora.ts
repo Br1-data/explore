@@ -1,9 +1,10 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
-import { F, PAROLE, b } from './base';
-import { cimaTabor, festa, palma } from './scenari';
+import { F, b } from './base';
+import { CANTO, CHEDES, PALMA, TABOR, palcoCanto, palcoChedes, palcoPalma, palcoTabor } from './racconto';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'debora';
 
 const TRIBU = (v: string) => [b('Giudici', 5, v)];
 
@@ -17,25 +18,20 @@ export const debora: Ruolo = {
   nome: 'Debora',
   titolo: 'La profetessa che disse «Verrò senz’altro»',
   descrizione:
-    'Giudica sotto la tua palma, trasmetti a Barac il comando di Geova, decidi se seguirlo verso la battaglia, dagli il segnale sul Tabor e intona il canto di vittoria.',
+    'Giudica sotto la tua palma, trasmetti a Barac il comando di Geova, decidi se seguirlo verso la battaglia, sali con lui e con i suoi uomini da Chedes al Tabor, dagli il segnale e intona il canto di vittoria.',
   fedelta:
     'Giudici 4:4-14 e 5:1-23, come li spiega il capitolo 16 del libro con le pubblicazioni che cita. Le parole di Debora e di Barac sono quelle del testo; la scelta riguarda un momento che il racconto descrive.',
   modo: 'cammina',
   stile: 'debora',
-  durata: '15-18 minuti',
+  durata: '18-22 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Debora',
   scene: [
     {
       id: 'debora-palma',
       titolo: 'Sotto la palma',
       luogo: 'Fra Rama e Betel, nella regione montuosa di Efraim',
-      ...palma(2000),
+      ...palcoPalma(io),
       inizioX: 300,
-      attori: [{ id: 'barac', x: 1980, stile: 'barac', verso: -1 }],
-      folle: [
-        { x0: 1080, x1: 1150, n: 2, seme: 101 },
-        { x0: 1400, x1: 1700, n: 2, seme: 103, donne: 0.5, comportamento: 'vaga' },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -74,12 +70,7 @@ export const debora: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Manda a chiamare Barac',
           richiede: ['incarico', 'palma', 'disputa'],
-          passi: [
-            { t: 'fx', fx: { k: 'vai', chi: 'barac', x: 1080, vel: 150, attendi: true } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.comando, dur: 5.5 } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.promessa, dur: 5.5 } },
-            det('non-autorita'),
-          ],
+          passi: [...PALMA.arriva(io), ...PALMA.comando(io), det('non-autorita')],
         },
         {
           id: 'risposta',
@@ -88,7 +79,7 @@ export const debora: Ruolo = {
           etichetta: 'Barac ti risponde',
           richiede: ['chiama'],
           passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'barac', testo: PAROLE.condizione, dur: 4.5 } },
+            ...PALMA.condizione(io),
             {
               t: 'attivita',
               a: {
@@ -127,8 +118,43 @@ export const debora: Ruolo = {
                 distrattori: ['subito', 'vittoria', 'profetessa'],
               },
             },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.verro, dur: 3 } },
+            ...PALMA.verro(io),
             senti('d-coraggio'),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'debora-chedes',
+      titolo: 'A Chedes',
+      luogo: 'Con Barac, nella regione montuosa di Neftali',
+      ...palcoChedes(io),
+      inizioX: 400,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Ti sei alzata e sei andata con Barac a Chedes.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '9')],
+        },
+      ],
+      punti: [
+        { id: 'barac', x: 820, tipo: 'esamina', etichetta: 'Tu e Barac', passi: [det('lappidot')] },
+        {
+          id: 'convoca',
+          x: 1100,
+          tipo: 'osserva',
+          etichetta: 'Barac convoca Zabulon e Neftali',
+          richiede: ['barac'],
+          passi: [
+            ...CHEDES.convoca(),
+            {
+              t: 'narra',
+              testo: 'Diecimila uomini seguono Barac. E Barac li arma come può.',
+              certezza: 'libro',
+              fonti: [b('Giudici', 4, '10'), F.libro],
+            },
+            ...CHEDES.arma(io),
           ],
         },
       ],
@@ -137,13 +163,8 @@ export const debora: Ruolo = {
       id: 'debora-tabor',
       titolo: 'Sul monte Tabor',
       luogo: 'Con Barac e i suoi uomini',
-      ...cimaTabor(2200),
+      ...palcoTabor(io),
       inizioX: 300,
-      attori: [{ id: 'barac', x: 520, stile: 'barac', verso: 1 }],
-      folle: [
-        { x0: 660, x1: 1220, n: 14, seme: 105, armati: 0.3, comportamento: 'vaga' },
-        { x0: 1250, x1: 1900, n: 16, seme: 107, armati: 0.9, piano: 'fondo', comportamento: 'vaga' },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -182,9 +203,8 @@ export const debora: Ruolo = {
           etichetta: 'Da’ il segnale a Barac',
           richiede: ['soldati', 'pianura'],
           passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.va, dur: 4.5 } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.davanti, dur: 3.5 } },
-            { t: 'fx', fx: { k: 'vai', chi: 'barac', x: 2140, vel: 160 } },
+            ...TABOR.segnale(io),
+            ...TABOR.scende(io),
             { t: 'verso', id: 'gdc-4-14', evidenzia: ['E Bàrac scese dal monte Tàbor alla testa dei 10.000 uomini'] },
           ],
         },
@@ -194,14 +214,8 @@ export const debora: Ruolo = {
       id: 'debora-canto',
       titolo: 'Il canto di vittoria',
       luogo: 'Quel giorno',
-      ...festa(2000),
+      ...palcoCanto(io),
       inizioX: 170,
-      attori: [{ id: 'barac', x: 470, stile: 'barac', verso: -1 }],
-      folle: [
-        { x0: 760, x1: 1000, n: 7, seme: 91, donne: 0.7, gruppo: 'danza' },
-        { x0: 1100, x1: 1650, n: 9, seme: 93, donne: 0.4, bimbi: 0.2, comportamento: 'vaga' },
-        { x0: 300, x1: 1900, n: 12, seme: 95, piano: 'fondo', comportamento: 'vaga' },
-      ],
       ingresso: [
         {
           t: 'narra',
@@ -217,7 +231,7 @@ export const debora: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Intona il canto con Barac',
           passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'barac', posa: 'alza' } },
+            ...CANTO.intona(io),
             { t: 'verso', id: 'gdc-5-1-3', evidenzia: ['a motivo del popolo che si offrì spontaneamente', 'A Geova io canterò'] },
             det('prima-persona'),
           ],

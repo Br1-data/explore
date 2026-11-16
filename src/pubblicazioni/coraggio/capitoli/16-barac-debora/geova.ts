@@ -1,30 +1,32 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { b } from './base';
-import { pianura, villaggio } from './scenari';
+import { CANTO, CHEDES, PALMA, PIANURA, TABOR, palcoCanto, palcoChedes, palcoPalma, palcoPianura, palcoTabor } from './racconto';
+import { villaggio } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'geova';
 
 /**
  * Il punto di vista di Geova.
  *
  * Geova non viene raffigurato e non gli vengono attribuite parole o pensieri oltre
- * al testo. Chi gioca sposta lo sguardo e compie soltanto gli atti che Giudici 4 e 5
- * e il libro attribuiscono a Geova: dà Israele in mano a Iabin, ascolta il grido del
- * popolo, comanda tramite Debora, va davanti a Barac, getta nello scompiglio Sisera,
- * sottomette Iabin.
+ * al testo. Chi gioca sposta lo sguardo su tutte le scene del racconto (racconto.ts) e
+ * compie soltanto gli atti che Giudici 4 e 5 e il libro attribuiscono a Geova: dà
+ * Israele in mano a Iabin, ascolta il grido del popolo, comanda tramite Debora, va
+ * davanti a Barac, getta nello scompiglio Sisera, sottomette Iabin.
  */
 export const geova: Ruolo = {
   id: 'geova',
   nome: 'Geova',
   titolo: 'Ciò che Geova vede e fa',
   descrizione:
-    'Guarda Israele oppresso, rispondi al suo grido, manda il tuo comando tramite Debora e interveni presso il torrente Chison.',
+    'Guarda Israele oppresso, rispondi al suo grido, manda il tuo comando tramite Debora, guarda i volontari radunarsi, va’ davanti a Barac e interveni presso il torrente Chison.',
   fedelta:
     'Geova non viene raffigurato. Compie solo gli atti che Giudici 4 e 5 gli attribuiscono, spiegati dal libro e dalle pubblicazioni che cita: nessuna parola e nessun pensiero gli vengono attribuiti oltre a ciò che è scritto.',
   modo: 'osserva',
   stile: 'nessuno',
-  durata: '10-12 minuti',
+  durata: '16-20 minuti',
   conclusione: 'Hai ripercorso ciò che fece Geova',
   scene: [
     {
@@ -59,67 +61,87 @@ export const geova: Ruolo = {
           etichetta: 'In mano a Iabin',
           passi: [{ t: 'verso', id: 'gdc-4-2', evidenzia: ['Geova li diede dunque in mano a Iàbin', 'implorarono Geova'] }],
         },
-        {
-          id: 'dei',
-          x: 1360,
-          tipo: 'esamina',
-          etichetta: 'Nuovi dèi',
-          passi: [det('nuovi-dei')],
-        },
+        { id: 'dei', x: 1360, tipo: 'esamina', etichetta: 'Nuovi dèi', passi: [det('nuovi-dei')] },
         {
           id: 'grido',
           x: 1870,
           tipo: 'ascolta',
           etichetta: 'Il popolo implora aiuto',
-          richiede: ['mani'],
+          richiede: ['mani', 'dei'],
           passi: [det('disposti'), senti('g-scelta')],
-        },
-        {
-          id: 'comanda',
-          x: 2120,
-          tipo: 'agisci',
-          etichetta: 'Manda il tuo comando tramite Debora',
-          richiede: ['grido', 'dei'],
-          passi: [
-            {
-              t: 'narra',
-              testo:
-                'Tramite la profetessa Debora, Geova comanda a Barac di radunare 10.000 uomini sul monte Tabor, e promette di dargli in mano Sisera.',
-              certezza: 'scritto',
-              fonti: [b('Giudici', 4, '6, 7')],
-            },
-            det('una-donna'),
-          ],
         },
       ],
     },
     {
-      id: 'geova-chison',
-      titolo: 'Presso il torrente Chison',
-      luogo: 'La pianura sotto il monte Tabor',
-      ...pianura(2800),
-      inizioX: 640,
-      vars: { pioggia: 0 },
-      folle: [
-        { x0: 300, x1: 760, n: 11, seme: 65, armati: 0.4, comportamento: 'vaga' },
-        { x0: 1150, x1: 2150, n: 14, seme: 67, armati: 0.9, comportamento: 'vaga' },
-      ],
+      id: 'geova-palma',
+      titolo: 'Il comando',
+      luogo: 'Sotto la palma di Debora',
+      ...palcoPalma(io),
+      inizioX: 1000,
       ingresso: [
         {
           t: 'narra',
-          testo:
-            'È il giorno della battaglia. Barac è sul monte Tabor con 10.000 uomini; presso il torrente Chison c’è Sisera con tutti i suoi carri.',
+          testo: 'La profetessa Debora siede sotto la sua palma, fra Rama e Betel, e gli israeliti salgono da lei per il giudizio.',
           certezza: 'scritto',
-          fonti: [b('Giudici', 4, '10'), b('Giudici', 4, '13, 14')],
+          fonti: [b('Giudici', 4, '4, 5')],
+        },
+      ],
+      punti: [
+        {
+          id: 'comanda',
+          x: 1000,
+          tipo: 'agisci',
+          etichetta: 'Manda il tuo comando tramite Debora',
+          passi: [...PALMA.arriva(io), ...PALMA.comando(io), ...PALMA.condizione(io), ...PALMA.verro(io), det('una-donna')],
+        },
+      ],
+    },
+    {
+      id: 'geova-chedes',
+      titolo: 'Diecimila volontari',
+      luogo: 'Chedes',
+      ...palcoChedes(io),
+      inizioX: 1000,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Debora è andata con Barac a Chedes. Barac convoca Zabulon e Neftali.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '9, 10')],
+        },
+      ],
+      punti: [
+        {
+          id: 'volontari',
+          x: 1150,
+          tipo: 'osserva',
+          etichetta: 'Chi risponde alla chiamata',
+          passi: [...CHEDES.convoca(), ...CHEDES.arma(io), det('sforzi'), senti('g-sforzi')],
+        },
+      ],
+    },
+    {
+      id: 'geova-tabor',
+      titolo: 'Davanti a Barac',
+      luogo: 'Sul monte Tabor',
+      ...palcoTabor(io),
+      inizioX: 700,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Barac è salito sul monte Tabor con 10.000 uomini. Presso il torrente Chison, Sisera ha radunato tutti i suoi carri.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '10'), b('Giudici', 4, '12, 13')],
         },
       ],
       punti: [
         {
           id: 'davanti',
-          x: 600,
+          x: 640,
           tipo: 'agisci',
           etichetta: 'Va’ davanti a Barac',
           passi: [
+            ...TABOR.segnale(io),
             {
               t: 'attivita',
               a: {
@@ -133,16 +155,37 @@ export const geova: Ruolo = {
                 dettaglio: 'tre-volte',
               },
             },
+            ...TABOR.scende(io),
           ],
         },
+      ],
+    },
+    {
+      id: 'geova-chison',
+      titolo: 'Presso il torrente Chison',
+      luogo: 'La pianura sotto il monte Tabor',
+      ...palcoPianura(),
+      inizioX: 640,
+      folle: [
+        { x0: 300, x1: 760, n: 11, seme: 65, armati: 0.4, comportamento: 'vaga' },
+        { x0: 1150, x1: 2150, n: 14, seme: 67, armati: 0.9, comportamento: 'vaga' },
+      ],
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Barac scende dal monte Tabor alla testa dei 10.000 uomini, verso i carri di Sisera.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '14')],
+        },
+      ],
+      punti: [
         {
           id: 'scompiglio',
           x: 1500,
           tipo: 'agisci',
           etichetta: 'Getta nello scompiglio l’esercito di Sisera',
-          richiede: ['davanti'],
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 3 } },
+            ...PIANURA.scompiglio(),
             {
               t: 'attivita',
               a: {
@@ -160,12 +203,37 @@ export const geova: Ruolo = {
           ],
         },
         {
-          id: 'merito',
-          x: 1900,
-          tipo: 'leggi',
-          etichetta: 'Chi fa che cosa',
+          id: 'sottometti',
+          x: 2450,
+          tipo: 'agisci',
+          etichetta: 'Sottometti Iabin',
           richiede: ['scompiglio'],
+          passi: [{ t: 'verso', id: 'gdc-4-23', evidenzia: ['Dio sottomise Iàbin'] }],
+        },
+      ],
+    },
+    {
+      id: 'geova-canto',
+      titolo: 'Il canto di vittoria',
+      luogo: 'Quel giorno',
+      ...palcoCanto(io),
+      inizioX: 600,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Quel giorno Debora intona un canto insieme a Barac.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 5, '1')],
+        },
+      ],
+      punti: [
+        {
+          id: 'canto',
+          x: 600,
+          tipo: 'ascolta',
+          etichetta: 'Il canto',
           passi: [
+            ...CANTO.intona(io),
             {
               t: 'attivita',
               a: {
@@ -187,22 +255,6 @@ export const geova: Ruolo = {
               },
             },
           ],
-        },
-        {
-          id: 'volontari',
-          x: 2150,
-          tipo: 'medita',
-          etichetta: 'Diecimila volontari',
-          richiede: ['merito'],
-          passi: [det('sforzi'), senti('g-sforzi')],
-        },
-        {
-          id: 'sottometti',
-          x: 2450,
-          tipo: 'agisci',
-          etichetta: 'Sottometti Iabin',
-          richiede: ['volontari'],
-          passi: [{ t: 'verso', id: 'gdc-4-23', evidenzia: ['Dio sottomise Iàbin'] }],
         },
       ],
     },

@@ -1,9 +1,11 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { pianura, villaggio } from './scenari';
+import { CHEDES, PIANURA, TABOR, palcoChedes, palcoPianura, palcoTabor } from './racconto';
+import { villaggio } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'volontario';
 
 /**
  * Il punto di vista di uno dei 10.000 uomini di Zabulon e di Neftali che seguirono
@@ -22,7 +24,7 @@ export const volontario: Ruolo = {
     'Uno qualunque degli uomini che seguirono Barac: la Bibbia non ne riporta i nomi. Ciò che vede e fa è quanto Giudici 4 e 5 e le pubblicazioni dicono degli israeliti di quel tempo; la scelta di offrirsi è una ricostruzione dichiarata.',
   modo: 'cammina',
   stile: 'volontario',
-  durata: '8-10 minuti',
+  durata: '12-15 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di uno dei 10.000',
   scene: [
     {
@@ -130,12 +132,77 @@ export const volontario: Ruolo = {
       ],
     },
     {
+      id: 'volontario-chedes',
+      titolo: 'A Chedes',
+      luogo: 'Nella regione montuosa di Neftali',
+      ...palcoChedes(io),
+      inizioX: 1000,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Sei arrivato a Chedes, dove Barac ha convocato gli uomini di Zabulon e di Neftali. Con lui c’è la profetessa Debora.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '9, 10')],
+        },
+      ],
+      punti: [
+        {
+          id: 'convocati',
+          x: 1100,
+          tipo: 'ascolta',
+          etichetta: 'Gli uomini arrivano',
+          passi: [
+            ...CHEDES.convoca(),
+            {
+              t: 'narra',
+              testo: 'Siete in 10.000 a seguire Barac.',
+              certezza: 'scritto',
+              fonti: [b('Giudici', 4, '10')],
+            },
+          ],
+        },
+        {
+          id: 'armi',
+          x: 1250,
+          tipo: 'agisci',
+          etichetta: 'Ricevi le armi',
+          richiede: ['convocati'],
+          passi: [...CHEDES.arma(io), senti('v-armi')],
+        },
+      ],
+    },
+    {
+      id: 'volontario-tabor',
+      titolo: 'Sul monte Tabor',
+      luogo: 'Con Barac e Debora',
+      ...palcoTabor(io),
+      inizioX: 950,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Siete saliti sul monte Tabor con Barac, e Debora è salita con voi. Laggiù, presso il torrente Chison, Sisera ha radunato tutti i suoi carri.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 4, '10'), b('Giudici', 4, '12, 13')],
+        },
+      ],
+      punti: [
+        { id: 'compagni', x: 1050, tipo: 'esamina', etichetta: 'I tuoi compagni', passi: [det('dura-prova')] },
+        {
+          id: 'segnale',
+          x: 720,
+          tipo: 'ascolta',
+          etichetta: 'Debora parla a Barac',
+          richiede: ['compagni'],
+          passi: [...TABOR.segnale(io), ...TABOR.scende(io)],
+        },
+      ],
+    },
+    {
       id: 'volontario-battaglia',
       titolo: 'Nella pianura',
       luogo: 'Presso il torrente Chison',
-      ...pianura(2800),
+      ...palcoPianura(),
       inizioX: 320,
-      vars: { pioggia: 0 },
       folle: [
         { x0: 120, x1: 300, n: 9, seme: 123, armati: 0.3, comportamento: 'insegue', distanza: [200, 140] },
         { x0: 1300, x1: 2150, n: 12, seme: 125, armati: 0.9, comportamento: 'vaga' },
@@ -163,7 +230,7 @@ export const volontario: Ruolo = {
           etichetta: 'Il cielo si oscura',
           richiede: ['carri'],
           passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'pioggia', a: 1, dur: 3 } },
+            ...PIANURA.scompiglio(),
             {
               t: 'narra',
               testo: 'Geova getta nello scompiglio Sisera, tutti i suoi carri e tutto l’esercito.',

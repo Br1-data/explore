@@ -32,15 +32,17 @@ collegato all'originale su jw.org.
   moglie e il figlio vivono anche l’anno nell’arca, in scene interne dichiarate come
   ricostruzioni (La Torre di Guardia 15/11/2001 e 1/8/2013, Perspicacia «Arca»; per il
   corvo e il patto, Perspicacia «Corvo» e «Patto»).
-- **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista:
+- **Capitolo 16, Barac e Debora** (Giudici 4:1-16, 23, 24; 5:1-23), da cinque punti di vista
+  che vivono le stesse scene (la palma, Chedes, il Tabor, la pianura, il canto), ognuno con
+  i suoi appunti:
   - **Debora**: profetessa e giudice sotto la palma, il comando di Geova trasmesso a
-    Barac, «Verrò senz’altro», il segnale sul Tabor, il canto e le tribù;
+    Barac, «Verrò senz’altro», Chedes, il segnale sul Tabor, il canto e le tribù;
   - **Barac**: la condizione posta a Debora (fede, non debolezza), convoca e arma i suoi
-    uomini a Chedes, il Tabor, la scelta di scendere nella pianura, l’inseguimento;
+    uomini a Chedes, il Tabor, la scelta di scendere nella pianura, l’inseguimento, il canto;
   - **Geova**: non raffigurato; risponde al grido del popolo, comanda tramite Debora,
-    va davanti a Barac, getta nello scompiglio l’esercito di Sisera;
-  - **Uno dei 10.000**: il paese oppresso, la chiamata a offrirsi, la battaglia sotto
-    la pioggia;
+    guarda radunarsi i volontari, va davanti a Barac, getta nello scompiglio l’esercito di Sisera;
+  - **Uno dei 10.000**: il paese oppresso, la chiamata a offrirsi, le armi a Chedes, il
+    Tabor, la battaglia sotto la pioggia;
   - **Sisera**: il nemico che contava sui suoi carri, fino alla disfatta.
 - **Capitolo 17, Iael** (Giudici 4:17-22; 5:24-31), da sei punti di vista che vivono le
   stesse scene (l’arrivo di Sisera, la coperta, il latte, Barac alla tenda, il canto, la
@@ -61,7 +63,7 @@ collegato all'originale su jw.org.
   Geova (le stesse scene, compiendo solo i suoi atti), Ioas (il mattino in cui difese il
   figlio), uno dei 300 (dal corno di Ofra all’inseguimento) e un soldato madianita (il sogno
   del pane d’orzo e la notte della fuga).
-- **261 dettagli** (84 + 49 + 48 + 35 + 45), ognuno con la sua fonte e un contrassegno che dice quanto
+- **263 dettagli** (84 + 49 + 50 + 35 + 45), ognuno con la sua fonte e un contrassegno che dice quanto
   è certo: *È scritto*, *Dai numeri*, *Lo spiega il libro*, *Sembra che*.
 - **Tre modi di giocare**:
   - *indizi* da trovare ed esaminare nella scena;

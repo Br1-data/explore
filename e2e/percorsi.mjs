@@ -41,7 +41,7 @@ const SUONI_ATTESI = {
   '16/debora-canto': { sorgenti: ['danza', 'folla'] },
   '16/geova-oppressione': { sorgenti: ['invoca'] },
   '16/geova-chison': { sorgenti: ['folla'] },
-  '16/barac-inseguimento': { sorgenti: ['insegue'], pioggia: true },
+  '16/barac-inseguimento': { sorgenti: ['insegue'] },
   '16/sisera-disfatta': { sorgenti: ['insegue'], pioggia: true },
   '16/volontario-battaglia': { sorgenti: ['insegue', 'folla'] },
   '17/iael-accampamento': { sorgenti: ['fuoco', 'pecora'], luce: 'giorno' },

@@ -116,6 +116,11 @@ export const VERSI: Record<string, Verso> = {
     b('Giudici', 5, '6-8'),
     'Ai giorni di Samgàr, figlio di Anàt, ai giorni di Iàel, le strade erano deserte; si viaggiava per sentieri isolati. Non c’erano più abitanti nei villaggi d’Israele; non ce n’erano più, finché sorsi io, Debora, finché sorsi come madre in Israele. Si scelsero nuovi dèi, e allora ci fu guerra alle porte. Non si vedeva né scudo né lancia tra quarantamila in Israele.',
   ),
+  'gdc-5-12': verso(
+    'Giudici 5:12',
+    b('Giudici', 5, '12'),
+    'Déstati, déstati, Debora! Déstati, déstati, intona un canto! Avanti, Bàrac! Conduci via i tuoi prigionieri, figlio di Abinòam!',
+  ),
   'gdc-5-20': verso(
     'Giudici 5:20, 21',
     b('Giudici', 5, '20, 21'),
@@ -141,6 +146,9 @@ export const PAROLE = {
   verro: 'Verrò senz’altro',
   va: 'Va’, perché questo è il giorno in cui Geova ti darà in mano Sìsera',
   davanti: 'Geova non sta forse andando davanti a te?',
+  // Il canto (5:2, 3).
+  lodate: 'A motivo dei capelli sciolti in Israele, a motivo del popolo che si offrì spontaneamente, lodate Geova!',
+  ascoltate: 'Ascoltate, voi re! Prestate orecchio, voi principi!',
 };
 
 function d(
@@ -182,6 +190,13 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'Con coraggio Debora accettò di andare con Barac. Era disposta a lasciare la sua casa, dove era al sicuro, per seguirlo sul campo di battaglia.',
     'libro',
     [F.libro, F.w03, F.it('Debora')],
+  ),
+  d(
+    'lappidot',
+    'Moglie di Lappidot',
+    'Debora era moglie di Lappidot. Alcuni pensano che Lappidot e Barac fossero la stessa persona, ma non ce n’è alcuna prova: Debora e Barac erano uniti dall’impegno comune di liberare Israele dall’oppressione.',
+    'libro',
+    [F.it('Debora'), b('Giudici', 4, '4')],
   ),
   d(
     'segnale',
@@ -414,6 +429,13 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     [b('Giudici', 5, '2'), b('Giudici', 5, '9'), b('Giudici', 5, '18')],
   ),
   d(
+    'dura-prova',
+    'Una dura prova',
+    'Sul Tabor eravate 10.000 uomini valorosi, ma meno numerosi e peggio armati di un nemico brutale: quel giorno la vostra fede e il vostro coraggio sarebbero stati messi a dura prova.',
+    'libro',
+    [F.wp15],
+  ),
+  d(
     'svantaggio',
     'In pianura, contro i carri',
     'Scendere nella pianura voleva dire affrontare i carri in netto svantaggio. Con armi leggere, combattere contro carri muniti di falci di ferro sarebbe stato comunque impossibile.',
@@ -516,7 +538,8 @@ export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('g-sforzi', 'Geova avrebbe potuto vincere senza nessuno, eppure chiamò 10.000 volontari. Che cosa ti dice questo dei tuoi sforzi per lui?'),
 
   s('v-offrirsi', 'Offrirsi voleva dire rischiare la vita, mentre altri restavano con le greggi o con le navi. Che cosa ti spinge oggi a offrirti per Geova?'),
-  s('v-visto', 'I volontari videro con i loro occhi che cosa fece Geova. C’è un momento della tua vita in cui hai visto il suo aiuto?'),
+  s('v-armi', 'Ricevi le armi che Barac è riuscito a trovare, e il nemico ha 900 carri. Su che cosa conti, mentre sali verso il Tabor?'),
+  s('v-visto','I volontari videro con i loro occhi che cosa fece Geova. C’è un momento della tua vita in cui hai visto il suo aiuto?'),
 
   s('s-carri', 'Sisera contava sui suoi carri, e proprio i carri causarono la sua disfatta. Su che cosa rischi di contare tu, invece che su Geova?'),
 ]);
