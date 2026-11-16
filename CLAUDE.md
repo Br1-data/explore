@@ -67,12 +67,26 @@ Date in risposta a domande dirette o come correzioni; valgono per tutti i capito
    camminare con Dio: niente «strada degli anni», «trecento anni di cammino», percorsi a
    piedi come simbolo. Lo stesso vale per espressioni simili negli altri capitoli.
    Un test vieta «cammino», «a piedi», «strada degli anni» nei testi dei ruoli.
-8. **Ogni personaggio ha i suoi dettagli.** Nessun dettaglio, sensazione o attività si
-   ripete tra i punti di vista dello stesso capitolo: ogni ruolo guarda il racconto con
-   la sua lente (Enoc: la sua condotta; Geova: ciò che approva e fa; Matusalemme: i
-   numeri; l'empio: il mondo e il messaggio dalla sua parte). I test lo verificano.
-   Evitare anche le ripetizioni dentro un ruolo (un versetto citato e poi un dettaglio
-   che ne ripete le parole): per questo le attività possono rivelare un `dettaglio`.
+8. **Le stesse scene per tutti, gli appunti di ciascuno.** «L’obiettivo della divisione
+   non è “spezzettare” la narrazione in più personaggi, ma rivivere le stesse dinamiche
+   da diversi punti di vista. Reintegra tutto in tutti i racconti, variando solo i
+   dettagli rilevanti, ma non le scene. Esempio: Gedeone deve sentire le voci dei nemici
+   che fanno il sogno, ma gli appunti devono riflettere il suo punto di vista.» Quindi:
+   - ogni punto di vista vive **tutte le scene del racconto in cui il suo personaggio era
+     presente**, con le stesse voci (`nastro`), gli stessi gesti, gli stessi suoni e la
+     stessa scenografia: un personaggio principale non perde un pezzo di storia perché
+     «ce l’ha» un altro ruolo. Le scene comuni stanno in `racconto.ts` del capitolo
+     (i «palchi» e i «momenti»), e ogni ruolo le compone (modello: `18-gedeone/`);
+   - Geova vede tutto e le vive tutte, compiendo solo i suoi atti (decisione 3); gli altri
+     non vanno dove la Bibbia non li mette (decisione 2): Ioas non scende all’accampamento
+     di Madian, uno dei 300 non sente il sogno;
+   - cambiano gli **appunti**: dettagli, sensazioni e attività restano di ciascuno e non si
+     ripetono fra i punti di vista dello stesso capitolo (i test lo verificano); ognuno
+     guarda la scena con la sua lente (Gedeone: la sua cautela e la sua fede; Geova: ciò
+     che fa e perché; uno dei 300: ciò che vede e vive chi segue; il madianita: il nemico).
+     Una scena può non avere un dettaglio per un ruolo, se non ce n’è uno suo e vero;
+   - evitare anche le ripetizioni dentro un ruolo (un versetto citato e poi un dettaglio
+     che ne ripete le parole): per questo le attività possono rivelare un `dettaglio`.
 9. Il repository precedente (gioco «Segnale Remoto») è stato rimosso su richiesta.
 10. **Suoni fedeli a ciò che si poteva sentire realmente** («Migliora la gestione dei
     suoni, devono essere fedeli a quello che si poteva sentire realmente»). Quindi:
@@ -212,7 +226,8 @@ src/
                              scenari.ts: palma, chedes, cimaTabor, pianura, villaggio, festa (usata anche dal 17)
         17-iael/             Giudici 4:9, 11, 17-22; 5:24-31 (iael, geova, sisera, barac, debora, madre)
         18-gedeone/          Giudici 6:1–7:22; 8:4-23, 28 (gedeone, geova, ioas, trecento, madianita);
-                             scenari.ts: ofra (giorno o notte), harod, campoMadian (e villaggio dal 16)
+                             scenari.ts: ofra (giorno o notte), harod, campoMadian (e villaggio dal 16);
+                             racconto.ts: le scene comuni a tutti i ruoli (decisione 8)
   motore/                    generico
     partita.ts               ciclo di gioco, movimento, tocco sui punti, indizi, folle, sequenze, disegno
     figure.ts                persone disegnate (senza volto), pose; Stile e STILE_BASE (gli stili veri li dà la pubblicazione)
@@ -289,9 +304,16 @@ Strumenti di scena già pronti nel motore:
   c’è vita (dopo il diluvio, prima che gli animali escano dall’arca);
 - oggetto `uccello` (corvo, colomba, colomba con la foglia) che va e torna dal punto in
   cui si posa;
+- `fx suono`: un suono che avviene una volta, dove avviene (`corno`, `giare` in pezzi);
+  oggetti `giara` (in mano), `cocci`, `altare` variante 1 (senza fuoco, non crepita);
 - pose: `fermo`, `cammina`, `parla`, `pugno`, `indica`, `alza`, `proclama`,
-  `sdraiato`, `coperto` (sdraiato sotto una coperta);
-- folle: `comportamento` `vaga`/`cerca`/`insegue`, `gruppo` `rissa`/`invoca`/`danza`;
+  `sdraiato`, `coperto` (sdraiato sotto una coperta), `seduto` (per terra: l’angelo
+  sotto l’albero di Ofra);
+- folle: `comportamento` `vaga`/`cerca`/`insegue`, `gruppo` `rissa`/`invoca`/`danza`/
+  `assalto` (fermi, corni e grida di guerra)/`fuga` (corrono e urlano); `giare` come
+  `torce` e `armati`. Due folle con lo stesso `seme`, `x0`, `x1`, `n` e `comportamento:
+  'fermo'` stanno negli stessi punti: sfumandone una nell’altra (`seVar`) cambia ciò che
+  tengono in mano (le giare che diventano torce, gli uomini disarmati che ricevono le armi);
 - oggetti per interni aperti sul davanti (`tendone`, `sala`): gli attori ci stanno dentro.
 
 ### Suoni (decisione 10)
@@ -318,7 +340,8 @@ Per un capitolo nuovo basta mettere in scena le cose giuste. Se serve un suono c
 c’è (es. il mare, un asino, un corno), si aggiunge una ricetta in `EVENTI`, il suo
 ritmo in `RITMI` e, se viene da un oggetto, la voce in `SUONI_OGGETTI`; poi si misura
 il volume rispetto agli altri. In `e2e/percorsi.mjs` si aggiungono a `SUONI_ATTESI`
-le scene con sorgenti caratteristiche: la prova controlla che si sentano davvero.
+le scene con sorgenti caratteristiche: la prova controlla che si sentano davvero
+all’inizio della scena e, con `poi`, alla fine (sorgenti comparse e `fx suono` sentiti).
 
 Attività (`ui/schede.ts`), tutte risolvibili, nessuna cambia la storia. **Standard
 (approvato dal committente dopo la prova sul capitolo 16):** i «mini rompicapi» —

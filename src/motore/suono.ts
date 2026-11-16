@@ -21,7 +21,11 @@ export type TipoSorgente =
   | 'invoca'
   | 'danza'
   | 'insegue'
-  | 'passi';
+  | 'passi'
+  /** I 300 intorno all’accampamento: corni e grida di guerra (Giudici 7:20-22). */
+  | 'assalto'
+  /** Un accampamento che fugge: gente che corre e urla (Giudici 7:21). */
+  | 'fuga';
 
 /** Gli oggetti di scena che suonano, e come. */
 export const SUONI_OGGETTI: Record<string, TipoSorgente> = {
@@ -316,6 +320,51 @@ export const EVENTI = {
   battimano(b: Banco, dest: AudioNode, t: number, vol: number): void {
     for (let i = 0; i < 3; i++) soffio(b, dest, t + i * 0.006 + caso(0, 0.004), 0.012, { vol, filtro: 'bandpass', f: 1300, q: 1.2 });
   },
+  corno(b: Banco, dest: AudioNode, t: number, vol: number): number {
+    // Un corno di montone: una nota rauca che sale, si regge e a volte salta più in alto.
+    const { ac } = b;
+    const dur = caso(1.1, 1.9);
+    const f0 = caso(190, 250);
+    const osc = ac.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(f0 * 0.72, t);
+    osc.frequency.exponentialRampToValueAtTime(f0, t + 0.14);
+    if (Math.random() < 0.5) {
+      osc.frequency.setValueAtTime(f0, t + dur * 0.55);
+      osc.frequency.exponentialRampToValueAtTime(f0 * 1.5, t + dur * 0.62);
+    }
+    const vibrato = ac.createOscillator();
+    vibrato.frequency.value = caso(4, 6);
+    const ampiezza = ac.createGain();
+    ampiezza.gain.value = f0 * 0.012;
+    vibrato.connect(ampiezza).connect(osc.frequency);
+    const corpo = ac.createBiquadFilter();
+    corpo.type = 'bandpass';
+    corpo.frequency.value = caso(800, 1000);
+    corpo.Q.value = 1.3;
+    const morbido = ac.createBiquadFilter();
+    morbido.type = 'lowpass';
+    morbido.frequency.value = 2600;
+    const g = ac.createGain();
+    inviluppo(g, t, vol, dur, 0.07, 0.18);
+    osc.connect(corpo).connect(morbido).connect(g).connect(dest);
+    osc.start(t);
+    vibrato.start(t);
+    osc.stop(t + dur + 0.05);
+    vibrato.stop(t + dur + 0.05);
+    // Il fiato.
+    soffio(b, dest, t, dur, { vol: vol * 0.08, filtro: 'bandpass', f: 1300, q: 0.8, attacco: 0.06 });
+    return dur;
+  },
+  cocci(b: Banco, dest: AudioNode, t: number, vol: number): void {
+    // Una giara di terracotta che va in pezzi: un colpo sordo e una pioggia di frammenti.
+    fischio(b, dest, t, 160, 70, 0.09, vol * 0.7);
+    soffio(b, dest, t, 0.06, { vol: vol * 0.8, filtro: 'bandpass', f: 900, q: 0.8 });
+    const n = Math.floor(caso(5, 9));
+    for (let i = 0; i < n; i++) {
+      soffio(b, dest, t + caso(0.01, 0.35), caso(0.008, 0.03), { vol: vol * caso(0.25, 0.6), filtro: 'bandpass', f: caso(1800, 6000), q: caso(2, 5) });
+    }
+  },
   fruscio(b: Banco, dest: AudioNode, t: number, vol: number): void {
     // Un rotolo che si svolge.
     for (let i = 0; i < 3; i++) {
@@ -361,6 +410,8 @@ const VOLUMI: Record<TipoSorgente, number> = {
   danza: 0.6,
   insegue: 0.6,
   passi: 0.35,
+  assalto: 0.7,
+  fuga: 0.65,
 };
 
 /** Quanto vento si sente in ciascun luogo. */
@@ -378,6 +429,8 @@ export class Suono {
   private prossimi: Record<string, number> = {};
   private punti: AudioNode[] = [];
   private lontani: AudioNode[] = [];
+  /** I suoni singoli (fx `suono`) sentiti finora, in ordine: li controllano le prove automatiche. */
+  private uditi: string[] = [];
   private _muto = false;
 
   constructor(muto: boolean) {
@@ -441,8 +494,8 @@ export class Suono {
     this.paesaggioCorrente = null;
   }
 
-  /** Per le prove automatiche: che cosa sta suonando adesso. */
-  istantanea(): { stato: string; luogo: string | null; luce: string | null; pioggia: number; sorgenti: string[] } {
+  /** Per le prove automatiche: che cosa sta suonando adesso, e i suoni singoli già sentiti. */
+  istantanea(): { stato: string; luogo: string | null; luce: string | null; pioggia: number; sorgenti: string[]; eventi: string[] } {
     const p = this.paesaggioCorrente;
     return {
       stato: this.ac?.state ?? 'spento',
@@ -450,7 +503,31 @@ export class Suono {
       luce: p?.luce ?? null,
       pioggia: p ? Math.max(p.pioggia, p.base === 'pioggia' ? 1 : 0) : 0,
       sorgenti: [...new Set([...this.voci.values()].map((v) => v.tipo))].sort(),
+      eventi: [...this.uditi],
     };
+  }
+
+  /** Un suono che avviene una volta, nel punto `x` della scena: più forte e centrato se è vicino. */
+  evento(cosa: 'corno' | 'giare', x: number): void {
+    this.uditi = [...this.uditi.slice(-49), cosa];
+    const p = this.paesaggioCorrente;
+    if (!this.ac || !this.banco || !this.mondo || !p || this._muto) return;
+    const ac = this.ac;
+    const vicinanza = Math.max(0.15, 1 - Math.abs(x - p.ascolto) / (p.vista * 1.1));
+    const g = ac.createGain();
+    g.gain.value = vicinanza;
+    let catena: AudioNode = g;
+    if (ac.createStereoPanner) {
+      const pan = ac.createStereoPanner();
+      pan.pan.value = Math.max(-1, Math.min(1, (x - p.ascolto) / (p.vista * 0.6))) * 0.85;
+      catena = catena.connect(pan);
+    }
+    catena.connect(this.mondo);
+    const t = ac.currentTime + 0.03;
+    if (cosa === 'corno') EVENTI.corno(this.banco, g, t, 0.5);
+    // Più giare che vanno in pezzi quasi insieme.
+    else for (let i = 0; i < 5; i++) EVENTI.cocci(this.banco, g, t + caso(0, 0.25), 0.45);
+    window.setTimeout(() => g.disconnect(), 4000);
   }
 
   // ——— Il letto: vento e pioggia, che ci sono sempre e cambiano intensità ———
@@ -807,6 +884,28 @@ const RITMI: Record<TipoSorgente, (v: Voce, b: Banco, t: number, agitazione: num
   passi: (v, b, t) => {
     EVENTI.passo(b, v.ingresso, t, 0.5);
     return 0.36;
+  },
+  assalto: (v, b, t) => {
+    // Corni che si sovrappongono, e a tratti il grido di guerra di molte voci.
+    const giro = v.giro++ % 3;
+    let durata = 0;
+    for (let i = 0; i < 3; i++) durata = Math.max(durata, EVENTI.corno(b, v.ingresso, t + caso(0, 0.5), 0.22));
+    if (giro === 2) {
+      for (let k = 0; k < 6; k++) {
+        sillaba(b, v.ingresso, t + caso(0, 0.08), { f0: caso(140, 210), dur: caso(0.35, 0.6), vol: 0.1, vocale: scegli(['a', 'e', 'o']), scivola: -0.1, consonante: true });
+      }
+    }
+    return durata * caso(0.5, 0.8);
+  },
+  fuga: (v, b, t) => {
+    // Gente che corre e urla nel buio.
+    for (let i = 0; i < 4; i++) EVENTI.passo(b, v.ingresso, t + caso(0, 0.14), caso(0.25, 0.45));
+    for (let k = 0; k < 2; k++) {
+      if (Math.random() < 0.45) {
+        sillaba(b, v.ingresso, t + caso(0, 0.1), { f0: caso(170, 300), dur: caso(0.25, 0.55), vol: 0.14, vocale: scegli(['a', 'o', 'e']), scivola: caso(-0.3, 0.1), consonante: true });
+      }
+    }
+    return caso(0.12, 0.2);
   },
 };
 

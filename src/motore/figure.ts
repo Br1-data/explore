@@ -9,7 +9,7 @@ export interface Stile {
   capelli: string;
   barba?: boolean;
   velo?: string;
-  accessorio?: 'bastone' | 'clava' | 'lancia' | 'torcia';
+  accessorio?: 'bastone' | 'clava' | 'lancia' | 'torcia' | 'giara';
   scala: number;
 }
 
@@ -53,7 +53,7 @@ const VELI = ['#9a7a5a', '#7a6a7a', '#a89270', '#6a7a70', '#8a5f50'];
 /** Aspetto casuale ma stabile per una persona della folla. */
 export function stileFolla(
   seme: number,
-  opz: { donna?: boolean; bimbo?: boolean; armato?: boolean; torcia?: boolean } = {},
+  opz: { donna?: boolean; bimbo?: boolean; armato?: boolean; torcia?: boolean; giara?: boolean } = {},
 ): Stile {
   const r = casuale(seme * 7919 + 13);
   const scegli = <T>(a: T[]): T => a[Math.floor(r() * a.length)];
@@ -69,6 +69,7 @@ export function stileFolla(
     scala: tipo === 'bimbo' ? 0.58 + r() * 0.1 : 0.94 + r() * 0.12,
   };
   if (opz.torcia) stile.accessorio = 'torcia';
+  else if (opz.giara) stile.accessorio = 'giara';
   else if (opz.armato) stile.accessorio = r() < 0.5 ? 'clava' : 'lancia';
   return stile;
 }
@@ -151,6 +152,9 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
   const coperto = f.posa === 'coperto';
   const sdraiato = f.posa === 'sdraiato' || coperto;
   const cammina = f.posa === 'cammina';
+  // Seduto per terra, con le gambe in avanti: il corpo si abbassa di SEDUTO.
+  const seduto = f.posa === 'seduto';
+  const SEDUTO = 30;
   let luce: Luce | null = null;
 
   ctx.save();
@@ -170,13 +174,13 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
   } else {
     const respiro = Math.sin(f.t * 1.6 + f.x * 0.01) * 0.6;
     const sobbalzo = cammina ? Math.abs(Math.sin(f.fase)) * -1.6 : respiro * 0.5;
-    ctx.translate(0, sobbalzo);
+    ctx.translate(0, sobbalzo + (seduto ? SEDUTO : 0));
     if (f.chino) ctx.rotate(f.chino * v);
   }
 
   const testa = s.tipo === 'bimbo' ? R * 1.25 : R;
   const yTesta = -H + R;
-  const orlo = s.tipo === 'donna' ? -5 : -17;
+  const orlo = seduto ? -SEDUTO - 2 : s.tipo === 'donna' ? -5 : -17;
   const ondeggia = cammina ? Math.sin(f.fase) * 1.6 : 0;
   const a = angoli(sdraiato ? 'fermo' : f.posa, f.fase, f.t);
   const torcia = s.accessorio === 'torcia' && !sdraiato;
@@ -190,7 +194,18 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
   ctx.lineCap = 'round';
   ctx.strokeStyle = pelle;
   ctx.lineWidth = 5.4;
-  for (const lato of [-1, 1] as const) {
+  if (seduto) {
+    // Le gambe distese in avanti sotto la veste, e i piedi.
+    ctx.fillStyle = tono(piuScuro(s.veste));
+    ctx.beginPath();
+    ctx.roundRect(v > 0 ? -6 : -26, -SEDUTO - 11, 32, 10, 5);
+    ctx.fill();
+    ctx.fillStyle = tono('#4a3828');
+    ctx.beginPath();
+    ctx.ellipse(28 * v, -SEDUTO - 4, 3, 4.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const lato of seduto ? [] : ([-1, 1] as const)) {
     const px = lato * passo * v + lato * 3.2;
     const alza = cammina ? Math.max(0, Math.sin(f.fase + (lato > 0 ? Math.PI / 2 : -Math.PI / 2))) * 3.2 : 0;
     ctx.beginPath();
@@ -210,7 +225,7 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
     ctx.strokeStyle = tono('#5d4a34');
     ctx.lineWidth = lungo ? 2.6 : 3;
     ctx.beginPath();
-    ctx.moveTo(bx, 0);
+    ctx.moveTo(bx, seduto ? -SEDUTO : 0);
     ctx.lineTo(bx + (lungo ? 0 : 1.5 * v), lungo ? -H - 30 : Y_SPALLA + 2);
     ctx.stroke();
     if (lungo) {
@@ -293,6 +308,14 @@ export function disegnaFigura(ctx: CanvasRenderingContext2D, s: Stile, f: StatoF
     ctx.moveTo(mano.x + 7 * v, mano.y - 16);
     ctx.lineTo(mano.x + 9.5 * v, mano.y - 22);
     ctx.stroke();
+  }
+  if (!sdraiato && s.accessorio === 'giara') {
+    // Una grossa giara di terracotta tenuta davanti: la torcia è dentro, e non si vede.
+    ctx.fillStyle = tono('#8a5a3a');
+    ctx.beginPath();
+    ctx.ellipse(mano.x + 3 * v, mano.y - 2, 7.5, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(mano.x + 3 * v - 3.5, mano.y - 14, 7, 5);
   }
   if (torcia) {
     const tx = mano.x + 2 * v;

@@ -129,6 +129,7 @@ export function avviaGioco(cx: Contesto, cap: Capitolo, ruolo: Ruolo): SessioneG
       cx.vai(indirizzo.fine(cap, ruolo));
     },
     passo: () => cx.suono.passo(),
+    evento: (cosa, x) => cx.suono.evento(cosa, x),
     paesaggio: (p) => cx.suono.paesaggio(p),
   };
 

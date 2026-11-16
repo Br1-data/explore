@@ -51,11 +51,17 @@ const SUONI_ATTESI = {
   '17/debora-lode': { sorgenti: ['danza', 'folla'] },
   '17/madre-finestra': { sorgenti: ['folla'] },
   '18/gedeone-notte': { luce: 'notte' },
-  '18/trecento-notte': { sorgenti: ['fuoco', 'torcia'], luce: 'notte' },
+  '18/gedeone-vello': { poi: { eventi: ['corno'] } },
+  // L’attacco: corni e giare in pezzi, poi i 300 con le torce e l’accampamento in fuga.
+  '18/gedeone-campo': { sorgenti: ['fuoco'], luce: 'notte', poi: { sorgenti: ['assalto', 'fuga', 'torcia'], eventi: ['corno', 'giare'] } },
+  '18/trecento-notte': { sorgenti: ['fuoco', 'folla'], luce: 'notte', poi: { sorgenti: ['assalto', 'fuga', 'torcia'], eventi: ['corno', 'giare'] } },
+  '18/madianita-campo': { poi: { sorgenti: ['assalto', 'fuga', 'torcia'], eventi: ['corno', 'giare'] } },
+  '18/geova-campo': { poi: { sorgenti: ['assalto', 'fuga', 'torcia'], eventi: ['corno', 'giare'] } },
   '18/geova-harod': { sorgenti: ['acqua', 'folla'] },
 };
-/** Ciò che si sentiva all’inizio di ogni scena giocata. */
+/** Ciò che si sentiva all’inizio di ogni scena giocata, e alla sua fine (`poi`). */
 const ascoltati = new Map();
+const ascoltatiPoi = new Map();
 const PORTA = 4317;
 const schermate = process.env.SCHERMATE;
 const [larghezza, altezza] = (process.env.VISTA ?? '1280x720').split('x').map(Number);
@@ -279,6 +285,7 @@ async function gioca(cap, id) {
       await pagina.keyboard.press('KeyE');
       await pagina.waitForTimeout(60);
     } else if (s.completa) {
+      ascoltatiPoi.set(`${cap}/${s.scena}`, await pagina.evaluate(() => window.__suono?.istantanea()));
       await pagina.locator('.prosegui').click();
       await pagina.waitForTimeout(120);
     } else {
@@ -406,6 +413,19 @@ function provaSuoni() {
     verifica(
       !mancano.length && luce && pioggia,
       `${scena}: ${a.sorgenti.join(', ') || 'nessuna sorgente'} · ${a.luce}${a.pioggia ? ` · pioggia ${a.pioggia}` : ''}${mancano.length ? ` (mancano: ${mancano.join(', ')})` : ''}`,
+    );
+    // Alla fine della scena: le sorgenti comparse e i suoni singoli sentiti durante la scena.
+    const poi = ascoltatiPoi.get(scena);
+    if (!attese.poi || !poi) continue;
+    // Gli eventi sono in ordine: quelli sentiti durante la scena vengono dopo quelli di prima.
+    const nuovi = [...new Set((poi.eventi ?? []).slice((a.eventi ?? []).length))];
+    const assenti = [
+      ...(attese.poi.sorgenti ?? []).filter((t) => !poi.sorgenti.includes(t)),
+      ...(attese.poi.eventi ?? []).filter((e) => !nuovi.includes(e)),
+    ];
+    verifica(
+      !assenti.length,
+      `${scena}, alla fine: ${poi.sorgenti.join(', ') || 'nessuna sorgente'}${nuovi.length ? ` · ${nuovi.join(', ')}` : ''}${assenti.length ? ` (mancano: ${assenti.join(', ')})` : ''}`,
     );
   }
 }

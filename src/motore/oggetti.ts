@@ -1260,13 +1260,44 @@ const corno: Pittore = (p) => {
   ctx.stroke();
 };
 
-/** Un altare di pietre con il fuoco degli olocausti (Genesi 8:20). */
+/** Una grossa giara di terracotta, portata in mano (Giudici 7:16). */
+const giara: Pittore = (p) => {
+  const { ctx, tono } = p;
+  ctx.fillStyle = tono('#96573a');
+  ctx.beginPath();
+  ctx.ellipse(0, -16, 11, 15, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillRect(-5, -36, 10, 8);
+  ctx.fillStyle = tono('#4a2a1a');
+  ctx.beginPath();
+  ctx.ellipse(0, -36, 5, 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+};
+
+/** I cocci di una giara fracassata (Giudici 7:19, 20). */
+const cocci: Pittore = (p, o) => {
+  const { ctx, tono } = p;
+  const r = casuale(o.x * 7 + 3);
+  ctx.fillStyle = tono('#96573a');
+  for (let i = 0; i < 7; i++) {
+    const x = (r() - 0.5) * 60;
+    const w = 5 + r() * 8;
+    ctx.beginPath();
+    ctx.moveTo(x - w, 0);
+    ctx.quadraticCurveTo(x, -3 - r() * 5, x + w, 0);
+    ctx.closePath();
+    ctx.fill();
+  }
+};
+
+/** Un altare di pietre con il fuoco degli olocausti (Genesi 8:20); variante 1: senza fuoco. */
 const altare: Pittore = (p, o) => {
   const { ctx, tono, t } = p;
   ctx.fillStyle = tono('#8a8070');
   rettTondo(ctx, -36, -42, 72, 46, 6);
   ctx.fillStyle = tono('#6b6255');
   for (const [x, y] of [[-30, -30], [-6, -36], [16, -26], [-20, -14], [8, -10]]) rettTondo(ctx, x, y, 18, 9, 3);
+  if (o.variante === 1) return;
   fiamma(ctx, 0, -44, 1.2, t + o.x);
   luce(p, 0, -60, 140);
 };
@@ -1408,6 +1439,8 @@ const PITTORI: Record<string, Pittore> = {
   vello,
   corno,
   coperta,
+  giara,
+  cocci,
 };
 
 export const TIPI_OGGETTO = Object.keys(PITTORI);

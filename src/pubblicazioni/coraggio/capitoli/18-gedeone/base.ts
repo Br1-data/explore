@@ -93,12 +93,35 @@ export const VERSI: Record<string, Verso> = {
   ),
 };
 
-/** Le parole pronunciate, alla lettera (Giudici 6:31; 7:14, 20). */
+/** Le parole pronunciate, alla lettera (Giudici 6–8): ogni punto di vista le sente uguali. */
 export const PAROLE = {
+  // All’angelo e a Gedeone (6:12-14, 22).
+  saluto: 'Geova è con te, potente guerriero',
+  perche: 'Perdonami, mio signore, ma se Geova è con noi, perché ci è successo tutto questo?',
+  manda: 'Va’ con la potenza che hai, e salverai Israele dalla mano di Màdian. Non sono forse io che ti mando?',
+  ohime: 'Ohimè, Sovrano Signore Geova, ho visto l’angelo di Geova faccia a faccia!',
+  // Gli uomini di Ofra e Ioas (6:29-32).
+  chi: 'Chi è stato a far questo?',
+  stato: 'È stato Gedeone, il figlio di Iòas',
+  portaFuori: 'Porta fuori tuo figlio! Deve morire, perché ha demolito l’altare di Bàal e ha abbattuto il palo sacro che gli stava accanto',
   difendere: 'Dovete essere voi a difendere Bàal? Dovete essere voi a salvarlo?',
   siDifenda: 'Se è un dio si difenda da solo, visto che il suo altare è stato demolito',
+  // A Harod (7:3).
+  paura: 'Chi ha paura e trema torni a casa',
+  // Il sogno e la sua spiegazione (7:13, 14).
+  sogno: 'Questo è il sogno che ho fatto. C’era un pane rotondo d’orzo che entrava rotolando nell’accampamento di Màdian',
+  tenda: 'Ha raggiunto una tenda e l’ha colpita così forte da farla cadere. La tenda si è rovesciata ed è crollata a terra',
   spada: 'Non può essere altro che la spada di Gedeone, figlio di Iòas, un uomo d’Israele',
+  dato: 'Dio gli ha dato in mano Màdian e tutto l’accampamento',
+  // L’attacco (7:15, 17, 20).
+  alzatevi: 'Alzatevi, perché Geova vi ha dato in mano l’accampamento di Màdian',
+  guardate: 'Guardate me e fate esattamente quello che faccio io',
   grido: 'La spada di Geova e di Gedeone!',
+  // A Succot e dopo la vittoria (8:5, 6, 22, 23).
+  pane: 'Vi prego, date del pane agli uomini al mio seguito, perché sono stanchi e io sto inseguendo Zeba e Zalmùnna, i re di Màdian',
+  rifiuto: 'Zeba e Zalmùnna sono forse già in mano tua? Perché dovremmo dare pane al tuo esercito?',
+  governa: 'Governa su di noi, tu e tuo figlio e tuo nipote, dato che ci hai salvato dalla mano di Màdian',
+  geovaGoverna: 'Non sarò io a governarvi, né vi governerà mio figlio. Sarà Geova a governarvi',
 };
 
 function d(id: string, titolo: string, testo: string, certezza: Dettaglio['certezza'], fonti: Fonte[]): [string, Dettaglio] {
@@ -146,9 +169,30 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'shalom',
     'Geova è pace',
-    'Gedeone temette di morire, perché aveva visto l’angelo di Geova faccia a faccia. Ma Geova gli disse: «Non aver paura; non morirai». Lì Gedeone eresse un altare e lo chiamò Geova-Shalom, che significa «Geova è pace».',
+    'Lì, a Ofra, Gedeone eresse un altare a Geova e lo chiamò Geova-Shalom, che significa «Geova è pace». Quando fu scritto il libro dei Giudici, quell’altare si trovava ancora lì.',
     'scritto',
-    [b('Giudici', 6, '22-24')],
+    [b('Giudici', 6, '24')],
+  ),
+  d(
+    'tagliatore',
+    'Un nome per quella notte',
+    'Il nome Gedeone significa «tagliatore» o «stroncatore». Quella notte abbatté il palo sacro accanto all’altare di Baal.',
+    'libro',
+    [F.it('Gedeone'), b('Giudici', 6, '27')],
+  ),
+  d(
+    'contenda',
+    '«Baal difenda la sua causa»',
+    'Il nuovo nome che tuo padre ti diede quella mattina, Ierubbaal, significa «Baal difenda la sua causa (contenda)»: se Baal era un dio, toccava a lui difendersi.',
+    'scritto',
+    [b('Giudici', 6, '32')],
+  ),
+  d(
+    'quattro-volte',
+    'Più di quattro volte tanti',
+    'I nemici accampati nella pianura erano circa 135.000: più di quattro volte gli uomini che avevano risposto alla chiamata di Gedeone. Eppure Geova gli disse che i suoi uomini erano troppi.',
+    'libro',
+    [F.it('Gedeone'), F.libro, b('Giudici', 7, '2')],
   ),
   d(
     'toro',
@@ -160,7 +204,7 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d(
     'radunati',
     'Al suono del corno',
-    'Lo spirito di Geova venne su Gedeone: al suono del suo corno si radunarono gli abiezeriti, e i suoi messaggeri chiamarono anche Manasse, Aser, Zabulon e Neftali.',
+    'Al suono del corno si radunarono dietro a Gedeone gli abiezeriti, la sua famiglia; poi i suoi messaggeri chiamarono tutto Manasse, e anche Aser, Zabulon e Neftali.',
     'scritto',
     [b('Giudici', 6, '34, 35')],
   ),
@@ -210,13 +254,41 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'scritto',
     [b('Giudici', 6, '7-10'), F.libro],
   ),
+  d(
+    'potenza',
+    '«Io sarò con te»',
+    'Geova mandò Gedeone «con la potenza che hai», e gli diede una garanzia: «Io sarò con te». Era lui a mandarlo.',
+    'scritto',
+    [b('Giudici', 6, '14'), b('Giudici', 6, '16')],
+  ),
+  d(
+    'rassicura',
+    '«Non morirai»',
+    'Quando l’angelo scomparve, Gedeone capì chi era e temette di morire: aveva visto l’angelo di Geova faccia a faccia. Geova lo rassicurò: «La pace sia con te. Non aver paura; non morirai».',
+    'scritto',
+    [b('Giudici', 6, '22, 23')],
+  ),
+  d(
+    'prova',
+    'Messo alla prova',
+    'Quella stessa notte Geova mise alla prova Gedeone: gli chiese di demolire l’altare che suo padre aveva eretto a Baal. Il toro che gli chiese di offrire evidentemente era considerato sacro a Baal.',
+    'libro',
+    [F.it('Gedeone'), b('Giudici', 6, '25, 26')],
+  ),
+  d(
+    'spirito',
+    'Rivestito dallo spirito',
+    'Quando i nemici si accamparono nella Valle di Izreel, lo spirito di Geova venne su Gedeone: alla lettera, lo «rivestì». Fu allora che Gedeone suonò il corno.',
+    'scritto',
+    [b('Giudici', 6, '33, 34')],
+  ),
   d('paziente', 'Con pazienza', 'Gedeone chiese due segni con il vello, uno dopo l’altro, e Geova con pazienza assecondò le sue richieste.', 'libro', [F.libro, b('Giudici', 6, '36-40')]),
   d(
     'pochi',
     'Da 32.000 a 300',
-    'L’esercito di Gedeone passò da 32.000 uomini a 300, mentre i nemici erano circa 135.000: così nessuno avrebbe potuto dire di essersi salvato da solo.',
-    'libro',
-    [F.libro, F.w04],
+    'Prima tornarono a casa 22.000 uomini, poi altri 9.700: dei 32.000 che avevano risposto alla chiamata, Geova ne tenne soltanto 300.',
+    'numeri',
+    [b('Giudici', 7, '3'), b('Giudici', 7, '6-8'), F.libro],
   ),
   d(
     'sogno',
@@ -224,6 +296,20 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
     'Geova diede a Gedeone un’altra prova di essere con lui: gli fece sentire, nell’accampamento nemico, il racconto di un sogno che indicava la vittoria di Israele.',
     'libro',
     [F.libro, b('Giudici', 7, '9-14')],
+  ),
+  d(
+    'spada',
+    'L’uno contro l’altro',
+    'Mentre i 300 restavano ciascuno al suo posto suonando i corni, Geova volse in tutto l’accampamento la spada dell’uno contro l’altro, e l’esercito fuggì fino a Bet-Sitta e ad Abel-Meola.',
+    'scritto',
+    [b('Giudici', 7, '21, 22')],
+  ),
+  d(
+    're',
+    'Il vero Re d’Israele',
+    'Gedeone non volle fondare una dinastia perché sapeva che il legittimo Re d’Israele era Geova.',
+    'libro',
+    [F.it('Gedeone'), b('Giudici', 8, '23')],
   ),
 
   // ——— Ioas: il padre ———
@@ -238,6 +324,13 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   d('nome', 'Ierubbaal', 'Da quel giorno Gedeone ebbe anche il nome di Ierubbaal: con quel nome lo chiama il racconto della battaglia.', 'scritto', [b('Giudici', 6, '32'), b('Giudici', 7, '1')]),
 
   // ——— Uno dei 300 ———
+  d(
+    'trentaduemila',
+    'Tu resti',
+    'Alla chiamata di Gedeone si erano raccolti 32.000 combattenti, accampati presso la sorgente di Harod, a sud dell’accampamento di Madian. Dopo l’annuncio tu resti, con chi non ha paura.',
+    'libro',
+    [F.it('Gedeone'), b('Giudici', 7, '1')],
+  ),
   d('trecento', 'Rimasero in 300', 'Rimasero soltanto quelli che, stando in guardia, si chinarono e si portarono l’acqua con la mano alla bocca: 300 uomini.', 'libro', [F.libro, b('Giudici', 7, '6, 7')]),
   d(
     'corni',
@@ -294,17 +387,17 @@ export const DETTAGLI: Record<string, Dettaglio> = Object.fromEntries([
   ),
   d(
     'panico',
-    'Circondati, credevano',
-    'Pensarono di essere circondati e sotto attacco: furono presi dal panico, e Geova fece in modo che si scagliassero gli uni contro gli altri.',
+    'Circondati, credevate',
+    'Corni, giare in pezzi, torce e grida tutt’intorno, all’improvviso, nel cuore della notte: pensaste di essere circondati e sotto attacco, e foste presi dal panico.',
     'libro',
-    [F.libro, b('Giudici', 7, '22')],
+    [F.libro, F.it('Gedeone')],
   ),
   d(
     'quindicimila',
     'Ne rimasero 15.000',
-    'Dell’esercito degli orientali, circa 135.000 uomini, rimasero in 15.000: gli altri 120.000 erano caduti.',
-    'numeri',
-    [b('Giudici', 8, '10'), F.libro],
+    'Dell’esercito degli orientali ne rimasero circa 15.000, a Carcor con i re Zeba e Zalmunna: 120.000 uomini erano caduti.',
+    'scritto',
+    [b('Giudici', 8, '10')],
   ),
 ]);
 
@@ -315,10 +408,14 @@ function s(id: string, domanda: string): [string, Sensazione] {
 export const SENSAZIONI: Record<string, Sensazione> = Object.fromEntries([
   s('ge-cauto', 'Gedeone fu coraggioso e cauto insieme. In quale situazione serve a te essere l’uno e l’altro?'),
   s('ge-segni', 'Gedeone chiese dei segni per essere sicuro. Che cosa ti aiuta a essere sicuro di fare ciò che Geova vuole?'),
+  s('ge-padre', 'La città chiede la tua morte, e tuo padre, a cui apparteneva l’altare, prende le tue difese. Come ti sentiresti, ascoltandolo da dentro casa?'),
+  s('g-baal', 'Baal non fece nulla per difendere il suo altare. Che differenza vedi fra lui e un Dio che agisce davvero?'),
   s('g-pochi', 'Geova sceglie di vincere con 300 uomini. Che cosa ti dice questo quando ti senti in pochi, o debole?'),
   s('i-figlio', 'Tutta la città vuole la morte di tuo figlio. Che cosa ti serve per difendere chi fa ciò che Dio chiede?'),
   s('t-paura', 'Chi aveva paura poteva tornare a casa, e 22.000 se ne andarono. Che cosa ti avrebbe dato il coraggio di restare?'),
-  s('t-stanchi', 'Siete stanchi e nessuno vi dà del pane, ma continuate. Che cosa ti aiuta ad andare avanti quando sei stanco?'),
+  s('t-chiamata', 'Il corno chiama a raccolta contro un esercito numeroso come le locuste. Che cosa ti avrebbe spinto a rispondere?'),
+  s('t-re','Gedeone rifiuta il potere che gli offrite e dice che a governarvi sarà Geova. Che cosa ti insegna su chi deve avere il primo posto?'),
+  s('t-stanchi','Siete stanchi e nessuno vi dà del pane, ma continuate. Che cosa ti aiuta ad andare avanti quando sei stanco?'),
   s('m-sogno', 'Un pane d’orzo che rovescia una tenda: il sogno dice che la vostra forza non basta. Su che cosa contava il tuo esercito?'),
 ]);
 

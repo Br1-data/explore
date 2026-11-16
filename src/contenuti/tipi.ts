@@ -48,7 +48,7 @@ export interface Verso {
 }
 
 /** «coperto»: sdraiato sotto una coperta. */
-export type Posa = 'fermo' | 'cammina' | 'parla' | 'pugno' | 'indica' | 'alza' | 'sdraiato' | 'coperto' | 'proclama';
+export type Posa = 'fermo' | 'cammina' | 'parla' | 'pugno' | 'indica' | 'alza' | 'sdraiato' | 'coperto' | 'proclama' | 'seduto';
 
 /** Una persona sulla linea del tempo. Anni a.E.V. negativi, E.V. positivi. */
 export interface Vita {
@@ -178,7 +178,12 @@ export type Fx =
   /** Cambia l’aspetto di un oggetto di scena (per `id`): es. l’arca che si costruisce. */
   | { k: 'oggetto'; id: string; variante: number }
   /** Qualcuno prende in mano un oggetto (un `tipo` di oggetto di scena) o lo posa (`null`). */
-  | { k: 'carico'; chi: string; cosa: string | null };
+  | { k: 'carico'; chi: string; cosa: string | null }
+  /**
+   * Un suono che avviene una volta sola, nel punto `x` (di norma dove guarda la scena):
+   * un corno che suona, delle giare che vanno in pezzi.
+   */
+  | { k: 'suono'; cosa: 'corno' | 'giare'; x?: number };
 
 export type Passo =
   | {
@@ -241,12 +246,18 @@ export interface Folla {
   /** Frazioni 0..1 sul totale. */
   armati?: number;
   torce?: number;
+  /** Chi tiene in mano una grossa giara (Giudici 7:16). */
+  giare?: number;
   donne?: number;
   bimbi?: number;
   comportamento?: 'fermo' | 'vaga' | 'insegue' | 'cerca';
   /** Reagisce alla variabile «agitazione». */
   reagisce?: boolean;
-  gruppo?: 'rissa' | 'invoca' | 'danza';
+  /**
+   * `assalto`: fermi, a braccia alzate, suonano i corni e gridano (Giudici 7:20-22);
+   * `fuga`: corrono di qua e di là e urlano (7:21).
+   */
+  gruppo?: 'rissa' | 'invoca' | 'danza' | 'assalto' | 'fuga';
   /** Per «insegue»: distanza iniziale e finale dal bersaglio. */
   distanza?: [number, number];
   /** Per «insegue»: attore da seguire (se assente, chi gioca). */

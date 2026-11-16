@@ -1,42 +1,54 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, PAROLE, b } from './base';
-import { campoMadian, ofra } from './scenari';
+import {
+  CAMPO,
+  GOVERNO,
+  HAROD,
+  MATTINO,
+  NOTTE,
+  SUCCOT,
+  TORCHIO,
+  VELLO,
+  palcoCampo,
+  palcoGoverno,
+  palcoHarod,
+  palcoMattino,
+  palcoNotte,
+  palcoSuccot,
+  palcoTorchio,
+  palcoVello,
+} from './racconto';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'gedeone';
 
 /**
- * Il punto di vista di Gedeone: coraggioso e cauto (Giudici 6:11–8:23). L’angelo non
- * viene raffigurato come un personaggio: le sue parole si leggono nel versetto. Gedeone
- * fa con le sue mani ciò che il racconto dice che fece: batte il grano, prepara il dono,
- * demolisce l’altare di Baal, stende e strizza il vello, suona il corno e fracassa la giara.
+ * Il punto di vista di Gedeone: coraggioso e cauto (Giudici 6:11–8:23). Vive tutto il
+ * racconto (racconto.ts) e fa con le sue mani ciò che il testo dice che fece: batte il
+ * grano, porta il dono, erige l’altare, demolisce quello di Baal, suona il corno, stende e
+ * strizza il vello, fracassa la giara. Il mattino dopo la notte dell’altare sta in casa:
+ * la scena si guarda senza muoverlo.
  */
 export const gedeone: Ruolo = {
   id: 'gedeone',
   nome: 'Gedeone',
   titolo: 'Coraggioso e cauto',
   descrizione:
-    'Batti il grano di nascosto, ricevi l’incarico e il segno del fuoco, demolisci di notte l’altare di Baal, chiedi il segno del vello, attacca l’accampamento di Madian con 300 uomini e rifiuta di diventare re.',
+    'Batti il grano di nascosto, ricevi l’incarico dall’angelo e il segno del fuoco, demolisci di notte l’altare di Baal, chiedi il segno del vello, riduci l’esercito a 300 uomini, ascolti il sogno nell’accampamento di Madian, attacchi e rifiuti di diventare re.',
   fedelta:
-    'Giudici 6:11–7:22, 8:4-23 e 8:28, come li spiega il capitolo 18 del libro con le pubblicazioni che cita. La situazione in cui scegli è un momento che il racconto descrive.',
+    'Giudici 6:11–7:22, 8:4-23 e 8:28, come li spiega il capitolo 18 del libro con le pubblicazioni che cita. Le parole sono quelle del testo; la situazione in cui scegli è un momento che il racconto descrive.',
   modo: 'cammina',
   stile: 'gedeone',
-  durata: '18-22 minuti',
+  durata: '25-30 minuti',
   conclusione: 'Hai vissuto il racconto nei panni di Gedeone',
   scene: [
     {
       id: 'gedeone-torchio',
       titolo: 'Il grano nel torchio',
       luogo: 'Ofra, sotto il grande albero',
-      ...ofra(false, 2200),
-      oggetti: [
-        ...ofra(false, 2200).oggetti,
-        // La grande roccia su cui Gedeone mette il dono, e il fuoco che ne divampa (Giudici 6:20, 21).
-        { tipo: 'roccia', x: 520, scala: 1.3 },
-        { tipo: 'fuoco', x: 520, seVar: 'fuocoRoccia' },
-      ],
+      ...palcoTorchio(io),
       inizioX: 200,
-      vars: { fuocoRoccia: 0 },
       ingresso: [
         {
           t: 'narra',
@@ -63,6 +75,7 @@ export const gedeone: Ruolo = {
           richiede: ['grano'],
           passi: [
             { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
+            ...TORCHIO.appare(),
             {
               t: 'attivita',
               a: {
@@ -79,11 +92,12 @@ export const gedeone: Ruolo = {
         },
         {
           id: 'incarico',
-          x: 660,
+          x: 780,
           tipo: 'ascolta',
           etichetta: 'Un incarico più grande di te',
           richiede: ['torchio'],
           passi: [
+            ...TORCHIO.dialogo(io),
             {
               t: 'attivita',
               a: {
@@ -108,39 +122,43 @@ export const gedeone: Ruolo = {
           passi: [
             {
               t: 'narra',
-              testo: 'Chiedi all’angelo un segno e di aspettarti. Rientri in casa e prepari il dono: un capretto e del pane senza lievito.',
+              testo: 'Chiedi all’angelo un segno e di aspettarti. Rientri in casa e prepari il dono: un capretto e del pane senza lievito. Metti la carne nel cesto e il brodo nella pentola.',
               certezza: 'scritto',
               fonti: [b('Giudici', 6, '17-19')],
             },
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'secchio' } },
+            ...TORCHIO.dono(io),
             det('efa'),
           ],
         },
         {
           id: 'roccia',
-          x: 560,
+          x: 520,
           tipo: 'agisci',
           etichetta: 'Metti il dono sulla roccia',
           richiede: ['dono'],
           passi: [
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
             {
               t: 'narra',
-              testo: 'L’angelo ti dice di mettere la carne e il pane senza lievito sulla grande roccia e di versare il brodo. Poi li tocca con la punta del bastone.',
+              testo: 'L’angelo ti dice di mettere la carne e il pane senza lievito sulla grande roccia e di versare il brodo. Poi stende il bastone e con la punta li tocca.',
               certezza: 'scritto',
               fonti: [b('Giudici', 6, '20, 21')],
             },
-            { t: 'fx', fx: { k: 'var', nome: 'fuocoRoccia', a: 1, dur: 0.3 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2.5 } },
+            ...TORCHIO.fuoco(io),
             {
               t: 'narra',
-              testo: 'Un fuoco divampa dalla roccia e consuma la carne e il pane. L’angelo scompare.',
+              testo: 'Ma Geova ti dice: «La pace sia con te. Non aver paura; non morirai».',
               certezza: 'scritto',
-              fonti: [b('Giudici', 6, '21')],
+              fonti: [b('Giudici', 6, '23')],
             },
-            { t: 'fx', fx: { k: 'var', nome: 'fuocoRoccia', a: 0, dur: 2 } },
-            det('shalom'),
           ],
+        },
+        {
+          id: 'altare',
+          x: 440,
+          tipo: 'agisci',
+          etichetta: 'Erigi un altare a Geova',
+          richiede: ['roccia'],
+          passi: [...TORCHIO.altare(), det('shalom')],
         },
       ],
     },
@@ -148,11 +166,8 @@ export const gedeone: Ruolo = {
       id: 'gedeone-notte',
       titolo: 'L’altare di Baal',
       luogo: 'Ofra, di notte',
-      ...ofra(true, 2200, 'notte'),
+      ...palcoNotte(io),
       inizioX: 1300,
-      vars: { altareGeova: 0 },
-      // I dieci servitori che Gedeone prese con sé (Giudici 6:27).
-      folle: [{ x0: 1150, x1: 1450, n: 10, seme: 301, comportamento: 'vaga' }],
       ingresso: [
         {
           t: 'narra',
@@ -218,8 +233,8 @@ export const gedeone: Ruolo = {
                 spiegazione: 'Sono gli ordini di Giudici 6:25, 26, nell’ordine in cui Geova li diede.',
               },
             },
-            { t: 'fx', fx: { k: 'oggetto', id: 'baal', variante: 3 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1.2 } },
+            ...NOTTE.demolisci(io),
+            det('tagliatore'),
           ],
         },
         {
@@ -228,7 +243,35 @@ export const gedeone: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Erigi l’altare a Geova',
           richiede: ['demolisci'],
-          passi: [{ t: 'fx', fx: { k: 'var', nome: 'altareGeova', a: 1, dur: 1.5 } }, { t: 'fx', fx: { k: 'attendi', dur: 1 } }, det('toro')],
+          passi: [...NOTTE.erigi(io), det('toro')],
+        },
+      ],
+    },
+    {
+      id: 'gedeone-mattino',
+      titolo: '«Porta fuori tuo figlio!»',
+      luogo: 'Ofra, il mattino dopo: sei in casa',
+      ...palcoMattino(io),
+      // Gedeone è in casa: si guarda la scena senza muoverlo (Giudici 6:30).
+      modo: 'osserva',
+      inizioX: 1600,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Al mattino gli uomini della città si alzano presto e vedono l’altare di Baal demolito, il palo sacro abbattuto e il toro offerto sul nuovo altare. Tu sei in casa.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 6, '28')],
+        },
+      ],
+      punti: [
+        { id: 'accusa', x: 1800, tipo: 'ascolta', etichetta: 'Gli uomini della città', passi: MATTINO.accusa() },
+        {
+          id: 'difesa',
+          x: 1600,
+          tipo: 'ascolta',
+          etichetta: 'Tuo padre risponde',
+          richiede: ['accusa'],
+          passi: [...MATTINO.difesa(io), det('contenda'), senti('ge-padre')],
         },
       ],
     },
@@ -236,13 +279,8 @@ export const gedeone: Ruolo = {
       id: 'gedeone-vello',
       titolo: 'Il vello nell’aia',
       luogo: 'L’aia, di notte e al mattino',
-      ...ofra(true, 2200, 'demolito'),
-      oggetti: [...ofra(true, 2200, 'demolito').oggetti, { tipo: 'vello', x: 1100, id: 'vello', seVar: 'steso' }],
-      // La notte sfuma nel mattino con la variabile `visione` (Giudici 6:38: «il giorno dopo si alzò di buon’ora»).
-      ambiente2: 'mattino',
+      ...palcoVello(io),
       inizioX: 300,
-      vars: { radunati: 0, steso: 0, visione: 0 },
-      folle: [{ x0: 200, x1: 800, n: 12, seme: 305, armati: 0.4, comportamento: 'vaga', seVar: 'radunati' }],
       ingresso: [
         {
           t: 'narra',
@@ -252,19 +290,7 @@ export const gedeone: Ruolo = {
         },
       ],
       punti: [
-        {
-          id: 'corno',
-          x: 480,
-          tipo: 'agisci',
-          etichetta: 'Suona il corno',
-          passi: [
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'corno' } },
-            { t: 'fx', fx: { k: 'var', nome: 'radunati', a: 1, dur: 2 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1.5 } },
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: null } },
-            det('radunati'),
-          ],
-        },
+        { id: 'corno', x: 480, tipo: 'agisci', etichetta: 'Suona il corno', passi: [...VELLO.corno(io), det('radunati')] },
         {
           id: 'vello',
           x: 1050,
@@ -278,7 +304,7 @@ export const gedeone: Ruolo = {
               certezza: 'scritto',
               fonti: [b('Giudici', 6, '36, 37')],
             },
-            { t: 'fx', fx: { k: 'var', nome: 'steso', a: 1, dur: 0.6 } },
+            ...VELLO.stendi(io),
           ],
         },
         {
@@ -287,12 +313,7 @@ export const gedeone: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Al mattino, strizza il vello',
           richiede: ['vello'],
-          passi: [
-            { t: 'fx', fx: { k: 'var', nome: 'visione', a: 1, dur: 3 } },
-            { t: 'fx', fx: { k: 'oggetto', id: 'vello', variante: 1 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1.5 } },
-            det('scodella'),
-          ],
+          passi: [...VELLO.rugiada(), det('scodella')],
         },
         {
           id: 'ancora',
@@ -312,14 +333,90 @@ export const gedeone: Ruolo = {
                 distrattori: ['mano', 'bagnato', 'pioggia'],
               },
             },
-            // Un’altra notte, un altro mattino.
-            { t: 'fx', fx: { k: 'var', nome: 'visione', a: 0, dur: 1.5 } },
-            { t: 'fx', fx: { k: 'oggetto', id: 'vello', variante: 0 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1 } },
-            { t: 'fx', fx: { k: 'var', nome: 'visione', a: 1, dur: 3 } },
-            { t: 'fx', fx: { k: 'oggetto', id: 'vello', variante: 2 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 1.5 } },
+            ...VELLO.asciutto(),
             senti('ge-segni'),
+          ],
+        },
+      ],
+    },
+    {
+      id: 'gedeone-harod',
+      titolo: 'Troppi uomini',
+      luogo: 'La sorgente di Harod',
+      ...palcoHarod(io),
+      inizioX: 400,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Ti sei alzato presto e ti sei accampato presso la sorgente di Harod con tutti quelli che hanno risposto alla chiamata. L’accampamento di Madian è a nord, nella pianura.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 7, '1')],
+        },
+      ],
+      punti: [
+        { id: 'pianura', x: 1850, tipo: 'esamina', etichetta: 'La pianura', passi: [det('quattro-volte')] },
+        {
+          id: 'annuncio',
+          x: 620,
+          tipo: 'agisci',
+          etichetta: 'Fai l’annuncio',
+          richiede: ['pianura'],
+          passi: [
+            {
+              t: 'narra',
+              testo: 'Geova ti dice che hai troppi uomini con te: Israele potrebbe vantarsi di essersi salvato da solo. Ti dice di annunciare che chi ha paura torni a casa.',
+              certezza: 'scritto',
+              fonti: [b('Giudici', 7, '2, 3')],
+            },
+            ...HAROD.annuncio(io),
+          ],
+        },
+        {
+          id: 'acqua',
+          x: 1100,
+          tipo: 'agisci',
+          etichetta: 'Fai scendere gli uomini all’acqua',
+          richiede: ['annuncio'],
+          passi: [
+            {
+              t: 'narra',
+              testo: '«Sono ancora troppi», ti dice Geova. All’acqua li metterà alla prova per te: verrà con te chi si porta l’acqua con la mano alla bocca, non chi si inginocchia per bere.',
+              certezza: 'scritto',
+              fonti: [b('Giudici', 7, '4-6')],
+            },
+            ...HAROD.acqua(),
+            {
+              t: 'narra',
+              testo: 'Geova ti dice: vi salverò tramite i 300 uomini che hanno leccato l’acqua dalla mano. Gli altri tornino a casa.',
+              certezza: 'scritto',
+              fonti: [b('Giudici', 7, '7')],
+            },
+          ],
+        },
+        {
+          id: 'conta',
+          x: 1300,
+          tipo: 'medita',
+          etichetta: 'Come Geova ha ridotto l’esercito',
+          richiede: ['acqua'],
+          passi: [
+            {
+              t: 'attivita',
+              a: {
+                tipo: 'ordina',
+                id: 'riduzione',
+                consegna: 'Rimetti in ordine come si è ridotto il tuo esercito. Una cosa non è successa: scartala.',
+                voci: [
+                  { testo: 'Annunci: «Chi ha paura e trema torni a casa»', nota: 'Giudici 7:3' },
+                  { testo: 'In 22.000 tornano a casa; ne restano 10.000', nota: 'Giudici 7:3' },
+                  { testo: 'Fai scendere gli uomini all’acqua', nota: 'Giudici 7:4, 5' },
+                  { testo: 'In 300 si portano l’acqua con la mano alla bocca', nota: 'Giudici 7:6' },
+                  { testo: 'Gli altri tornano a casa; i 300 prendono le provviste e i corni', nota: 'Giudici 7:8' },
+                ],
+                distrattori: ['Scegli i più forti per la battaglia'],
+                spiegazione: 'È la sequenza di Giudici 7:3-8. A scegliere fu Geova, non la forza degli uomini.',
+              },
+            },
           ],
         },
       ],
@@ -328,18 +425,8 @@ export const gedeone: Ruolo = {
       id: 'gedeone-campo',
       titolo: '«Per Geova e per Gedeone!»',
       luogo: 'L’accampamento di Madian, di notte',
-      ...campoMadian(2400),
-      inizioX: 200,
-      vars: { luci: 0 },
-      attori: [
-        { id: 'pura', x: 280, stile: 'trecento', verso: 1 },
-        { id: 'soldato', x: 1460, stile: 'madianita', verso: -1 },
-      ],
-      folle: [
-        { x0: 900, x1: 2200, n: 16, seme: 341, armati: 0.6, comportamento: 'vaga' },
-        // Le torce dei 300, che compaiono tutte insieme quando le giare vanno in pezzi.
-        { x0: 60, x1: 700, n: 10, seme: 343, torce: 1, comportamento: 'fermo', seVar: 'luci' },
-      ],
+      ...palcoCampo(io),
+      inizioX: 300,
       ingresso: [
         {
           t: 'narra',
@@ -355,7 +442,7 @@ export const gedeone: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Scendi con Pura',
           passi: [
-            { t: 'fx', fx: { k: 'vai', chi: 'pura', x: 1250, vel: 110 } },
+            ...CAMPO.scendi(io),
             {
               t: 'narra',
               testo: 'Tu e Pura scendete fino ai margini dell’accampamento. Le tende coprono la pianura come uno sciame di locuste.',
@@ -370,20 +457,17 @@ export const gedeone: Ruolo = {
           tipo: 'ascolta',
           etichetta: 'Due soldati parlano',
           richiede: ['scendi'],
-          passi: [
-            { t: 'fx', fx: { k: 'nastro', chi: 'soldato', testo: PAROLE.spada, dur: 4.5 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2 } },
-            det('adora'),
-          ],
+          passi: [...CAMPO.sogno(io), det('adora')],
         },
         {
           id: 'istruzioni',
-          x: 700,
+          x: 520,
           tipo: 'leggi',
           etichetta: 'Torna dai tuoi uomini',
           richiede: ['sogno'],
           passi: [
-            { t: 'fx', fx: { k: 'vai', chi: 'pura', x: 560, vel: 130 } },
+            ...CAMPO.ritorno(io),
+            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.alzatevi, dur: 4.5 } },
             {
               t: 'attivita',
               a: {
@@ -399,31 +483,47 @@ export const gedeone: Ruolo = {
                 dettaglio: 'veglia',
               },
             },
+            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.guardate, dur: 4 } },
+            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'giara' } },
+            ...CAMPO.schierati(),
           ],
         },
         {
           id: 'attacco',
-          x: 900,
+          x: 620,
           tipo: 'agisci',
           etichetta: 'Suona il corno e fracassa la giara',
           richiede: ['istruzioni'],
-          passi: [
-            { t: 'fx', fx: { k: 'carico', chi: 'giocatore', cosa: 'corno' } },
-            { t: 'fx', fx: { k: 'var', nome: 'luci', a: 1, dur: 0.4 } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: PAROLE.grido, dur: 3.5 } },
-            { t: 'fx', fx: { k: 'attendi', dur: 2 } },
-            det('esempio'),
-          ],
+          passi: [...CAMPO.attacco(io), det('esempio')],
         },
+      ],
+    },
+    {
+      id: 'gedeone-succot',
+      titolo: 'Stanchi, ma avanti',
+      luogo: 'Oltre il Giordano, a Succot',
+      ...palcoSuccot(io),
+      inizioX: 300,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Hai attraversato il Giordano con i tuoi 300 uomini: siete stanchi, ma continuate a inseguire Zeba e Zalmunna, i re di Madian.',
+          certezza: 'scritto',
+          fonti: [b('Giudici', 8, '4, 5')],
+        },
+      ],
+      punti: [
+        { id: 'efraim', x: 700, tipo: 'ascolta', etichetta: 'Gli uomini di Efraim', passi: [det('mite')] },
+        { id: 'pane', x: 1250, tipo: 'agisci', etichetta: 'Chiedi pane per i tuoi uomini', richiede: ['efraim'], passi: SUCCOT.pane(io) },
+        { id: 'carcor', x: 1750, tipo: 'medita', etichetta: 'I re di Madian', richiede: ['pane'], passi: [det('catturati')] },
       ],
     },
     {
       id: 'gedeone-dopo',
       titolo: 'Sarà Geova a governarvi',
       luogo: 'Dopo la vittoria',
-      ...ofra(false, 2200, 'demolito'),
+      ...palcoGoverno(io),
       inizioX: 300,
-      folle: [{ x0: 900, x1: 1500, n: 12, seme: 303, comportamento: 'vaga' }],
       ingresso: [
         {
           t: 'narra',
@@ -457,15 +557,14 @@ export const gedeone: Ruolo = {
             },
           ],
         },
-        { id: 'efraim', x: 1000, tipo: 'ascolta', etichetta: 'Gli uomini di Efraim', richiede: ['segni'], passi: [det('mite')] },
-        { id: 'carcor', x: 1150, tipo: 'medita', etichetta: 'I re di Madian', richiede: ['efraim'], passi: [det('catturati')] },
         {
           id: 're',
-          x: 1300,
+          x: 1250,
           tipo: 'agisci',
           etichetta: 'Ti chiedono di governare',
-          richiede: ['carcor'],
+          richiede: ['segni'],
           passi: [
+            ...GOVERNO.richiesta(),
             {
               t: 'attivita',
               a: {
@@ -477,6 +576,7 @@ export const gedeone: Ruolo = {
                 distrattori: ['fratello', 'Efraim'],
               },
             },
+            ...GOVERNO.risposta(io),
             det('umile'),
           ],
         },

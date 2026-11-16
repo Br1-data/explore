@@ -26,6 +26,7 @@ export const PERSONAGGI: Record<string, Stile> = {
     accessorio: 'bastone',
     scala: 0.98,
   },
+  // Il corno, la giara e la torcia li prende in mano quando il racconto lo dice (fx `carico`).
   trecento: {
     tipo: 'uomo',
     veste: '#6f5a4a',
@@ -33,8 +34,38 @@ export const PERSONAGGI: Record<string, Stile> = {
     pelle: '#a36f4a',
     capelli: '#1e1a18',
     barba: true,
-    accessorio: 'torcia',
     scala: 1,
+  },
+  pura: {
+    tipo: 'uomo',
+    veste: '#7d6a4e',
+    fascia: '#4a3a2c',
+    pelle: '#b5835a',
+    capelli: '#3b2b22',
+    barba: true,
+    scala: 0.97,
+  },
+  // Un uomo del posto che parla per gli altri (gli uomini di Ofra, i principi di Succot).
+  abitante: {
+    tipo: 'uomo',
+    veste: '#8a6a52',
+    fascia: '#40384a',
+    pelle: '#b5835a',
+    capelli: '#3b2b22',
+    barba: true,
+    scala: 1,
+  },
+  // L’angelo di Geova ha l’aspetto di un uomo: Gedeone capisce chi è solo quando scompare
+  // (Giudici 6:21, 22). Ha in mano un bastone (6:21). La Bibbia non lo descrive oltre.
+  angelo: {
+    tipo: 'uomo',
+    veste: '#e4ddcc',
+    fascia: '#b8a378',
+    pelle: '#b98a62',
+    capelli: '#3a2a20',
+    barba: true,
+    accessorio: 'bastone',
+    scala: 1.02,
   },
   madianita: {
     tipo: 'uomo',

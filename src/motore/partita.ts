@@ -51,6 +51,8 @@ export interface Ascoltatori {
   fine(): void;
   /** I passi di chi gioca. */
   passo?(): void;
+  /** Un suono che avviene una volta, in un punto della scena (fx `suono`). */
+  evento?(cosa: 'corno' | 'giare', x: number): void;
   /** Ciò che si sente nella scena: aggiornato più volte al secondo. */
   paesaggio?(p: Paesaggio): void;
 }
@@ -268,6 +270,7 @@ export class Partita {
       const u2 = r();
       const torcia = !donna && !bimbo && u2 < (folla.torce ?? 0);
       const armato = !donna && !bimbo && !torcia && u2 < (folla.torce ?? 0) + (folla.armati ?? 0);
+      const giara = !donna && !bimbo && !torcia && !armato && u2 < (folla.torce ?? 0) + (folla.armati ?? 0) + (folla.giare ?? 0);
       let x = interpola(folla.x0, folla.x1, k * 0.86 + r() * 0.14);
       let verso: 1 | -1 = r() < 0.5 ? 1 : -1;
       let posa: Posa = 'fermo';
@@ -282,11 +285,11 @@ export class Partita {
         x = centro + lato * (20 + Math.floor(i / 2) * 34 + r() * 6);
         verso = lato < 0 ? 1 : -1;
         posa = i < 4 ? 'pugno' : 'indica';
-      } else if (folla.gruppo === 'danza') {
+      } else if (folla.gruppo === 'danza' || folla.gruppo === 'assalto') {
         posa = 'alza';
       }
       this.persone.push({
-        stile: stileFolla(folla.seme * 31 + i, { donna, bimbo, armato, torcia }),
+        stile: stileFolla(folla.seme * 31 + i, { donna, bimbo, armato, torcia, giara }),
         x,
         prof: -7 + r() * 14,
         verso,
@@ -553,6 +556,10 @@ export class Partita {
         else this.carichi.delete(fx.chi);
         avanti();
         break;
+      case 'suono':
+        this.ui.evento?.(fx.cosa, fx.x ?? this.camera.x);
+        avanti();
+        break;
       case 'visibile': {
         if (fx.chi === 'giocatore') this.giocatore.visibile = fx.v;
         else {
@@ -703,6 +710,8 @@ export class Partita {
     s.oggetti.forEach((o, i) => {
       const tipo = SUONI_OGGETTI[o.tipo];
       if (!tipo) return;
+      // Un altare senza fuoco (variante 1) non crepita.
+      if (o.tipo === 'altare' && ((o.id !== undefined ? this.varianti.get(o.id) : undefined) ?? o.variante) === 1) return;
       const forza = (o.seVar ? this.vars[o.seVar] ?? 0 : 1) * ((o.piano ?? 'medio') === 'medio' ? 1 : 0.3);
       if (forza > 0.02) sorgenti.push({ chiave: `${s.id}:o${i}`, tipo, x: o.x, forza });
     });
@@ -759,7 +768,18 @@ export class Partita {
         p.x = p.casa + Math.sin(this.t * 3.1 + p.indice * 1.7) * 5 * (p.verso > 0 ? 1 : -1);
         continue;
       }
-      if (f.gruppo === 'invoca') continue;
+      if (f.gruppo === 'invoca' || f.gruppo === 'assalto') continue;
+      if (f.gruppo === 'fuga') {
+        // Corrono di qua e di là senza fermarsi.
+        if (Math.abs(p.meta - p.x) < 8) p.meta = interpola(f.x0, f.x1, casuale(Math.floor(this.t * 1000) + p.indice * 977 + f.seme)());
+        const d = p.meta - p.x;
+        const passo = Math.sign(d) * Math.min(Math.abs(d), (170 + (p.indice % 4) * 15) * dt);
+        p.x += passo;
+        p.fase += Math.abs(passo) * 0.064;
+        p.verso = d > 0 ? 1 : -1;
+        p.posa = 'cammina';
+        continue;
+      }
       if (f.gruppo === 'danza') {
         // Un girotondo sul posto, a braccia alzate o a passo di danza.
         const k = this.t * 1.5 + p.indice * 0.9;
