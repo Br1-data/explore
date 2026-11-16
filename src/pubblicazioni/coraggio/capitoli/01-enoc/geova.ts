@@ -1,6 +1,9 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
+import { STRADA, palcoStrada } from './racconto';
 import { altura, mondo, notte, paradiso } from './scenari';
+
+const io = 'geova';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -155,20 +158,44 @@ export const geova: Ruolo = {
           ],
         },
         {
-          id: 'forza',
-          x: 900,
-          tipo: 'agisci',
-          etichetta: 'Dagli la forza di proclamarlo',
-          richiede: ['atti'],
-          passi: [det('forza'), senti('g-incarico'), { t: 'fx', fx: { k: 'vai', chi: 'enoc', x: 1900, vel: 120 } }],
-        },
-        {
           id: 'parole',
           x: 1600,
           tipo: 'leggi',
           etichetta: 'Dove sono scritte le sue parole',
           facoltativo: true,
           passi: [det('solo-giuda')],
+        },
+      ],
+    },
+    {
+      id: 'geova-strada',
+      titolo: 'Il messaggio in strada',
+      luogo: 'Persone molto diverse da Enoc',
+      ...palcoStrada(io),
+      inizioX: 1090,
+      ingresso: [
+        {
+          t: 'narra',
+          testo: 'Enoc porta il messaggio a persone che hanno un atteggiamento e un comportamento molto diversi dai suoi.',
+          certezza: 'libro',
+          fonti: [F.libro],
+        },
+      ],
+      punti: [
+        {
+          id: 'forza',
+          x: 1090,
+          tipo: 'agisci',
+          etichetta: 'Dagli la forza di proclamarlo',
+          passi: [...STRADA.parla(io, 0), det('forza'), ...STRADA.avanza(io, 1)],
+        },
+        {
+          id: 'tutto',
+          x: 1810,
+          tipo: 'osserva',
+          etichetta: 'Enoc dice tutto',
+          richiede: ['forza'],
+          passi: [...STRADA.parla(io, 1), ...STRADA.avanza(io, 2), ...STRADA.parla(io, 2), senti('g-incarico')],
         },
       ],
     },

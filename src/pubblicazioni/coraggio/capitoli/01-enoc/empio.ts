@@ -1,7 +1,9 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, b } from './base';
-import { NASTRO } from './enoc';
-import { mondo, notte, strada } from './scenari';
+import { STRADA, palcoStrada } from './racconto';
+import { mondo, notte } from './scenari';
+
+const io = 'empio';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
@@ -146,16 +148,8 @@ export const empio: Ruolo = {
       id: 'empio-strada',
       titolo: 'Quell’uomo parla in strada',
       luogo: 'Un messaggio che ti riguarda',
-      ...strada(2900),
+      ...palcoStrada(io),
       inizioX: 620,
-      vars: { agitazione: 0 },
-      folle: [
-        { x0: 780, x1: 1240, n: 13, seme: 31, reagisce: true, armati: 0.15, donne: 0.3, comportamento: 'vaga' },
-        { x0: 1480, x1: 1980, n: 14, seme: 33, reagisce: true, armati: 0.3, donne: 0.25, comportamento: 'vaga' },
-        { x0: 2220, x1: 2760, n: 15, seme: 35, reagisce: true, armati: 0.4, donne: 0.2, comportamento: 'vaga' },
-        { x0: 600, x1: 2900, n: 14, seme: 37, piano: 'fondo', comportamento: 'vaga' },
-      ],
-      attori: [{ id: 'enoc', x: 1090, stile: 'enoc', verso: -1 }],
       ingresso: [
         {
           t: 'narra',
@@ -171,13 +165,7 @@ export const empio: Ruolo = {
           x: 1000,
           tipo: 'ascolta',
           etichetta: 'Fermati ad ascoltare',
-          passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'proclama' } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'enoc', testo: NASTRO[0], dur: 5 } },
-            { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 0.35, dur: 2.5 } },
-            det('infastiditi'),
-            { t: 'fx', fx: { k: 'vai', chi: 'enoc', x: 1810, vel: 150 } },
-          ],
+          passi: [...STRADA.parla(io, 0), det('infastiditi'), ...STRADA.avanza(io, 1)],
         },
         {
           id: 'ascolta-2',
@@ -186,9 +174,7 @@ export const empio: Ruolo = {
           etichetta: 'Parla di voi',
           richiede: ['ascolta-1'],
           passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'proclama' } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'enoc', testo: NASTRO[1], dur: 5.5 } },
-            { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 0.7, dur: 2.5 } },
+            ...STRADA.parla(io, 1),
             {
               t: 'attivita',
               a: {
@@ -203,7 +189,7 @@ export const empio: Ruolo = {
             },
             det('quattro-volte'),
             det('empi-significato'),
-            { t: 'fx', fx: { k: 'vai', chi: 'enoc', x: 2570, vel: 150 } },
+            ...STRADA.avanza(io, 2),
           ],
         },
         {
@@ -212,14 +198,7 @@ export const empio: Ruolo = {
           tipo: 'ascolta',
           etichetta: 'Dice tutto, fino in fondo',
           richiede: ['ascolta-2'],
-          passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'proclama' } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'enoc', testo: NASTRO[2], dur: 5 } },
-            { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 1, dur: 2.5 } },
-            det('opere-parole'),
-            senti('e-parole'),
-            { t: 'fx', fx: { k: 'posa', chi: 'enoc', posa: 'fermo' } },
-          ],
+          passi: [...STRADA.parla(io, 2), det('opere-parole'), senti('e-parole')],
         },
         {
           id: 'reazioni',

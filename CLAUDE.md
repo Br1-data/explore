@@ -217,7 +217,8 @@ src/
       personaggi.ts          l’aspetto (Stile) dei personaggi che compaiono nei capitoli
       capitoli/
         01-enoc/             base.ts (versetti, VITE, DETTAGLI, SENSAZIONI, STUDIO), scenari.ts,
-                             un file per punto di vista (enoc, geova, matusalemme, empio), index.ts
+                             un file per punto di vista (enoc, geova, matusalemme, empio), index.ts;
+                             racconto.ts: la strada del messaggio (Enoc, l’empio, Geova)
         02-noe/              Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5 (noe, geova, moglie, figlio,
                              contemporaneo); scenari.ts: cantiere, arcaPronta, diluvio, arcaDentro (la
                              stiva, per le scene ricostruite nell’arca), ararat (altare e arcobaleno

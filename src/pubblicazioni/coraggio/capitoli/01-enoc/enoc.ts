@@ -1,16 +1,13 @@
 import type { Passo, Ruolo } from '@/contenuti/tipi';
 import { F, MESSAGGIO, VERSI, b } from './base';
-import { altura, colline, mondo, notte, quiete, strada } from './scenari';
+import { STRADA, palcoStrada } from './racconto';
+import { altura, colline, mondo, notte, quiete } from './scenari';
 
 const det = (id: string): Passo => ({ t: 'dettaglio', id });
 const senti = (id: string): Passo => ({ t: 'senti', id });
+const io = 'enoc';
 
-/** Il messaggio diviso nei tre momenti in cui Enoc lo proclama in strada. */
-export const NASTRO = [
-  'Ecco, Geova è venuto con le sue sante miriadi per eseguire il giudizio contro tutti…',
-  '…e dimostrare la colpevolezza di tutti gli empi per tutte le opere empie che hanno empiamente compiuto…',
-  '…e per tutte le cose offensive che gli empi peccatori hanno detto contro di lui.',
-];
+export { NASTRO } from './racconto';
 
 /**
  * Il punto di vista di Enoc.
@@ -372,16 +369,8 @@ export const enoc: Ruolo = {
       id: 'enoc-strada',
       titolo: 'In una strada affollata',
       luogo: 'Persone molto diverse da te',
-      ...strada(2800),
+      ...palcoStrada(io),
       inizioX: 150,
-      vars: { agitazione: 0 },
-      folle: [
-        { x0: 780, x1: 1240, n: 13, seme: 31, reagisce: true, armati: 0.15, donne: 0.3, comportamento: 'vaga' },
-        { x0: 1480, x1: 1980, n: 14, seme: 33, reagisce: true, armati: 0.3, donne: 0.25, comportamento: 'vaga' },
-        { x0: 2220, x1: 2700, n: 15, seme: 35, reagisce: true, armati: 0.4, donne: 0.2, comportamento: 'vaga' },
-        { x0: 600, x1: 2800, n: 14, seme: 37, piano: 'fondo', comportamento: 'vaga' },
-      ],
-      zone: [{ x0: 740, x1: 2700, tipo: 'pressione', forza: 0.3 }],
       ingresso: [
         {
           t: 'narra',
@@ -398,12 +387,7 @@ export const enoc: Ruolo = {
           x: 1010,
           tipo: 'agisci',
           etichetta: 'Proclama il messaggio',
-          passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'giocatore', posa: 'proclama' } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: NASTRO[0], dur: 5 } },
-            { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 0.35, dur: 2.5 } },
-            { t: 'fx', fx: { k: 'posa', chi: 'giocatore', posa: 'fermo' } },
-          ],
+          passi: STRADA.parla(io, 0),
         },
         {
           id: 'parla-2',
@@ -412,10 +396,7 @@ export const enoc: Ruolo = {
           etichetta: 'Continua: non hai detto tutto',
           richiede: ['parla-1'],
           passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'giocatore', posa: 'proclama' } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: NASTRO[1], dur: 5.5 } },
-            { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 0.7, dur: 2.5 } },
-            { t: 'fx', fx: { k: 'posa', chi: 'giocatore', posa: 'fermo' } },
+            ...STRADA.parla(io, 1),
             {
               t: 'attivita',
               a: {
@@ -448,13 +429,7 @@ export const enoc: Ruolo = {
           tipo: 'agisci',
           etichetta: 'Di’ tutto ciò che Geova vuole che sappiano',
           richiede: ['parla-2'],
-          passi: [
-            { t: 'fx', fx: { k: 'posa', chi: 'giocatore', posa: 'proclama' } },
-            { t: 'fx', fx: { k: 'nastro', chi: 'giocatore', testo: NASTRO[2], dur: 5 } },
-            { t: 'fx', fx: { k: 'var', nome: 'agitazione', a: 1, dur: 2.5 } },
-            { t: 'fx', fx: { k: 'posa', chi: 'giocatore', posa: 'fermo' } },
-            senti('strada'),
-          ],
+          passi: [...STRADA.parla(io, 2), senti('strada')],
         },
       ],
     },

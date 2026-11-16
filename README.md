@@ -18,7 +18,8 @@ collegato all'originale su jw.org.
   - **Enoc**: la sua condotta in un mondo violento, che cosa voleva dire camminare con
     Dio, l’incarico di profeta, il pericolo, la conferma di essere gradito a Dio;
   - **Geova**: non raffigurato; si compiono gli atti che il racconto gli attribuisce:
-    affidare l’incarico, dare la forza, confermare, sottrarre Enoc al pericolo;
+    affidare l’incarico, dare la forza mentre Enoc proclama il messaggio in strada (la
+    stessa scena che vive l’empio), confermare, sottrarre Enoc al pericolo;
   - **Matusalemme**: che cosa rivelano i numeri di Genesi 5, sulla linea del tempo;
   - **Uno degli empi**: il loro mondo e il messaggio, dalla parte di chi lo ascoltò.
 - **Capitolo 2, Noè** (Genesi 6:1–8:22; 9:8-19; Ebrei 11:7; 2 Pietro 2:5), da cinque punti di vista:
